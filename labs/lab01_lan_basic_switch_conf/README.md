@@ -38,36 +38,30 @@ Switch# show flash
  6 -rwx 616 Mar 1 1993 00:07:13 +00:00 vlan.dat
 Switch# delete vlan.dat
 ```
-
    1.1.2. Удаление загрузочной конфигурации:
-
 ```
 Switch> enable
 Switch# erase startup-config
 ```
    1.1.3. Перезагрузка коммутатора и отказ от загрузки диалога начального конфигурирования
-
 ```
 Switch# reload
 Would you like to enter the initial configuration dialog? [yes/no]: no
 Switch>
 ```
    1.1.4. Проверка, что старые настройки были действительно удалены:
-
 ```
 Switch> enable
 Switch# show running-config
 ```
 
    1.3. Изучение файла загрузочной конфигурации (startup configuration):
-
 ```
 Switch# show startup-config
 ```
+1.4. Изучение характеристик SVI для VLAN 1.
 
-   1.4. Изучение характеристик SVI для VLAN 1.
-
-   1.4.1. Проверка, назначен ли IP-адрес сети VLAN 1.
+1.4.1. Проверка, назначен ли IP-адрес сети VLAN 1.
 
 ***На занятии не давалось***
 
@@ -195,11 +189,8 @@ S1(config)#
 
 ```
 S1(config)#interface vlan1
-
 S1(config-if)#ip address 192.168.1.2 255.255.255.0
-
 S1(config-if)#no shutdown
-
 S1(config-if)#end
 
 ```
@@ -215,5 +206,135 @@ S1(config-if)#end
 ```
 S1> enable
 S1> show running-config
+Building configuration...
 
+Current configuration : 1298 bytes
+!
+version 12.2
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+!
+hostname S1
+!
+enable secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
+!
+!
+!
+no ip domain-lookup
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+interface FastEthernet0/1
+!
+interface FastEthernet0/2
+!
+interface FastEthernet0/3
+!
+interface FastEthernet0/4
+!
+interface FastEthernet0/5
+!
+interface FastEthernet0/6
+!
+interface FastEthernet0/7
+!
+interface FastEthernet0/8
+!
+interface FastEthernet0/9
+!
+interface FastEthernet0/10
+!
+interface FastEthernet0/11
+!
+interface FastEthernet0/12
+!
+interface FastEthernet0/13
+!
+interface FastEthernet0/14
+!
+interface FastEthernet0/15
+!
+interface FastEthernet0/16
+!
+interface FastEthernet0/17
+!
+interface FastEthernet0/18
+!
+interface FastEthernet0/19
+!
+interface FastEthernet0/20
+!
+interface FastEthernet0/21
+!
+interface FastEthernet0/22
+!
+interface FastEthernet0/23
+!
+interface FastEthernet0/24
+!
+interface GigabitEthernet0/1
+!
+interface GigabitEthernet0/2
+!
+interface Vlan1
+ ip address 192.168.1.2 255.255.255.0
+!
+banner motd ^C Authorized Access Only! ^C
+!
+!
+!
+line con 0
+ password 7 0822455D0A16
+ logging synchronous
+ login
+!
+line vty 0 4
+ password 7 0822404F1A0A
+ login
+line vty 5 15
+ password 7 0822404F1A0A
+ login
+!
+!
+!
+!
+end
+```
+3.2. Тестирование сквозного соединения отправкой эхо-запроса c PC1.
+
+```
+C:\>ping 192.168.1.2
+
+Pinging 192.168.1.2 with 32 bytes of data:
+
+Reply from 192.168.1.2: bytes=32 time<1ms TTL=255
+Reply from 192.168.1.2: bytes=32 time<1ms TTL=255
+Reply from 192.168.1.2: bytes=32 time<1ms TTL=255
+Reply from 192.168.1.2: bytes=32 time<1ms TTL=255
+
+Ping statistics for 192.168.1.2:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+```
+
+3.3. Тестирование возможности удаленного управления с помощью Telnet.
+
+```
+C:\>telnet 192.168.1.2
+Trying 192.168.1.2 ...Open Authorized Access Only! 
+
+
+User Access Verification
+
+Password: 
+Password: 
+S1>en 
+Password: 
+Password: 
+S1#
 ```
