@@ -180,6 +180,7 @@ S1(config)#
 S1(config)#line vty 0 15
 S1(config-line)#password class
 S1(config-line)#login
+S1(config-line)#transport input telnet
 S1(config-line)#exit
 S1(config)#
 ```
@@ -195,7 +196,7 @@ S1(config-if)#end
 
 ```
 
- 2.3. Настройка IP-адреса для ПК.
+2.3. Настройка IP-адреса для ПК.
 
 ![](PC_int_settings.png)
 

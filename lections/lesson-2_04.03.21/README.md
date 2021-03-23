@@ -1,10 +1,79 @@
-## Занятие 1.  Команды IOS. Базовая конфигурация устройств сетевых устройств CISCO. Конспект.
+## Занятие 2. Физический уровень. Модель OSI 
 
-Дата занятия: 25.02.21
+Дата занятия: 04.03.21
 
 ###  Модуль 2 Cisco CCNA. Базовая конфигурация коммутатора и оконечного устройства.
 
-#### Доступ к Cisco IOS.
+#### Базовая настройка маршрутизатора.
+
+Базовая настройка маршрутизатора практически совпадаетс с базовой настройкой коммутатора.
+Но есть пара особенностей:
+- порты маршрутизатора по умолчанию выключены и после настройки их нужно обязательно включить командой **no shutdown**
+- физическим интерфейсам маршрутизатора можно и нужно задавать IP-адреса (в отличие от коммутатора, которому можно задать ip-адрес только виртуального интерфейса SVI) следующим образом
+```
+R1>enable
+R1#config terminal
+R1(config)#interface ge0/0/1
+R1(config-if)#description Link to LAN
+R1(config-if)#ip address 192.168.10.1 255.255.255.0
+R1(config-if)#ipv6 address 2001:db8:acad:10::1/64
+R1(config-if)#no shutdown
+R1(config-if)#no shutdown
+```
+
+#### Команды просмотра настройки, состояния и статистики интерфейсов.
+
+- Просмотр состояния интерфейсов
+```
+R1>enable
+R1#show ip interface brief
+R1#show ipv6 interface brief
+```
+- Просмотр статистики интерфейсов
+```
+R1>enable
+R1#show interfaces
+R1#show ip interfaces
+R1#show ipv6 interface brief
+```
+- Просмотр таблицы маршрутизации сетевого устройства
+```
+R1>enable
+R1#show interfaces
+R1#show ip interfaces
+R1#show ipv6 interface brief
+```
+- Настройка шлюза по умолчанию на коммутаторе:
+```
+S1>enable
+S1#configure terminal
+S1(config)#ip default-gateway 192.168.1.70
+S1(config)#exit
+S1(config)#
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ##### Состав операционной системы:
 - Оборудование (hardware) - физические компоненты компьютера 
@@ -134,11 +203,6 @@ R1#line vty 0 4
 ```
 R1#password cisco
 R1#login
-R1#transport input ssh telnet
-```
-- Примечание: включение доступа по линии VTY осуществлятся командой **transport input** 
-
-```
 R1#exit
 ```
 
@@ -179,14 +243,5 @@ S1(config)#interface vlan1
 S1(config-if)#ip address 192.168.1.20 255.255.255.0
 S1(config-if)#no shutdown
 S1(config-if)#exit
-S1(config)#
-```
-
-- Настройка шлюза по умолчанию на коммутаторе:
-```
-S1>enable
-S1#configure terminal
-S1(config)#ip default-gateway 192.168.1.70
-S1(config)#exit
 S1(config)#
 ```
