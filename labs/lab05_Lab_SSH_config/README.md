@@ -35,6 +35,18 @@ R1(config)#
 R1(config)#no ip domain-lookup
 ```
 
+- Установка параметра минимальной длины пароля в 5 символов.
+
+```
+R1(config)#security passwords min-length 5
+```
+
+- Предотвращение перебора пароля методом грубой силы
+
+```
+R1(config)#login block-for 120 attempts 3 within 60
+```
+
 - Назначение пароля **cisco** в качестве пароля консоли:
 
 
@@ -47,10 +59,11 @@ R1(config-line)#exit
 R1(config)#
 ```
 
-- Назначение пароля **cisco** в качестве пароля VTY:
+- Назначение пароля **cisco** в качестве пароля VTY и отключение доступа к неактивному привилегированному режиму через заданное время:
 
 ```
 R1(config)#line vty 0 15
+R1(config)#exec-timeout 5 30
 R1(config-line)#password cisco
 R1(config-line)#login
 R1(config-line)#exit
@@ -105,7 +118,38 @@ Reply from 192.168.1.1: bytes=32 time<1ms TTL=255
 
 #### 2. Настройка маршрутизатора для доступа по протоколу SSH.
 
+2.1. Зададим доменное имя устройства
 
+```
+R1#configure terminal
+R1(config)#ip domain-name R1
+```
+2.2. Сгенерируем ключ шифрования с указанием его длины.
 
+```
+R1(config)#crypto key generate rsa general-keys modulus 1024
+The name for the keys will be: R1.R1
+% The key modulus size is 1024 bits
+% Generating 1024 bit RSA keys, keys will be non-exportable...[OK]
+*Mar 1 0:38:43.894: %SSH-5-ENABLED: SSH 1.99 has been enabled
+```
+2.3. Создадим пользоваеля admin с паролем Adm1n в качестве пароля.
 
+```
+R1(config)#username admin privilege 15 secret Adm1n
+```
 
+2.4.Включаем SSH сервер v2
+
+```
+R1(config)#ip ssh version 2
+```
+2.4. Активируем протокол SSH и telnet на линиях VTY:
+
+```
+R1(config)#line vty 0 15 
+R1(config-line)#transport input all
+R1(config-line)#login local
+R1(config)#exit
+R1#
+```
