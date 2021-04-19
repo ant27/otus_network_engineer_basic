@@ -153,3 +153,11 @@ R1(config-line)#login local
 R1(config)#exit
 R1#
 ```
+
+2.5. Указываем маршрутизатору использовать локальную базу учетных записей для аутентификации.
+
+```
+R1(config-line)#login local
+R1(config)#exit
+R1#
+```
