@@ -161,3 +161,135 @@ R1(config-line)#login local
 R1(config)#exit
 R1#
 ```
+
+
+#### 3. Выполнение базовых настроек коммутатора.
+
+- Настройка имени устройства в соответствии с топологией.
+
+```
+Switch> enable
+Switch#configure terminal
+Switch(config)#hostname S1
+S1(config)#
+```
+
+- Отключение поиска DNS, чтобы предотвратить попытки маршрутизатора неверно преобразовывать введенные команды таким образом, как будто они являются именами узлов.
+
+```
+S1(config)#no ip domain-lookup
+```
+
+- Назначение пароля **cisco** в качестве пароля консоли:
+
+```
+S1(config)#line console 0
+S1(config-line)#password cisco
+S1(config-line)#login
+S1(config-line)#logging synchronous
+S1(config-line)#exit
+S1(config)#
+```
+
+- Назначение пароля **cisco** в качестве пароля VTY и отключение доступа к неактивному привилегированному режиму через заданное время:
+
+```
+S1(config)#line vty 0 15
+S1(config)#exec-timeout 5 30
+S1(config-line)#password cisco
+S1(config-line)#login
+S1(config-line)#exit
+S1(config)#
+```
+
+- Настройка пароля для входа в привилегированный режим и настройка отображения этого пароля в неявном виде при выводе команды **show running-config**
+
+```
+S1(config)#enable secret class
+S1(config)#service password-encryption
+S1(config)#
+```
+
+- Настройка приветственного баннера:
+
+```
+S1(config)#banner motd $ Authorized Access Only! $
+```
+
+- Настройка и активация на коммутаторе S1 интерфейса VTY:
+
+```
+S1(config)#interface vlan 1
+S1(config-if)#ip address 192.168.1.11 255.255.255.0
+S1(config-if)#no shutdown
+S1(config-if)#exit
+```
+- Настройка шлюза по умолчанию
+
+```
+S1(config)#ip default-gateway 192.168.1.1
+```
+
+- Сохранение настроенной конфигурации устройства.
+
+```
+S1#copy running-config startup-config
+```
+
+
+#### 4. Настройка коммутатора для доступа по протоколу SSH.
+
+4.1. Зададим доменное имя устройства
+
+```
+S1#configure terminal
+S1(config)#ip domain-name S1
+```
+4.2. Сгенерируем ключ шифрования с указанием его длины.
+
+```
+S1(config)#crypto key generate rsa general-keys modulus 1024
+The name for the keys will be: S1.S1
+% The key modulus size is 1024 bits
+% Generating 1024 bit RSA keys, keys will be non-exportable...[OK]
+*Mar 1 0:20:41.373: %SSH-5-ENABLED: SSH 1.99 has been enabled
+```
+4.3. Создадим пользоваеля admin с паролем Adm1n в качестве пароля.
+
+```
+S1(config)#username admin privilege 15 secret Adm1n
+```
+
+4.4.Включаем SSH сервер v2
+
+```
+S1(config)#ip ssh version 2
+```
+4.4. Активируем протокол SSH и telnet на линиях VTY:
+
+```
+S1(config)#line vty 0 15 
+S1(config-line)#transport input all
+S1(config-line)#login local
+S1(config)#exit
+S1#
+```
+
+4.5. Указываем маршрутизатору использовать локальную базу учетных записей для аутентификации.
+
+```
+S1(config-line)#login local
+S1(config)#exit
+S1#
+```
+
+#### 5. Установление с коммутатора S1 соединения с маршрутизатором R1 по протоколу SSH
+
+```
+S1#ssh -l admin 192.168.1.1
+Password: 
+
+ Authorized Access Only! 
+
+R1#
+```
