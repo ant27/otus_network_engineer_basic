@@ -289,10 +289,12 @@ SW3#copy running-config startup-config
 
 Включаем сервис DNS на Server0. Вносим в него две записи о соответсвия IP адреса и названии сервера Server0:
 
-```test.site 192.168.1.2
+```
+test.site 192.168.1.2
 ```
 
-```test.site 2001:CCCC:DDDD::2
+```
+test.site 2001:CCCC:DDDD::2
 ```
 
 На терминальных узлах прописываем соответсвенно IPv4 и IPv6 адреса DNS-сервера.
