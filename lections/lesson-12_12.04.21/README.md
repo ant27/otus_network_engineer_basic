@@ -66,6 +66,15 @@ Switch(config-if)#switchport mode access
 Switch(config-if)#switchport access vlan vlan-id
 Switch(config-vlan)#end
 ```  
-*Примечание: при вводе команды ***no switchport access vlan*** интерфейс помещаниется в VLAN по умолчанию, то есть 1-ый. Команда ***switchport mode access*** переводит порт в режим ***access***. Порт коммутатора может находится в 3-х режимах - auto, access, trunk. Режим Auto означает, что, если на подключенном к этому интерфейсу интерфейсе настроят trunk, то этот интерфейс также автоматически перейдет в trunk. Это небезопасно и рекомендуется вручную указывать режим работы порта.
+*Примечание: при вводе команды ***no switchport access vlan vlan-id*** интерфейс помещается в VLAN по умолчанию, то есть 1-ый. Команда ***switchport mode access*** переводит порт в режим ***access***. Порт коммутатора может находится в 3-х режимах - auto, access, trunk. Режим Auto означает, что, если на подключенном к этому интерфейсу интерфейсе настроят trunk, то этот интерфейс также автоматически перейдет в trunk. Это небезопасно и рекомендуется вручную указывать режим работы порта.
 
+- Назначение интерфейса коммутатора магистральным портом
 
+```
+Switch(config)#inteface interface-id
+Switch(config-if)#switchport mode trunk
+Switch(config-if)#switchport trunk allowed vlan vlan-list
+Switch(config-if)#switchport trunk native vlan vlan-id
+Switch(config-vlan)#end
+```  
+*Примечание: команда ***switchport trunk allowed vlan vlan-list*** настраивает список vlan, которым разрешен доступ в магитстраль. По умолчанию всем VLAN разрешен доступ к настроенному транковому порту. Команда ***switchport trunk native vlan vlan-id*** задает native vlan для данного интерфейса.
