@@ -93,16 +93,19 @@ Switch#show interfaces interfac-id switchport
 
 Есть 3 варианта маршрутизации между VLAN:
 - Физическое подключение интерфейсов каждого VLAN к портам маршрутизатора и его настройка. Очень неэффективное использование сетевых ресурсов. Не применяется.
-- Маршрутизатор на палке (router-on-a-stick) - настройка транкового порта на коммутаторе с VLAN и подинтерфейсов на маршрутизаторе.
+- Маршрутизатор-на-палке (router-on-a-stick) - настройка транкового порта на коммутаторе с VLAN и подинтерфейсов на маршрутизаторе.
 - Коммутатор уровня 3 - в каждом VLAN настраиваются виртуальные интерфейсы SVI. Между интерфейсами настраивается маршрутизация между VLAN. 
 
-- Настройка подинтерфейсов маршрутизатора
+- Настройка подинтерфейсов маршрутизатора-на-палке (для примера настройка на интерфейсе g0/0 VLAN 10 и VLAN20)
 
 ```
-Switch(config)#inteface interface-id
-Switch(config-if)#switchport mode trunk
-Switch(config-if)#switchport trunk allowed vlan vlan-list
-Switch(config-if)#switchport trunk allowed vlan add vlan-id
-Switch(config-if)#switchport trunk native vlan vlan-id
-Switch(config-if)#end
+Router(config)#inteface g0/0.10
+Router(config-subif)#encapsulation dot1q 10
+Router(config-subif)#ip address 192.168.1.1 255.255.255.0
+Router(config-subif)#end
+Router(config)#inteface g0/0.20
+Router(config-subif)#encapsulation dot1q 20
+Router(config-subif)#ip address 192.168.2.1 255.255.255.0
+Router(config-subif)#end
 ```  
+*Примечание: включать подинтерфейс командой ***no shutdown*** необязательно, но нужно включить родительский интерфейс, но не настраивать его.
