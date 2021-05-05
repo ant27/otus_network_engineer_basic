@@ -64,7 +64,7 @@ Switch(config-vlan)#end
 Switch(config)#inteface interface-id
 Switch(config-if)#switchport mode access
 Switch(config-if)#switchport access vlan vlan-id
-Switch(config-vlan)#end
+Switch(config-if)#end
 ```  
 *Примечание: при вводе команды ***no switchport access vlan vlan-id*** интерфейс помещается в VLAN по умолчанию, то есть 1-ый. Команда ***switchport mode access*** переводит порт в режим ***access***. Порт коммутатора может находится в 3-х режимах - auto, access, trunk. Режим Auto означает, что, если на подключенном к этому интерфейсу интерфейсе настроят trunk, то этот интерфейс также автоматически перейдет в trunk. Это небезопасно и рекомендуется вручную указывать режим работы порта.
 
@@ -74,7 +74,35 @@ Switch(config-vlan)#end
 Switch(config)#inteface interface-id
 Switch(config-if)#switchport mode trunk
 Switch(config-if)#switchport trunk allowed vlan vlan-list
+Switch(config-if)#switchport trunk allowed vlan add vlan-id
 Switch(config-if)#switchport trunk native vlan vlan-id
-Switch(config-vlan)#end
+Switch(config-if)#end
 ```  
-*Примечание: команда ***switchport trunk allowed vlan vlan-list*** настраивает список vlan, которым разрешен доступ в магитстраль. По умолчанию всем VLAN разрешен доступ к настроенному транковому порту. Команда ***switchport trunk native vlan vlan-id*** задает native vlan для данного интерфейса.
+*Примечание: команда ***switchport trunk allowed vlan vlan-list*** настраивает список vlan, которым разрешен доступ в магитстраль. По умолчанию всем VLAN разрешен доступ к настроенному транковому порту. Однако, если на коммутаторе не созданы VLAN, траффик которых он передает по своим настроенным транковым портам, он будет такой траффик ***удалять***. То есть на всех коммутаторах сети с VLAN должны быть прописаны все используемые VLAN. Команда ***switchport trunk native vlan vlan-id*** задает native vlan для данного интерфейса.
+
+- Команды просмотра информации о настроенных VLAN
+
+```
+Switch#show vlan
+Switch#show interfaces interfac-id switchport
+```  
+
+### Маршрутизация между VLAN
+
+Так как узлы в VLAN логически изолированы и представляют собой как будто разные физические сети, то взаимодействие между узлами не может происходить без использования маршрутизатора или коммутатора уровня L3.
+
+Есть 3 варианта маршрутизации между VLAN:
+- Физическое подключение интерфейсов каждого VLAN к портам маршрутизатора и его настройка. Очень неэффективное использование сетевых ресурсов. Не применяется.
+- Маршрутизатор на палке (router-on-a-stick) - настройка транкового порта на коммутаторе с VLAN и подинтерфейсов на маршрутизаторе.
+- Коммутатор уровня 3 - в каждом VLAN настраиваются виртуальные интерфейсы SVI. Между интерфейсами настраивается маршрутизация между VLAN. 
+
+- Настройка подинтерфейсов маршрутизатора
+
+```
+Switch(config)#inteface interface-id
+Switch(config-if)#switchport mode trunk
+Switch(config-if)#switchport trunk allowed vlan vlan-list
+Switch(config-if)#switchport trunk allowed vlan add vlan-id
+Switch(config-if)#switchport trunk native vlan vlan-id
+Switch(config-if)#end
+```  
