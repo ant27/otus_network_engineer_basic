@@ -96,7 +96,8 @@ Switch#show interfaces interfac-id switchport
 - Маршрутизатор-на-палке (router-on-a-stick) - настройка транкового порта на коммутаторе с VLAN и подинтерфейсов на маршрутизаторе.
 - Коммутатор уровня 3 - в каждом VLAN настраиваются виртуальные интерфейсы SVI. Между интерфейсами настраивается маршрутизация между VLAN. 
 
-- Настройка подинтерфейсов маршрутизатора-на-палке (для примера настройка на интерфейсе g0/0 VLAN 10 и VLAN20)
+
+#### Настройка подинтерфейсов маршрутизатора-на-палке (для примера настройка на интерфейсе g0/0 VLAN 10 и VLAN20)
 
 ```
 Router(config)#inteface g0/0.10
@@ -109,3 +110,32 @@ Router(config-subif)#ip address 192.168.2.1 255.255.255.0
 Router(config-subif)#end
 ```  
 *Примечание: включать подинтерфейс командой ***no shutdown*** необязательно, но нужно включить родительский интерфейс, но не настраивать его.
+
+#### Настройка подержки уровня 3 в коммутаторе Cisco 2960 и маршрутизации между VLAN.
+
+В коммутаторах Cisco можно выбирать шаблоны режимов работы, в том числе шаблон коммутатора 3 уровня. Это делается следующей командой.
+
+```
+Switch(config)#sdm prefer lanbase-routing
+Switch(config)#write
+Switch(config)#reload
+Switch#show sdm prefer
+```  
+- Включение функции IP маршрутизации
+
+```
+Switch(config)#ip routing
+Switch(config)#write
+```  
+- Настройка интерфейсов SVI для каждого VLAN
+
+```
+Switch(config)#interface vlan 10
+Switch(config-if)#ip address 192.168.1.1 255.255.255.0
+Switch(config-if)#no shutdown
+Switch(config-if)#exit
+Switch(config)#interface vlan 20
+Switch(config-if)#ip address 192.168.2.1 255.255.255.0
+Switch(config-if)#no shutdown
+Switch(config-if)#exit
+```  
