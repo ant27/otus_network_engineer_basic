@@ -4,7 +4,7 @@
 
 1. Создание сети и настройка основных параметров устройств.
 2. Создание сетей VLAN и назначение портов коммутаторов.
-3. Настройка транка 802.1Q между коммутаторами.
+3. Настройка транка 802.1Q между коммутаторами и маршрутизатором.
 4. Настройка маршрутизации между сетями VLAN.
 5. Проверка маршрутизация между VLAN.
 
@@ -168,13 +168,12 @@ S1#copy running-config startup-config
 Настроим сетевые параметры узлов ПК (IP адреса, маски и шлюзы) в соответствии с заданием.
 
 
-
-
 #### 2. Создание сетей VLAN и назначение портов коммутаторов.
+
 
 В соответсвии с заданием на каждом коммутаторе необходимо создать 5 VLAN: 10, 20, 30, 999 и 1000.
 
-- Создание необходимых VLAN (выполняется на обоих коммутаторах)
+- Создание необходимых VLAN (выполняется  одинаково на обоих коммутаторах)
 
 
 ```
@@ -195,277 +194,221 @@ S1(config-vlan)#name native_vlan
 S1(config-vlan)#exit
 ```
 
-- Включение портов в VLAN 999 (для каждого коммутатора свой диапазон портов)
-
-interface range fastEthernet 0/2 - 4 , fastEthernet 0/7 -24 , GigabitEthernet 0/1 - 2
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-- Настройка и активация на маршрутизаторе R1 интерфейса G0/1 в соответствии с заданием
+- Настройка интерфейса VTY в административном VLAN 10 на коммутаторе S1
 
 ```
-R1(config)#interface ge0/1
-R1(config-if)#ip address 192.168.1.1 255.255.255.0
+S1(config)#interface vlan 10
+S1(config-if)#ip address 192.168.10.11 255.255.255.0
+S1(config-if)#no shutdown
+S1(config-if)#exit
+S1(config)#ip default-gateway 192.168.10.1 
+```
+
+- Настройка интерфейса VTY в административном VLAN 10 на коммутаторе S2
+
+```
+S2(config)#interface vlan 10
+S2(config-if)#ip address 192.168.10.12 255.255.255.0
+S2(config-if)#default-gateway 192.168.10.1
+S2(config-if)#no shutdown
+S2(config-if)#exit
+S2(config)#ip default-gateway 192.168.10.1 
+```
+
+- Включение портов в соответсвующие VLAN на коммутаторе S1
+
+
+```
+S1(config)#interface range fastEthernet 0/2 - 4 , fastEthernet 0/7 -24 , GigabitEthernet 0/1 - 2
+S1(config-if-range)#switchport mode access
+S1(config-if-range)#switchport access vlan 999
+S1(config-if-range)#shutdown
+S1(config-if-range)#exit
+S1(config)#interface fastEthernet 0/6
+S1(config-if)#switchport mode access
+S1(config-if)#switchport access vlan 20
+S1(config-if)#exit
+```
+
+
+- Включение портов в соответсвующие VLAN на коммутаторе S2
+
+
+```
+S2(config)#interface range fastEthernet 0/2 - 17 , fastEthernet 0/19 - 24 , GigabitEthernet 0/1 - 2
+S2(config-if-range)#switchport mode access
+S2(config-if-range)#switchport access vlan 999
+S2(config-if-range)#shutdown
+S2(config-if-range)#exit
+S2(config)#interface fastEthernet 0/18
+S2(config-if)#switchport mode access
+S2(config-if)#switchport access vlan 30
+S2(config-if)#exit
+```
+
+- Сохранение настроенной конфигурации устройств
+
+```
+S1#copy running-config startup-config
+S2#copy running-config startup-config
+```
+
+#### 3. Настройка транка 802.1Q между коммутаторами и маршрутизатором.
+
+
+- Настройка на коммутаторе S1 магистрального канала между S1 и S2 и между S1 и маршрутизатором R1
+
+```
+S1(config)#interface fastEthernet 0/1
+S1(config-if)#switchport mode trunk
+S1(config-if)#switchport trunk allowed vlan 10,20,30,1000
+S1(config-if)#switchport trunk native vlan 1000
+S1(config-if)#no shutdown
+S1(config-if)#exit
+S1(config)#interface fastEthernet 0/5
+S1(config-if)#switchport mode trunk
+S1(config-if)#switchport trunk allowed vlan 10,20,30,1000
+S1(config-if)#switchport trunk native vlan 1000
+S1(config-if)#no shutdown
+S1(config-if)#exit
+```
+
+- Настройка на коммутаторе S2 магистрального канала между S1 и S2 
+
+```
+S2(config)#interface fastEthernet 0/1
+S2(config-if)#switchport mode trunk
+S1(config-if)#switchport trunk allowed vlan 10,20,30,1000
+S2(config-if)#switchport trunk native vlan 1000
+S2(config-if)#no shutdown
+S2(config-if)#exit
+```
+
+- Сохранение настроенной конфигурации устройств
+
+```
+S1#copy running-config startup-config
+S2#copy running-config startup-config
+```
+
+
+#### 4. Настройка маршрутизации между сетями VLAN на маршрутизаторе (роутер-на-палке).
+
+- Настройка сабинтерфейсов
+
+```
+R1(config)#interface GigabitEthernet0/1.10
+R1(config-subif)#description network_management_vlan
+R1(config-subif)#encapsulation dot1Q 10
+R1(config-subif)#ip address 192.168.10.1 255.255.255.0
+R1(config-subif)#end
+R1(config)#interface GigabitEthernet0/1.20
+R1(config-subif)#description sales_vlan
+R1(config-subif)#encapsulation dot1Q 20
+R1(config-subif)#ip address 192.168.20.1 255.255.255.0
+R1(config-subif)#end
+R1(config)#interface GigabitEthernet0/1.30
+R1(config-subif)#description operations_vlan
+R1(config-subif)#encapsulation dot1Q 30
+R1(config-subif)#ip address 192.168.30.1 255.255.255.0
+R1(config-subif)#end
+R1(config)#interface GigabitEthernet0/1.1000
+R1(config-subif)#description native_vlan
+R1(config-subif)#encapsulation dot1Q 1000 native
+R1(config-subif)#end
+```
+
+*Примечание: при настройке сабинтерфейсов родительский интерфейс настраивать нельзя
+
+- Включение родительского интерфейса без настройки 
+
+```
+R1(config)#interface GigabitEthernet0/1
 R1(config-if)#no shutdown
-R1(config-if)#exit
-R1(config)#exit
-R1#
+R1(config-if)#end
 ```
 
-- Сохранение настроенной конфигурации устройства.
+- Сохранение настроенной конфигурации
 
 ```
 R1#copy running-config startup-config
 ```
 
-1.3. Настройка IP-адреса и маски подсети для PC-A в соответствии с заданием.
+В отличие от коммутатора на машрутизаторе уже включена функция маршрутизации (неожиданно :-))), поэтому больше ничего настраивать не надо. 
 
-Настроим через вкладку **Config** окна узла PC-A его IPv4 адрес **192.168.1.3** и шлюз по умолчанию **192.168.1.1**
+Маршрутизатор сам определит сети прямого подключения и маршруты к ним, поэтому маршрутизация между VLAN будет работать автоматически. 
 
-1.4. Проверка доступности маршрутизатора R1 с узла PC-A
 
-```
-C:\>ping 192.168.1.1
-Pinging 192.168.1.1 with 32 bytes of data:
-Reply from 192.168.1.1: bytes=32 time=1ms TTL=255
-Reply from 192.168.1.1: bytes=32 time<1ms TTL=255
-Reply from 192.168.1.1: bytes=32 time<1ms TTL=255
-Reply from 192.168.1.1: bytes=32 time<1ms TTL=255
-```
+#### 5. Проверка маршрутизация между VLAN.
 
-#### 2. Настройка маршрутизатора для доступа по протоколу SSH.
-
-2.1. Зададим доменное имя устройства
+- Отправка эхо-запроса с PC-A на его шлюз по умолчанию
 
 ```
-R1#configure terminal
-R1(config)#ip domain-name R1
-```
-2.2. Сгенерируем ключ шифрования с указанием его длины.
+C:\> ping 192.168.20.1
 
-```
-R1(config)#crypto key generate rsa general-keys modulus 1024
-The name for the keys will be: R1.R1
-% The key modulus size is 1024 bits
-% Generating 1024 bit RSA keys, keys will be non-exportable...[OK]
-*Mar 1 0:38:43.894: %SSH-5-ENABLED: SSH 1.99 has been enabled
-```
-2.3. Создадим пользоваеля admin с паролем Adm1n в качестве пароля.
+Pinging 192.168.20.1 with 32 bytes of data:
 
-```
-R1(config)#username admin privilege 15 secret Adm1n
+Reply from 192.168.20.1: bytes=32 time=45ms TTL=255
+Reply from 192.168.20.1: bytes=32 time<1ms TTL=255
+Reply from 192.168.20.1: bytes=32 time<1ms TTL=255
+Reply from 192.168.20.1: bytes=32 time<1ms TTL=255
 ```
 
-2.4.Включаем SSH сервер v2
+- Отправка эхо-запроса с PC-A на PC-B
 
 ```
-R1(config)#ip ssh version 2
-```
-2.4. Активируем протокол SSH и telnet на линиях VTY:
+C:\> ping 192.168.30.3
 
-```
-R1(config)#line vty 0 15 
-R1(config-line)#transport input all
-R1(config-line)#login local
-R1(config)#exit
-R1#
+Pinging 192.168.30.3 with 32 bytes of data:
+
+Request timed out.
+Reply from 192.168.30.3: bytes=32 time=1ms TTL=127
+Reply from 192.168.30.3: bytes=32 time=8ms TTL=127
+Reply from 192.168.30.3: bytes=32 time=1ms TTL=127
 ```
 
-2.5. Указываем маршрутизатору использовать локальную базу учетных записей для аутентификации.
+- Отправка эхо-запроса с PC-A на S2
 
 ```
-R1(config-line)#login local
-R1(config)#exit
-R1#
+C:\> ping 192.168.10.12
+
+Pinging 192.168.10.12 with 32 bytes of data:
+
+Request timed out.
+Request timed out.
+Reply from 192.168.10.12: bytes=32 time<1ms TTL=254
+Reply from 192.168.10.12: bytes=32 time<1ms TTL=254
 ```
 
-
-#### 3. Выполнение базовых настроек коммутатора.
-
-- Настройка имени устройства в соответствии с топологией.
+- Выполнение команды tracert до PC-A на PC-B
 
 ```
-Switch> enable
-Switch#configure terminal
-Switch(config)#hostname S1
-S1(config)#
+C:\>tracert 192.168.20.3
+
+Tracing route to 192.168.20.3 over a maximum of 30 hops: 
+
+  1   1 ms      0 ms      1 ms      192.168.30.1
+  2   1 ms      0 ms      0 ms      192.168.20.3
+
+Trace complete.
 ```
 
-- Отключение поиска DNS, чтобы предотвратить попытки маршрутизатора неверно преобразовывать введенные команды таким образом, как будто они являются именами узлов.
+-Дополнительный тест (сравнение уменьшения TTL при пинге до разных устройств)
 
-```
-S1(config)#no ip domain-lookup
-```
+Я заметил что TTL непонятно уменьшается при пинге разных устройств в нашей импровизированной сети. Сведем TTL пингов до разных устройств с PC-A в таблицу.
 
-- Назначение пароля **cisco** в качестве пароля консоли:
-
-```
-S1(config)#line console 0
-S1(config-line)#password cisco
-S1(config-line)#login
-S1(config-line)#logging synchronous
-S1(config-line)#exit
-S1(config)#
-```
-
-- Назначение пароля **cisco** в качестве пароля VTY и отключение доступа к неактивному привилегированному режиму через заданное время:
-
-```
-S1(config)#line vty 0 15
-S1(config)#exec-timeout 5 30
-S1(config-line)#password cisco
-S1(config-line)#login
-S1(config-line)#exit
-S1(config)#
-```
-
-- Настройка пароля для входа в привилегированный режим и настройка отображения этого пароля в неявном виде при выводе команды **show running-config**
-
-```
-S1(config)#enable secret class
-S1(config)#service password-encryption
-S1(config)#
-```
-
-- Настройка приветственного баннера:
-
-```
-S1(config)#banner motd $ Authorized Access Only! $
-```
-
-- Настройка и активация на коммутаторе S1 интерфейса VTY:
-
-```
-S1(config)#interface vlan 1
-S1(config-if)#ip address 192.168.1.11 255.255.255.0
-S1(config-if)#no shutdown
-S1(config-if)#exit
-```
-- Настройка шлюза по умолчанию
-
-```
-S1(config)#ip default-gateway 192.168.1.1
-```
-
-- Сохранение настроенной конфигурации устройства.
-
-```
-S1#copy running-config startup-config
-```
+Сам PC-A находится в VLAN 20
 
 
-#### 4. Настройка коммутатора для доступа по протоколу SSH.
+| Устройство          				| TTL до него   	|
+| --------------------------------------------- |-----------------------|
+|S1 (interface in VLAN 10)              	| 254              	|
+|S2 (interface in VLAN 10)  	          	| 254 			|
+|R1 (interface in VLAN 10)         		| 255			|
+|R1 (interface  in VLAN 20)       		| 255			|
+|R1 (interface  in VLAN 30)        	  	| 255			|
+|PC-B	                        		| 127			|
 
-4.1. Зададим доменное имя устройства
+Вопрос к преподавателям: Почему TTL так сильно уменьшился при запросе PC-B?
 
-```
-S1#configure terminal
-S1(config)#ip domain-name S1
-```
-4.2. Сгенерируем ключ шифрования с указанием его длины.
 
-```
-S1(config)#crypto key generate rsa general-keys modulus 1024
-The name for the keys will be: S1.S1
-% The key modulus size is 1024 bits
-% Generating 1024 bit RSA keys, keys will be non-exportable...[OK]
-*Mar 1 0:20:41.373: %SSH-5-ENABLED: SSH 1.99 has been enabled
-```
-4.3. Создадим пользоваеля admin с паролем Adm1n в качестве пароля.
-
-```
-S1(config)#username admin privilege 15 secret Adm1n
-```
-
-4.4.Включаем SSH сервер v2
-
-```
-S1(config)#ip ssh version 2
-```
-4.4. Активируем протокол SSH и telnet на линиях VTY:
-
-```
-S1(config)#line vty 0 15 
-S1(config-line)#transport input all
-S1(config-line)#login local
-S1(config)#exit
-S1#
-```
-
-4.5. Указываем маршрутизатору использовать локальную базу учетных записей для аутентификации.
-
-```
-S1(config-line)#login local
-S1(config)#exit
-S1#
-```
-
-#### 5. Установление с коммутатора S1 соединения с маршрутизатором R1 по протоколу SSH
-
-```
-S1#ssh -l admin 192.168.1.1
-Password: 
-
- Authorized Access Only! 
-
-R1#
-```
