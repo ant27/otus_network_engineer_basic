@@ -5,7 +5,9 @@
 
 ![](net_original.png)
 
+
 - Созданная топология с названиями узлов
+
 
 ![](net_topology.png)
 
@@ -46,6 +48,7 @@ SW1(config-if)#exit
 SW1(config)#interface fastEthernet 0/1
 SW1(config-if)#switchport mode trunk
 SW1(config-if)#exit
+SW1#copy running-config startup-config
 ```
 
 - Настройка SW2
@@ -69,6 +72,7 @@ SW2(config-if)#exit
 SW2(config)#interface fastEthernet 0/1
 SW2(config-if)#switchport mode trunk
 SW2(config-if)#exit
+SW2#copy running-config startup-config
 ```
 
 - Настройка SW0
@@ -90,6 +94,7 @@ SW0(config-if)#exit
 SW0(config)#interface GigabitEthernet0/1
 SW0(config-if)#switchport mode trunk
 SW0(config-if)#exit
+SW0#copy running-config startup-config
 ```
 
 - Настройка SW3
@@ -113,6 +118,7 @@ SW3(config-if)#exit
 SW3(config)#interface GigabitEthernet0/1
 SW3(config-if)#switchport mode trunk
 SW3(config-if)#exit
+SW3#copy running-config startup-config
 ```
 
 
