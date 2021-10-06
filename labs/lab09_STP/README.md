@@ -310,4 +310,4 @@ Fa0/4            Desg FWD 19        128.4    P2p
 
 #### 5. Файл лабораторной работы в программе cisco packet tracer. 
 
-![](stp.pkt)
+![stp.pkt](stp.pkt)
