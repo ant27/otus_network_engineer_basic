@@ -1,169 +1,185 @@
 # Лабораторная работа №9. Развертывание коммутируемой сети с резервными каналами (Протокол связующего дерева - STP ).
 
+###  Задание:
 
+1. Создание сети и настройка основных параметров устройств.
+2. Определение корневого моста
+
+##1. Создание сети и настройка основных параметров устройств.
 ### 1.1 Создадим топологию данной сети в программе cisco packet tracer в соответсвии с представленной схемой. 
 
 ![](net_topology_stp.png)
 
 
-### 1.2. Выполнение базовых настроек узлов ПК.
-
-Настроим сетевые параметры узлов ПК (IP адреса, маски и шлюзы) в соответствии со схемой.
-
-Здесь есть противоречие, с которым, думаю нужно обратиться к преподавателю - при автоматической настройке IPv6 узлов с помощью SLAAC, адрес DNS сервера автоматически не настраивается. Для его настройки вручную необходимо выключить SLAAC.
-
-![](pc0laptop0.png)
-
-![](pc1laptop1.png)
-
-![](servers.png)
-
-
-
-### 1.2. Выполнение настроек коммутаторов.
-
-- Настройка SW1
-
+### 1.2. Выполнение базовых настроек коммутаторов (описание только для первого).
 
 ```
-SW1(config)#vlan 22
-SW1(config-vlan)#name vlan_22
-SW1(config-vlan)#exit
-SW1(config)#vlan 64
-SW1(config-vlan)#name vlan_64
-SW1(config-vlan)#exit
-SW1(config)#interface fastEthernet 0/2
-SW1(config-if)#switchport mode access
-SW1(config-if)#switchport access vlan 64
-SW1(config-if)#exit
-SW1(config)#interface fastEthernet 0/3
-SW1(config-if)#switchport mode access
-SW1(config-if)#switchport access vlan 22
-SW1(config-if)#exit
-SW1(config)#interface fastEthernet 0/1
-SW1(config-if)#switchport mode trunk
-SW1(config-if)#exit
-SW1#copy running-config startup-config
+Switch> enable
+Switch#configure terminal
+Switch(config)#hostname S1
+S1(config)#
 ```
 
-- Настройка SW2
-
-
-```
-SW2(config)#vlan 22
-SW2(config-vlan)#name vlan_22
-SW2(config-vlan)#exit
-SW2(config)#vlan 64
-SW2(config-vlan)#name vlan_64
-SW2(config-vlan)#exit
-SW2(config)#interface fastEthernet 0/2
-SW2(config-if)#switchport mode access
-SW2(config-if)#switchport access vlan 64
-SW2(config-if)#exit
-SW2(config)#interface fastEthernet 0/3
-SW2(config-if)#switchport mode access
-SW2(config-if)#switchport access vlan 22
-SW2(config-if)#exit
-SW2(config)#interface fastEthernet 0/1
-SW2(config-if)#switchport mode trunk
-SW2(config-if)#exit
-SW2#copy running-config startup-config
-```
-
-- Настройка SW0
-
+- Отключение поиска DNS, чтобы предотвратить попытки маршрутизатора неверно преобразовывать введенные команды таким образом, как будто они являются именами узлов.
 
 ```
-SW0(config)#vlan 22
-SW0(config-vlan)#name vlan_22
-SW0(config-vlan)#exit
-SW0(config)#vlan 64
-SW0(config-vlan)#name vlan_64
-SW0(config-vlan)#exit
-SW0(config)#interface fastEthernet 0/1
-SW0(config-if)#switchport mode trunk
-SW0(config-if)#exit
-SW0(config)#interface fastEthernet 0/2
-SW0(config-if)#switchport mode trunk
-SW0(config-if)#exit
-SW0(config)#interface GigabitEthernet0/1
-SW0(config-if)#switchport mode trunk
-SW0(config-if)#exit
-SW0#copy running-config startup-config
+S1(config)#no ip domain-lookup
 ```
 
-- Настройка SW3
-
+- Создадим пользоваеля admin с паролем cisco в качестве пароля.
 
 ```
-SW3(config)#vlan 9
-SW3(config-vlan)#name vlan_9
-SW3(config-vlan)#exit
-SW3(config)#vlan 29
-SW3(config-vlan)#name vlan_29
-SW3(config-vlan)#exit
-SW3(config)#interface fastEthernet 0/1
-SW3(config-if)#switchport mode access
-SW3(config-if)#switchport access vlan 9
-SW3(config-if)#exit
-SW3(config)#interface fastEthernet 0/2
-SW3(config-if)#switchport mode access
-SW3(config-if)#switchport access vlan 29
-SW3(config-if)#exit
-SW3(config)#interface GigabitEthernet0/1
-SW3(config-if)#switchport mode trunk
-SW3(config-if)#exit
-SW3#copy running-config startup-config
+S1(config)#username admin privilege 0 secret cisco
 ```
 
 
-### 1.3. Выполнение настроек маршрутизатора
+- Настройка использования локальной БД (с ранее заведенными пользвателем admin) для аутентификации доступа в консоль:
 
 
 ```
-R1(config)#interface GigabitEthernet0/0/0.22
-R1(config-subif)#description vlan_22
-R1(config-subif)#encapsulation dot1Q 22
-R1(config-subif)#ip address 172.16.0.1 255.255.252.0
-R1(config-subif)#exit
-R1(config)#interface GigabitEthernet0/0/0.64
-R1(config-subif)#description vlan_64
-R1(config-subif)#encapsulation dot1Q 64
-R1(config-subif)#ipv6 address FE80::1 link-local
-R1(config-subif)#ipv6 address 2002:AAAA:BBBB::1/64
-R1(config-subif)#exit
-R1(config)#interface GigabitEthernet0/0/1.9
-R1(config-subif)#description vlan_9
-R1(config-subif)#encapsulation dot1Q 9
-R1(config-subif)#ip address 10.0.0.1 255.128.0.0
-R1(config-subif)#ipv6 address FE80::1 link-local
-R1(config-subif)#ipv6 address 2001:EEEE:FFFF::1/64
-R1(config-subif)#exit
-R1(config)#interface GigabitEthernet0/0/1.29
-R1(config-subif)#description vlan_29
-R1(config-subif)#encapsulation dot1Q 29
-R1(config-subif)#ip address 192.168.1.1 255.255.255.248
-R1(config-subif)#ipv6 address FE80::1 link-local
-R1(config-subif)#ipv6 address 2001:CCCC:DDDD::1/64
-R1(config-subif)#exit
-R1(config)#ipv6 unicast-routing
-R1(config)#exit
-R1#copy running-config startup-config
+S1(config)#line console 0
+S1(config-line)#login local
+S1(config-line)#logging synchronous
+S1(config-line)#exit
+S1(config)#
 ```
 
-### 1.4. Внесение A-записей в DNS-сервер.
+- Настройка использования локальной БД (с ранее заведенными пользвателем admin) для аутентификации доступа к линиям VTY и отключение доступа к неактивному привилегированному режиму через заданное время:
 
-![](dns_records.png)
+```
+S1(config)#line vty 0 15
+S1(config-line)#exec-timeout 5 30
+S1(config-line)#login local
+S1(config-line)#exit
+S1(config)#
+```
 
-Здесь также есть непонятный момент: для узлов с двойным стеком по какому адресу узел будет обращаться к шлюзу и DNS-серверу? А также какой IP-адрес: IPv4 или IPv6 будет выдавать узлу DNS-сервер в ответ на его запрос о разрешении имени узла? 
+- Настройка пароля для входа в привилегированный режим и настройка отображения этого пароля в неявном виде при выводе команды **show running-config**
 
-### 1.5. Проверка сетевой связности.
+```
+S1(config)#enable secret class
+S1(config)#service password-encryption
+S1(config)#
+```
 
-Также можно пропинговать узлы, находящиеся в одних VLAN. При правильной настройке все должно пинговаться.
-Таакже пропингуем сервера по именам, внесенным в DNS-сервер. При правильной настройке все должно пинговаться.
+- Настройка приветственного баннера:
 
+```
+S1(config)#banner motd $ Vy kto takie! Ya vas ne znayu! Idite naher! $
+```
 
+- Настройка и активация на коммутаторе S1 интерфейса VTY:
 
+```
+S1(config)#interface vlan 1
+S1(config-if)#ip address 192.168.1.1 255.255.255.0
+S1(config-if)#no shutdown
+S1(config-if)#exit
+```
 
+- Сохранение настроенной конфигурации устройства
 
+```
+S1#copy running-config startup-config
+```
+- Проверка доступности всех коммутаторов с S3
 
+Интерфейсы VTY всех коммутаторов доступны.
+
+##2. Определение корневого моста
+
+###2.1 Отключение всех портов на коммутаторах (описание только для первого)
+
+```
+S1> enable
+S1#configure terminal
+S1(config)#interface range fastEthernet 0/1 - 24 , GigabitEthernet 0/1 - 2
+S1(config-if-range)#shutdown
+S1(config-if-range)#exit
+S1(config)#
+```
+
+###2.2 Настройка подключенных портов в качестве транковых и их включение (описание только для первого)
+
+```
+S1(config)#interface range fastEthernet 0/2 , fastEthernet 0/4
+S1(config-if-range)#switchport mode trunk
+S1(config-if-range)#switchport trunk allowed vlan 1
+S1(config-if-range)#no shutdown
+S1(config-if-range)#exit
+```
+
+###2.3 Отображение данных протокола spanning-tree.
+
+Вывод команд show spanning-tree на все коммутаторах:
+
+```
+S1#show spanning-tree 
+VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    32769
+             Address     0007.ECA5.7C1E
+             Cost        19
+             Port        4(FastEthernet0/4)
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     00E0.F950.5928
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  20
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Fa0/2            Altn BLK 19        128.2    P2p
+Fa0/4            Root FWD 19        128.4    P2p
+```
+
+```
+S2#show spanning-tree 
+VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    32769
+             Address     0007.ECA5.7C1E
+             Cost        19
+             Port        4(FastEthernet0/4)
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     0009.7C85.BD16
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  20
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Fa0/2            Desg FWD 19        128.2    P2p
+Fa0/4            Root FWD 19        128.4    P2p
+```
+
+```
+S3#show spanning-tree 
+VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    32769
+             Address     0007.ECA5.7C1E
+             This bridge is the root
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     0007.ECA5.7C1E
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  20
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Fa0/2            Desg FWD 19        128.2    P2p
+Fa0/4            Desg FWD 19        128.4    P2p
+```
+
+Ответы на вопросы лабраторного задания:
+
+1. Какой коммутатор является корневым мостом?: S3
+2. Почему этот коммутатор был выбран протоколом spanning-tree в качестве корневого моста?: У него самое низкое значением MAC-адреса по сравнению с другими коммутаторами.
+3. Какие порты на коммутаторе являются корневыми портами?: Для S1 и S2 - Fa0/4, 
+4. Какие порты на коммутаторе являются назначенными портами? Для S2 - Fa0/2, для S3 - Fa0/2 и Fa0/4. 
+5. Какой порт отображается в качестве альтернативного и в настоящее время заблокирован?: Для S1 - Fa0/2
+6. Почему протокол spanning-tree выбрал этот порт в качестве невыделенного (заблокированного) порта?
