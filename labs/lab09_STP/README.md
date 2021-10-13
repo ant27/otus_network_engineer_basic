@@ -194,22 +194,141 @@ Fa0/4            Desg FWD 19        128.4    P2p
 
 ## 3. Наблюдение за процессом выбора протоколом STP порта, исходя из стоимости портов.
 
-### 3.1 Определение коммутатора с заблокированным портом
-
-В прошлом пункте мы определили, что заблокирован порт Fa0/2 на коммутаторе S1.
-
-### 3.2 Изменение стоимости порта
-
-```
-S1(config)#interface fastEthernet 0/2
-S1(config-if)#spanning-tree cost 18
-S1(config-if)#exit
-```
-
 К сожалению в packet tracer не работает изменение стоимости портов.
+
 Но не будем отчаиваться, потому что есть альтернативные среды эмуляции сетевых устройств cisco, среди которых GNS3.
-К сожалению, в GNS3, насколько я понимаю нельзя подгрузить нативный образ коммутатора CISCO, например, один из самых популярных Cisco 2960.
-Однако вместо этого можно использовать образ маршрутизатора
+
+К сожалению, в GNS3, насколько я понимаю нельзя подгрузить нативный образ коммутатора Cisco, например, один из популярных Cisco 2960.
+
+Однако вместо этого можно использовать образ маршрутизатора Cisco 3745 c модулем NM-16ESW c 16 коммутируемыми портами. 
+
+### 3.1 Создание топологии данной сети в программе GNS3 в соответсвии с представленной схемой. 
+
+![](gns3_topology.jpg)
+
+### 3.3 Команды предварительной настройки маршрутизаторов (описание только для R1).
+
+```
+R1#conf t
+R1(config)#interface range fa1/0 - 15
+R1(config-if-range)#shut 
+R1(config-if-range)#exit
+R1(config)#interface range fa1/2 , fa1/4
+R1(config-if-range)#switchport mode trunk
+R1(config-if-range)#no shut
+R1(config-if-range)#exit
+R1(config)#exit
+R1#wr
+```
+### 3.4 Отображение данных протокола spanning-tree на маршрутизаторах.
+
+```
+R1#show spanning-tree
+
+ VLAN1 is executing the ieee compatible Spanning Tree protocol
+  Bridge Identifier has priority 32768, address c401.19fc.0000
+  Configured hello time 2, max age 20, forward delay 15
+  We are the root of the spanning tree
+  Topology change flag not set, detected flag not set
+  Number of topology changes 2 last change occurred 00:01:03 ago
+          from FastEthernet1/2
+  Times:  hold 1, topology change 35, notification 2
+          hello 2, max age 20, forward delay 15
+  Timers: hello 1, topology change 0, notification 0, aging 300
+
+ Port 43 (FastEthernet1/2) of VLAN1 is forwarding
+   Port path cost 19, Port priority 128, Port Identifier 128.43.
+   Designated root has priority 32768, address c401.19fc.0000
+   Designated bridge has priority 32768, address c401.19fc.0000
+   Designated port id is 128.43, designated path cost 0
+   Timers: message age 0, forward delay 0, hold 0
+   Number of transitions to forwarding state: 1
+   BPDU: sent 187, received 12
+
+ Port 45 (FastEthernet1/4) of VLAN1 is forwarding
+   Port path cost 19, Port priority 128, Port Identifier 128.45.
+   Designated root has priority 32768, address c401.19fc.0000
+   Designated bridge has priority 32768, address c401.19fc.0000
+   Designated port id is 128.45, designated path cost 0
+   Timers: message age 0, forward delay 0, hold 0
+   Number of transitions to forwarding state: 1
+   BPDU: sent 196, received 20
+```
+```
+R2#show spanning-tree
+
+ VLAN1 is executing the ieee compatible Spanning Tree protocol
+  Bridge Identifier has priority 32768, address c402.06f0.0000
+  Configured hello time 2, max age 20, forward delay 15
+  Current root has priority 32768, address c401.19fc.0000
+  Root port is 43 (FastEthernet1/2), cost of root path is 19
+  Topology change flag not set, detected flag not set
+  Number of topology changes 1 last change occurred 00:01:52 ago
+          from FastEthernet1/2
+  Times:  hold 1, topology change 35, notification 2
+          hello 2, max age 20, forward delay 15
+  Timers: hello 0, topology change 0, notification 0, aging 300
+
+ Port 43 (FastEthernet1/2) of VLAN1 is forwarding
+   Port path cost 19, Port priority 128, Port Identifier 128.43.
+   Designated root has priority 32768, address c401.19fc.0000
+   Designated bridge has priority 32768, address c401.19fc.0000
+   Designated port id is 128.43, designated path cost 0
+   Timers: message age 3, forward delay 0, hold 0
+   Number of transitions to forwarding state: 1
+   BPDU: sent 1, received 71
+
+ Port 45 (FastEthernet1/4) of VLAN1 is forwarding
+   Port path cost 19, Port priority 128, Port Identifier 128.45.
+   Designated root has priority 32768, address c401.19fc.0000
+   Designated bridge has priority 32768, address c402.06f0.0000
+   Designated port id is 128.45, designated path cost 19
+   Timers: message age 0, forward delay 0, hold 0
+   Number of transitions to forwarding state: 1
+   BPDU: sent 145, received 14
+```
+```
+R3#show spanning-tree
+
+ VLAN1 is executing the ieee compatible Spanning Tree protocol
+  Bridge Identifier has priority 32768, address c403.3750.0000
+  Configured hello time 2, max age 20, forward delay 15
+  Current root has priority 32768, address c401.19fc.0000
+  Root port is 45 (FastEthernet1/4), cost of root path is 19
+  Topology change flag not set, detected flag not set
+  Number of topology changes 0 last change occurred 00:02:16 ago
+  Times:  hold 1, topology change 35, notification 2
+          hello 2, max age 20, forward delay 15
+  Timers: hello 0, topology change 0, notification 0, aging 300
+
+ Port 43 (FastEthernet1/2) of VLAN1 is blocking
+   Port path cost 19, Port priority 128, Port Identifier 128.43.
+   Designated root has priority 32768, address c401.19fc.0000
+   Designated bridge has priority 32768, address c402.06f0.0000
+   Designated port id is 128.45, designated path cost 19
+   Timers: message age 4, forward delay 0, hold 0
+   Number of transitions to forwarding state: 0
+   BPDU: sent 0, received 69
+
+ Port 45 (FastEthernet1/4) of VLAN1 is forwarding
+   Port path cost 19, Port priority 128, Port Identifier 128.45.
+   Designated root has priority 32768, address c401.19fc.0000
+   Designated bridge has priority 32768, address c401.19fc.0000
+   Designated port id is 128.45, designated path cost 0
+   Timers: message age 2, forward delay 0, hold 0
+   Number of transitions to forwarding state: 1
+   BPDU: sent 2, received 70
+```
+Как мы видим, маршрутизатор R1 является корневым. Заблокирован же порт Fa1/2 на маршрутизаторе R3. Изменим его стоимость.
+
+### 3.5 Изменение стоимости порта
+
+```
+R3(config)#interface fastEthernet 1/2
+R3(config-if)#spanning-tree cost 18
+R3(config-if)#exit
+```
+### 3.6 Повторное отображение данных протокола spanning-tree на маршрутизаторах.
 
 
 Но можно предположить, что уменьшение стоимсти заблокированного порта до уровня, меньшего, чем на другом коммутаторе, приведет к тому, что ранее заблокированный порт (S1– F0/2) станет назначенным портом, а протокол spanning-tree теперь будет блокировать порт на другом коммутаторе некорневого моста (S3 – F0/4). 
