@@ -412,6 +412,122 @@ R3#show spanning-tree
 
 Вообще, насколько я понимаю, назначенные порты теперь не имеют смысла, так как они использовались для выбора пути пакета в сетевом сегменте (в терминах протокола spanning-tree) на сетевой шине, которая была подключена к разным коммутаторам с двух концов. 
 
+### 3.7 Создание топологии данной сети в программе EVE-NG в соответсвии с представленной схемой. 
+Так как использование маршрутизаторов с коммутирующими модулями для имитации коммутаторов было признано читерством, придется выполнить пункт лабораторной еще и в EVE-NG.
+
+Создадим топологию сети:
+
+![](eve_topology.jpg)
+
+Настроим линки, соединяющие коммутаторы в режим транка:
+
+```
+S1#conf t
+S3(config)#interface range ethernet 0/0-3
+S3(config-if-range)#shut
+S1(config-if-range)#exit
+S1(config)#interface range ethernet 0/2-3
+S1(config-if-range)#switchport trunk encapsulation dot1q
+S1(config-if-range)#switchport mode trunk
+S1(config-if-range)#no shut
+S1(config-if-range)#exit
+S1(config)#exit
+R1#wr
+```
+Текст для вставки в командную строку коммутаторов:
+
+```
+enable
+conf t
+interface range ethernet 0/0-3
+shut
+exit
+interface range ethernet 0/2-3
+switchport trunk encapsulation dot1q
+switchport mode trunk
+no shut
+exit
+exit
+write
+
+```
+
+### 3.8 Отображение данных протокола spanning-tree на маршрутизаторах.
+
+```
+S1#show spanning-tree 
+
+VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    32769
+             Address     aabb.cc00.1000
+             This bridge is the root
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     aabb.cc00.1000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  15  sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/2               Desg FWD 100       128.3    Shr 
+Et0/3               Desg FWD 100       128.4    Shr 
+```
+```
+S2#show spanning-tree 
+
+VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    32769
+             Address     aabb.cc00.1000
+             Cost        100
+             Port        3 (Ethernet0/2)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     aabb.cc00.2000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  15  sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/2               Root FWD 100       128.3    Shr 
+Et0/3               Desg FWD 100       128.4    Shr 
+```
+```
+S3#show spanning-tree 
+
+VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    32769
+             Address     aabb.cc00.1000
+             Cost        100
+             Port        4 (Ethernet0/3)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     aabb.cc00.3000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/2               Altn BLK 100       128.3    Shr 
+Et0/3               Root LRN 100       128.4    Shr 
+```
+Как мы видим, заблокирован порт Et0/2 коммутатора S3. 
+Изменим его стоимость и посмотрим, как поведет себя протокол spanning-tree:
+
+```
+S3(config)#interface ethernet 0/2
+S3(config-if)#spanning-tree cost 99
+S3(config-if)#exit
+```
+
+Теперь посмотрим вывод команды show spanning tree:
+
+
 
 ## 4. Наблюдение за процессом выбора протоколом STP порта, исходя из приоритета портов.
 
