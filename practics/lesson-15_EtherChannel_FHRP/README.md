@@ -4,13 +4,20 @@
 
 ![](lesson_15_net_topology.png)
 
-## 2. Выполнение настроек коммутатора SW1.
+## 2. Выполнение настроек коммутаторов SW1 - SW3.
 По условиям занятия у нас есть 3 VLAN:
 - VLAN10 - USERS
 - VLAN99 - MANAGEMENT
 - VLAN100 - NATIVE
 
-Настроим эти VLAN на коммутаторе SW1 (данный блок команд общий для всех трех коммутаторов, поэтому вынесем его отдельно, чтобы использовать в дальнейшем):
+Для автоматизации настройки, разделим команды настроек на блок общих настроек для всех трех коммутаторов, и на индивидуальны блок.
+Блок общих настроек включает в себя:
+1. Создание VLAN 
+2. Создание 2-х Ether-channel интерфейсов, настроенных как транки 3х созданных ранее VLAN.
+3. Настройка интерфейса Gi0/1, смотрящего на роутер, в режим транка 3х созданных ранее VLAN.
+
+Команды блока общих настроек (для SW1): 
+
 ```
 SW1> enable
 SW1#configure terminal
@@ -23,6 +30,25 @@ SW1(config-vlan)#exit
 SW1(config)#vlan 100
 SW1(config-vlan)#name NATIVE
 SW1(config-vlan)#exit
+SW1(config)#interface port-channel 1
+SW1(config-if)#switchport mode trunk
+SW1(config-if)#switchport trunk allowed vlan 10,99,100
+SW1(config-if)#switchport trunk native vlan 100
+SW1(config-if)#exit
+SW1(config)#interface port-channel 2
+SW1(config-if)#switchport mode trunk
+SW1(config-if)#switchport trunk allowed vlan 10,99,100
+SW1(config-if)#switchport trunk native vlan 100
+SW1(config-if)#exit
+SW1(config)#interface Gi0/1
+SW1(config-if)#switchport mode trunk
+SW1(config-if)#switchport trunk allowed vlan 10,99,100
+SW1(config-if)#switchport trunk native vlan 100
+SW1(config-if)#exit
+SW1(config)#exit
+SW1#wr
+SW1#exit
+
 ```
 
 Текст для вставки с командную строку коммутатора
@@ -38,17 +64,31 @@ exit
 vlan 100
 name NATIVE
 exit
+interface port-channel 1
+switchport mode trunk
+switchport trunk allowed vlan 10,99,100
+switchport trunk native vlan 100
+exit
+interface port-channel 2
+switchport mode trunk
+switchport trunk allowed vlan 10,99,100
+switchport trunk native vlan 100
+exit
+interface Gi0/1
+switchport mode trunk
+switchport trunk allowed vlan 10,99,100
+switchport trunk native vlan 100
+exit
 exit 
 wr
 exit
+
 ```
 
-Настройки, уникальные для коммутатора SW1:
-1.  Необходимо создать два Ether-channel интерфейса, смотрящих соответсвенно в SW2 и SW3 и перевести их в режим транк:
-- Ether-channel с SW2 построен на физических интерфейсах fa0/1-3 без протокола.
-- Ether-channel с SW3 построен на физических интерфейсах fa0/6-7 с типом протокола PaGP.
-2. Необходимо настроить интерфейс VTY коммутатора для MANAGEMENT VLAN: 172.17.0.1/17
-3. Необходимо настроить интерфейс Gi0/1, смотрящий на роутер R1, в режим транка.
+Блок команд, уникальных для коммутатора SW1:
+1. Включение физических интерфейсов fa0/1-3 в port-channel 1 без протокола агрегации.
+2. Включение физических интерфейсов fa0/6-7 в port-channel 2 с типом протокола PaGP.
+3. Настройка интерфейса VTY коммутатора для MANAGEMENT VLAN: 172.17.0.1/17
 
 Выполним необходимые настройки:
 ```
@@ -57,30 +97,16 @@ SW1#configure terminal
 SW1(config)#interface range fa0/1-3
 SW1(config-if-range)#channel-group 1 mode on
 SW1(config-if-range)#exit
-SW1(config)#interface port-channel 1
-SW1(config-if)#switchport mode trunk
-SW1(config-if)#switchport trunk allowed vlan 10,99,100
-SW1(config-if)#switchport trunk native vlan 100
-SW1(config-if)#exit
 SW1(config)#interface range fa0/6-7
 SW1(config-if-range)#channel-group 2 mode desirable
 SW1(config-if-range)#exit
-SW1(config)#interface port-channel 2
-SW1(config-if)#switchport mode trunk
-SW1(config-if)#switchport trunk allowed vlan 10,99,100
-SW1(config-if)#switchport trunk native vlan 100
-SW1(config-if)#exit
 SW1(config)#interface vlan 10
 SW1(config-if)#ip address 172.17.0.1 255.255.128.0
 SW1(config-if)#no shutdown
 SW1(config-if)#exit
-SW1(config)#interface Gi0/1
-SW1(config-if)#switchport mode trunk
-SW1(config-if)#switchport trunk allowed vlan 10,99,100
-SW1(config-if)#switchport trunk native vlan 100
-SW1(config-if)#exit
 SW1(config)#exit
 SW1#wr
+SW1#exit
 ```
 
 Текст для вставки с командную строку коммутатора:
@@ -90,75 +116,43 @@ configure terminal
 interface range fa0/1-3
 channel-group 1 mode on
 exit
-interface port-channel 1
-switchport mode trunk
-switchport trunk allowed vlan 10,99,100
-switchport trunk native vlan 100
-exit
 interface range fa0/6-7
 channel-group 2 mode desirable
-exit
-interface port-channel 2
-switchport mode trunk
-switchport trunk allowed vlan 10,99,100
-switchport trunk native vlan 100
 exit
 interface vlan 10
 ip address 172.17.0.1 255.255.128.0
 no shutdown
 exit
-interface Gi0/1
-switchport mode trunk
-switchport trunk allowed vlan 10,99,100
-switchport trunk native vlan 100
-exit
 exit
 wr
 exit
+
 ```
 
-## 3. Выполнение настроек коммутатора SW2.
+Блок команд, уникальных для коммутатора SW2:
+1. Включение физических интерфейсов fa0/1-3 в port-channel 1 без протокола агрегации.
+2. Включение физических интерфейсов fa0/4-5 в port-channel 2 с типом протокола LACP.
+3. Настройка интерфейса VTY коммутатора для MANAGEMENT VLAN: 172.17.0.2/17
 
-Настройка VLAN аналогично настройке из п.2
-
-Настройки, уникальные для коммутатора SW2:
-1.  Необходимо создать два Ether-channel интерфейса, смотрящих соответсвенно в SW1 и SW3:
-- Ether-channel с SW1 построен на физических интерфейсах fa0/1-3 без протокола.
-- Ether-channel с SW3 построен на физических интерфейсах fa0/4-5 с типом протокола LACP.
-2. Необходимо настроить интерфейс VTY коммутатора для MANAGEMENT VLAN: 172.17.0.2/17
-3. Необходимо настроить интерфейс Gi0/1, смотрящий на роутер R2, в режим транка.
 Выполним необходимые настройки:
 ```
-SW2> enable
-SW2#configure terminal
-SW2(config)#interface range fa0/1-3
-SW2(config-if-range)#channel-group 1 mode on
-SW2(config-if-range)#exit
-SW2(config)#interface port-channel 1
-SW2(config-if)#switchport mode trunk
-SW2(config-if)#switchport trunk allowed vlan 10,99,100
-SW2(config-if)#switchport trunk native vlan 100
-SW2(config-if)#exit
-SW2(config)#interface range fa0/4-5
-SW2(config-if-range)#channel-group 2 mode active
-SW2(config-if-range)#exit
-SW2(config)#interface port-channel 2
-SW2(config-if)#switchport mode trunk
-SW2(config-if)#switchport trunk allowed vlan 10,99,100
-SW2(config-if)#switchport trunk native vlan 100
-SW2(config-if)#exit
+SW1> enable
+SW1#configure terminal
+SW1(config)#interface range fa0/1-3
+SW1(config-if-range)#channel-group 1 mode on
+SW1(config-if-range)#exit
+SW1(config)#interface range fa0/4-5
+SW1(config-if-range)#channel-group 2 mode active
+SW1(config-if-range)#exit
 SW1(config)#interface vlan 10
-SW2(config-if)#ip address 172.17.0.2 255.255.128.0
-SW2(config-if)#no shutdown
-SW2(config-if)#exit
-SW2(config)#interface Gi0/1
-SW2(config-if)#switchport mode trunk
-SW2(config-if)#switchport trunk allowed vlan 10,99,100
-SW2(config-if)#switchport trunk native vlan 100
-SW2(config-if)#exit
-SW2(config)#exit
-SW2#wr
+SW1(config-if)#ip address 172.17.0.2 255.255.128.0
+SW1(config-if)#no shutdown
+SW1(config-if)#exit
+SW1(config)#exit
+SW1#wr
+SW1#exit
 ```
+
 Текст для вставки с командную строку коммутатора:
 ```
 en
@@ -166,75 +160,43 @@ configure terminal
 interface range fa0/1-3
 channel-group 1 mode on
 exit
-interface port-channel 1
-switchport mode trunk
-switchport trunk allowed vlan 10,99,100
-switchport trunk native vlan 100
-exit
 interface range fa0/4-5
 channel-group 2 mode active
-exit
-interface port-channel 2
-switchport mode trunk
-switchport trunk allowed vlan 10,99,100
-switchport trunk native vlan 100
 exit
 interface vlan 10
 ip address 172.17.0.2 255.255.128.0
 no shutdown
 exit
-interface Gi0/1
-switchport mode trunk
-switchport trunk allowed vlan 10,99,100
-switchport trunk native vlan 100
-exit
 exit
 wr
 exit
+
 ```
 
-## 4. Выполнение настроек коммутатора SW3.
-
-Настройка VLAN аналогично настройке из п.2
-
-Настройки, уникальные для коммутатора SW3:
-1.  Необходимо создать два Ether-channel интерфейса, смотрящих соответсвенно в SW1 и SW2:
-- Ether-channel с SW1 построен на физических интерфейсах fa0/6-7 с типом протокола PaGP.
-- Ether-channel с SW2 построен на физических интерфейсах fa0/4-5 с типом протокола LACP.
-2. Необходимо настроить интерфейс VTY коммутатора для MANAGEMENT VLAN: 172.17.0.3/17
-3. Необходимо включить интерфейсы fa0/23-24 в VLAN 10, так как к этим портам подключаются хосты пользователей.
+Блок команд, уникальных для коммутатора SW3:
+1. Включение физических интерфейсов fa0/6-7 в port-channel 1 с типом протокола PaGP.
+2. Включение физических интерфейсов fa0/4-5 в port-channel 2 с типом протокола LACP.
+3. Настройка интерфейса VTY коммутатора для MANAGEMENT VLAN: 172.17.0.3/17
 
 Выполним необходимые настройки:
 ```
-SW3> enable
-SW3#configure terminal
-SW3(config)#interface range fa0/6-7
-SW3(config-if-range)#channel-group 1 mode desirable
-SW3(config-if-range)#exit
-SW3(config)#interface port-channel 1
-SW3(config-if)#switchport mode trunk
-SW3(config-if)#switchport trunk allowed vlan 10,99,100
-SW3(config-if)#switchport trunk native vlan 100
-SW3(config-if)#exit
-SW3(config)#interface range fa0/4-5
-SW3(config-if-range)#channel-group 2 mode active
-SW3(config-if-range)#exit
-SW3(config)#interface port-channel 2
-SW3(config-if)#switchport mode trunk
-SW3(config-if)#switchport trunk allowed vlan 10,99,100
-SW3(config-if)#switchport trunk native vlan 100
-SW3(config-if)#exit
-SW3(config)#interface vlan 10
-SW3(config-if)#ip address 172.17.0.1 255.255.128.0
-SW3(config-if)#no shutdown
-SW3(config-if)#exit
-SW3(config)#interface range fa0/23-24
-SW3(config-if-range)#switchport mode access
-SW3(config-if-range)#switchport access vlan 10
-SW3(config-if-range)#exit
-SW3(config)#exit
-SW3#wr
+SW1> enable
+SW1#configure terminal
+SW1(config)#interface range fa0/6-7
+SW1(config-if-range)#channel-group 1 mode desirable
+SW1(config-if-range)#exit
+SW1(config)#interface range fa0/4-5
+SW1(config-if-range)#channel-group 2 mode active
+SW1(config-if-range)#exit
+SW1(config)#interface vlan 10
+SW1(config-if)#ip address 172.17.0.3 255.255.128.0
+SW1(config-if)#no shutdown
+SW1(config-if)#exit
+SW1(config)#exit
+SW1#wr
+SW1#exit
 ```
+
 Текст для вставки с командную строку коммутатора:
 ```
 en
@@ -242,31 +204,19 @@ configure terminal
 interface range fa0/6-7
 channel-group 1 mode desirable
 exit
-interface port-channel 1
-switchport mode trunk
-switchport trunk allowed vlan 10,99,100
-switchport trunk native vlan 100
-exit
 interface range fa0/4-5
 channel-group 2 mode active
-exit
-interface port-channel 2
-switchport mode trunk
-switchport trunk allowed vlan 10,99,100
-switchport trunk native vlan 100
 exit
 interface vlan 10
 ip address 172.17.0.3 255.255.128.0
 no shutdown
 exit
-interface range fa0/23-24
-switchport mode access
-switchport access vlan 10
-exit
 exit
 wr
 exit
+
 ```
+
 
 ## 4. Выполнение настроек маршрутизатора R1.
 
