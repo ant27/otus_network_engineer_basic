@@ -47,7 +47,6 @@
 Router> enable
 Router#configure terminal
 Router(config)#hostname R1
-R1(config)#
 ```
 
 - Отключение поиска DNS, чтобы предотвратить попытки маршрутизатора неверно преобразовывать введенные команды таким образом, как будто они являются именами узлов.
@@ -102,16 +101,90 @@ R1(config)#banner motd $ Vy kto takie! Ya vas ne znayu! Idite naher! $
 R1#copy running-config startup-config
 ```
 
-Для ускорения настройки соберем все команды в единый блок, который будет вставляться в командную строку устройства посредством copy/paste:
+Для ускорения настройки соберем все команды в единый блок, который будет вставляться в консоль устройства посредством copy/paste:
 
 ```
 enable
 configure terminal
-hostname R1
-
-
+hostname S2
+no ip domain-lookup
+username admin privilege 0 secret cisco
+line console 0
+login local
+logging synchronous
+exit
+line vty 0 15
+exec-timeout 5 30
+login local
+exit
+enable secret class
+service password-encryption
+banner motd $ Vy kto takie! Ya vas ne znayu! Idite naher! $
+exit
+wr
+exit
 
 ```
+
+Выполним данный блок на всех маршрутизаторах и коммутаторах нашей сети.
+
+### 1.3. Настройка интерфейсов маршрутизаторов и статической маршрутизации.
+
+- Настроим подинтерфейсы G0/0/1 на маршрутизаторе R1:  
+
+```
+R1> enable
+R1#configure terminal
+R1(config)#interface GigabitEthernet0/0/1.100
+R1(config-subif)#description consumers_vlan
+R1(config-subif)#encapsulation dot1Q 10
+R1(config-subif)#ip address 192.168.1.1 255.255.255.192
+R1(config-subif)#end
+R1(config)#interface GigabitEthernet0/0/1.200
+R1(config-subif)#description network_management_vlan
+R1(config-subif)#encapsulation dot1Q 20
+R1(config-subif)#ip address 192.168.1.65 255.255.255.224
+R1(config-subif)#end
+R1(config)#interface GigabitEthernet0/1.1000
+R1(config-subif)#description native_vlan
+R1(config-subif)#encapsulation dot1Q 1000 native
+R1(config-subif)#end
+```
+- Включим родительский интерфейс R1: 
+
+```
+R1(config)#interface GigabitEthernet0/0/1
+R1(config-if)#no shutdown
+R1(config-if)#end
+R1(config)#end
+R1#wr
+
+```
+
+Блок команд:
+
+
+
+
+
+- Настроим и включим интерфейс G0/0/1 на маршрутизаторе R2:
+```
+R1> enable
+R1#configure terminal
+R1(config)#interface GigabitEthernet0/0/1
+R1(config-if)#192.168.1.97 netmask 255.255.255.240
+R1(config-if)#no shutdown
+R1(config-if)#end
+R1(config)#end
+R1#wr
+
+```
+
+
+
+
+
+
 
 
 
