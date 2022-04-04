@@ -51,4 +51,4 @@ Switch#show inteface port-channel 1
 Switch#show intefaces f0/1 etherchannel
 ```
 
-
+### Протокол резервирования первого перехода.
