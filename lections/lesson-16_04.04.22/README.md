@@ -31,3 +31,24 @@ Etherchannel объединяет несколько физических пор
 1. Одинаковая скорость и режим дуплекса
 2. Интерефесы должны относиться к одному VLAN или настроены как trunk.
 3. Trunk'и должны быть настроены под одинаковы диапазон VLAN. 
+
+### Настройка Etherchannel.
+
+```
+Switch(config)#inteface range interface-range
+Switch(config-if-range)#channel-group 1 mode active
+Switch(config-if-range)#interface port-channel 1
+Switch(config-if-range)#switchport mode trunk
+Switch(config-if-range)#switchport trunk allowed vlan 1,2,20
+```  
+
+### Вывод информации о настроенных Etherchannel.
+
+```
+Switch#show erherchannel summary
+Switch#show erherchannel port-channel
+Switch#show inteface port-channel 1
+Switch#show intefaces f0/1 etherchannel
+```
+
+
