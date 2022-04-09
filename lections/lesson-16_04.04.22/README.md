@@ -62,6 +62,28 @@ VRRP - мультивендорный протокол.
 3. Общение сообщениями между маршрутизаторами происходит через отправку пакетов на групповой MAC адрес группы HSRP. По умолчанию маршрутизаторы отправляют друг другу сообщения приветствия каждые 3 сек.
 4. При отсутствии сообщений приветствия в течении 10 секунд (настройка по умолчанию) от активного маршрутизатора он становится активным.
 
+### Главные команды настройки HSRP.
+Пример настройки двух маршрутизаторов. Главный - R1 c приритетным вытеснением.
+
+```
+R1(config)#interface gi0/1
+R1(config-if)#ip address 192.168.0.2 netmask 255.255.255.0
+R1(config-if)#standby version 2
+R1(config-if)#standby 1 ip 192.168.0.1
+R1(config-if)#standby 1 priority 150
+R1(config-if)#standby 1 preemt
+R1(config-if)#no shut
+
+R2(config)#interface gi0/1
+R1(config-if)#ip address 192.168.0.3 netmask 255.255.255.0
+R2(config-if)#standby version 2
+R2(config-if)#standby 1 ip 192.168.0.1
+R1(config-if)#no shut
+
+```
+
+
+
 
 
 
