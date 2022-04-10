@@ -218,45 +218,32 @@ exit
 ```
 
 
-## 4. Выполнение настроек маршрутизатора R1.
+## 4. Выполнение настроек маршрутизатора R1 и R2.
 
+R1:
 ```
-SW1> enable
-SW1#configure terminal
-SW1(config)#interface GigabitEthernet0/1.10
-SW1(config-if)#description USERS_VLAN
-SW1(config-if)#encapsulation dot1Q 10
-SW1(config-if)#ip address 192.168.10.124 255.255.255.128
-
-
-
-SW1(config-if-range)#exit
-SW1(config)#interface range fa0/4-5
-SW1(config-if-range)#channel-group 2 mode active
-SW1(config-if-range)#exit
-SW1(config)#interface vlan 10
-SW1(config-if)#ip address 172.17.0.3 255.255.128.0
-SW1(config-if)#no shutdown
-SW1(config-if)#exit
-SW1(config)#exit
-SW1#wr
-SW1#exit
+R1> enable
+R1#configure terminal
+R1(config)#interface GigabitEthernet0/1.10
+R1(config-if)#description USERS_VLAN
+R1(config-if)#encapsulation dot1Q 10
+R1(config-if)#ip address 192.168.10.124 255.255.255.128
+R1(config)#interface GigabitEthernet0/1.99
+R1(config-if)#description MANAGEMENT_VLAN
+R1(config-if)#encapsulation dot1Q 99
+R1(config-if)#ip address 172.17.127.254 255.255.128.0
 ```
-interface GigabitEthernet0/1.10
- description USERS_VLAN
- encapsulation dot1Q 10
- ip address 192.168.10.124 255.255.255.128
-!
-interface GigabitEthernet0/1.99
- description MANAGEMENT_VLAN
- encapsulation dot1Q 99
- ip address 172.17.127.254 255.255.128.0
 
-
-
-
-
-
-
-
-
+R2:
+```
+R2> enable
+R2#configure terminal
+R2(config)#interface GigabitEthernet0/1.10
+R2(config-if)#description USERS_VLAN
+R2(config-if)#encapsulation dot1Q 10
+R2(config-if)#ip address 192.168.10.124 255.255.255.128
+R2(config)#interface GigabitEthernet0/1.99
+R2(config-if)#description MANAGEMENT_VLAN
+R2(config-if)#encapsulation dot1Q 99
+R2(config-if)#ip address 172.17.127.254 255.255.128.0
+```
