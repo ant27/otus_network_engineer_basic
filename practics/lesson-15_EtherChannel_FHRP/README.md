@@ -225,13 +225,16 @@ R1:
 R1> enable
 R1#configure terminal
 R1(config)#interface GigabitEthernet0/1.10
-R1(config-if)#description USERS_VLAN
-R1(config-if)#encapsulation dot1Q 10
-R1(config-if)#ip address 192.168.10.124 255.255.255.128
+R1(config-subif)#description USERS_VLAN
+R1(config-subif)#encapsulation dot1Q 10
+R1(config-subif)#ip address 192.168.10.124 255.255.255.128
 R1(config)#interface GigabitEthernet0/1.99
-R1(config-if)#description MANAGEMENT_VLAN
-R1(config-if)#encapsulation dot1Q 99
-R1(config-if)#ip address 172.17.127.254 255.255.128.0
+R1(config-subif)#description MANAGEMENT_VLAN
+R1(config-subif)#encapsulation dot1Q 99
+R1(config-subif)#ip address 172.17.127.252 255.255.128.0
+R1(config-subif)#exit
+R1(config)#interface GigabitEthernet0/1
+R1(config-if)#no shut
 ```
 
 R2:
@@ -239,11 +242,14 @@ R2:
 R2> enable
 R2#configure terminal
 R2(config)#interface GigabitEthernet0/1.10
-R2(config-if)#description USERS_VLAN
-R2(config-if)#encapsulation dot1Q 10
-R2(config-if)#ip address 192.168.10.124 255.255.255.128
+R2(config-subif)#description USERS_VLAN
+R2(config-subif)#encapsulation dot1Q 10
+R2(config-subif)#ip address 192.168.10.125 255.255.255.128
 R2(config)#interface GigabitEthernet0/1.99
-R2(config-if)#description MANAGEMENT_VLAN
-R2(config-if)#encapsulation dot1Q 99
-R2(config-if)#ip address 172.17.127.254 255.255.128.0
+R2(config-subif)#description MANAGEMENT_VLAN
+R2(config-subif)#encapsulation dot1Q 99
+R2(config-subif)#ip address 172.17.127.253 255.255.128.0
+R2(config-subif)#exit
+R2(config)#interface GigabitEthernet0/1
+R2(config-if)#no shut
 ```
