@@ -235,6 +235,10 @@ R1(config-subif)#ip address 172.17.127.252 255.255.128.0
 R1(config-subif)#exit
 R1(config)#interface GigabitEthernet0/1
 R1(config-if)#no shut
+R1(config-if)#interface GigabitEthernet0/0
+R1(config-if)#ip address 10.0.0.3 255.255.255.0
+R1(config-if)#no sh
+R1(config-if)#exit
 ```
 
 R2:
@@ -252,4 +256,8 @@ R2(config-subif)#ip address 172.17.127.253 255.255.128.0
 R2(config-subif)#exit
 R2(config)#interface GigabitEthernet0/1
 R2(config-if)#no shut
+R2(config-if)#interface GigabitEthernet0/0
+R2(config-if)#ip address 10.0.0.2 255.255.255.0
+R2(config-if)#no sh
+R2(config-if)#exit
 ```
