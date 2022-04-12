@@ -79,11 +79,14 @@ R1(config-if)#ip address 192.168.0.3 netmask 255.255.255.0
 R2(config-if)#standby version 2
 R2(config-if)#standby 1 ip 192.168.0.1
 R1(config-if)#no shut
-
 ```
 
+### Просмотр настройки HSRP.
 
+```
+R1#show standby
 
+```
 
 
 
