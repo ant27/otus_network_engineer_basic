@@ -129,7 +129,7 @@ exit
 Выполним данный блок на всех маршрутизаторах и коммутаторах нашей сети.
 
 ### 1.3. Настройка интерфейсов маршрутизаторов.
-- Настроим подинтерфейсы G0/0/1 на маршрутизаторе R1:  
+- Настроим подинтерфейсы G0/1 на маршрутизаторе R1:  
 
 ```
 R1> enable
@@ -150,14 +150,20 @@ R1(config-subif)#encapsulation dot1Q 1000 native
 R1(config-subif)#exit
 ```
 - Включим родительский интерфейс R1: 
-
 ```
 R1(config)#interface GigabitEthernet0/1
 R1(config-if)#no shutdown
 R1(config-if)#exit
 R1(config)#exit
 R1#wr
-
+```
+- Настроим интерфейс G0/0 на маршрутизаторе R1: 
+```
+R1(config)#interface GigabitEthernet0/0
+R1(config-if)#description p2p_r1_r2
+R1(config-if)#ip address 10.10.0.1 255.255.255.252
+R1(config-if)#no shutdown
+R1(config-if)#exit
 ```
 
 Блок команд:
@@ -179,8 +185,11 @@ encapsulation dot1Q 1000 native
 exit
 interface GigabitEthernet0/1
 no shutdown
-exit
-exit
+interface GigabitEthernet0/0
+description p2p_r1_r2
+ip address 10.10.0.1 255.255.255.252
+no shutdown
+end
 wr
 ```
 
@@ -189,27 +198,37 @@ wr
 R1> enable
 R1#configure terminal
 R1(config)#interface GigabitEthernet0/1
-R1(config-if)#192.168.1.97 netmask 255.255.255.240
+R1(config-if)#ip address 192.168.1.97 netmask 255.255.255.240
 R1(config-if)#no shutdown
 R1(config-if)#exit
 R1(config)#exit
 R1#wr
-
 ```
+- Настроим интерфейс G0/0 на маршрутизаторе R2: 
+```
+R1(config)#interface GigabitEthernet0/0
+R1(config-if)#description p2p_r1_r2
+R1(config-if)#ip address 10.10.0.1 255.255.255.252
+R1(config-if)#exit
+```
+
 
 Блок команд:
 
 ```
 configure terminal
 interface GigabitEthernet0/1
-192.168.1.97 netmask 255.255.255.240
+ip address 192.168.1.97 255.255.255.240
 no shutdown
-exit
-exit
+interface GigabitEthernet0/0
+description p2p_r1_r2
+ip address 10.10.0.2 255.255.255.252
+no shutdown
+end
 wr
 ```
 
-### 1.3. Настройка VLAN и интерфесов коммутаторов.
+### 1.3. Настройка VLAN и интерфесов коммутатора S1.
 
 - Настроим VLAN'ы
 ```
@@ -228,24 +247,12 @@ S1(config-vlan)#exit
 
 - Поместим неиспользуемые интерфейсы в vlan 1000 (parking_lot)
 ```
-S1(config)#interface range 
-S1(config)#vlan 999
+S1(config)#interface range fa0/1-4 , fa0/7-24 , gi0/1-2
+S1(config)#switchport access vlan 999
 ```
-
-- Настроим VLAN'ы и интерфейсы на коммутарое S1:  
+- Настроим интерфейсы на коммутарое S1:  
 
 ```
-S1> enable
-S1#configure terminal
-S1(config)#vlan 999
-S1(config-vlan)#name parking_lot
-S1(config-vlan)vlan 100
-S1(config-vlan)#name clients
-S1(config-vlan)vlan 200
-S1(config-vlan)#name management
-S1(config-vlan)vlan 1000
-S1(config-vlan)#name native
-S1(config-vlan)#exit
 S1(config)#interface fa0/6
 S1(config-if)#description client_pc_a
 S1(config-if)#switchport mode access
@@ -254,14 +261,51 @@ S1(config-if)#interface fa0/5
 S1(config-if)#description trunk_to_r1
 S1(config-if)#switchport mode trunk
 S1(config-if)#switchport trunk allowed vlan 100,200,1000
-S1(config-if)#switchport access vlan 1000 native
-
+S1(config-if)#switchport trunk native vlan 1000
+```
+-Общий блок команд для ввода:
+```
+configure terminal
+vlan 999
+name parking_lot
+vlan 100
+name clients
+vlan 200
+name management
+vlan 1000
+name native
+exit
+interface range fa0/1-4 , fa0/7-24 , gi0/1-2
+switchport access vlan 999
+interface fa0/6
+description client_pc_a
+switchport mode access
+switchport access vlan 200
+interface fa0/5
+description trunk_to_r1
+switchport mode trunk
+switchport trunk allowed vlan 100,200,1000
+switchport trunk native vlan 1000
+end
+wr
+```
+### 1.4. Настройка VLAN и интерфесов коммутатора S2.
 
 ```
+S2(config)#interface fa0/18
+S2(config-if)#description client_pc_b
+S2(config-if)#switchport mode access
+```
+-Блок команд для ввода:
 
-
-
-
+```
+configure terminal
+interface fa0/18
+description client_pc_b
+switchport mode access
+end
+wr
+```
 
 #### 5. Файл лабораторной работы в программе cisco packet tracer. 
 
