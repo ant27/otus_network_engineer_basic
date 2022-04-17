@@ -338,6 +338,23 @@ R1(dhcp-config)#default-router 192.168.1.97
 R1(dhcp-config)#dns-server 192.168.1.97
 R1(dhcp-config)#domain-name ccna-lab.com
 ```
+### 2.2. Проверка выдачи адреса хоту PC-A командой show ip dhcp bindings
+```
+R1#show ip dhcp bindings
+IP address       Client-ID/              Lease expiration        Type
+                 Hardware address
+192.168.1.6      00E0.A35C.3404           --                     Automatic
+```
+Как мы видим, адрес был нормально выдан сервером.
+*Примечание: по неизвестной причине команды show ip dhcp server statistics нет в списке команд настройки dhcp в packet-tracer
+
+## 3. Настройка и проверка DHCP-ретрансляции на R2.
+
+### 3.1. 
+
+
+### 3.2. 
+
 
 
 #### 5. Файл лабораторной работы в программе cisco packet tracer. 
