@@ -350,9 +350,10 @@ IP address       Client-ID/              Lease expiration        Type
 
 ## 3. Настройка и проверка DHCP-ретрансляции на R2.
 
-### 3.1. 
-
-
+### 3.1. Настройка команды DHCP-ретрансляции на R2
+```
+ip helper-address
+```
 ### 3.2. 
 
 
