@@ -3,10 +3,11 @@
 ## 1. Реализация DHCPv4.
 ###  Задание:
 
-1. Создание сети и настройка основных параметров устройства
-2. Настройка и проверка двух серверов DHCPv4 на R1
+1. Создание сети и настройка параметров устройств.
+2. Настройка и проверка двух серверов DHCPv4 на R1.
 3. Настройка и проверка DHCP-ретрансляции на R2
 
+## 1. Создание сети и настройка параметров устройств.
 ### 1.1 Создание сети.
 
 Создадим топологию данной сети в программе cisco packet tracer в соответствии с представленной схемой.
@@ -40,7 +41,7 @@
 Интерфейсу R2 G0/0/1 необходимо назначить первый адрес, то есть 192.168.1.97 netmask 255.255.255.240. 
 
 - 
-### 1.2. Выполнение базовых настроек маршрутизаторов (описание только для R1).
+### 1.2. Выполнение базовых настроек маршрутизаторов и коммутаторов (описание только для R1).
 
 - Назначение имени устройства:
 ```
@@ -192,7 +193,6 @@ no shutdown
 end
 wr
 ```
-
 - Настроим и включим интерфейс G0/1 на маршрутизаторе R2:
 ```
 R1> enable
@@ -211,10 +211,7 @@ R1(config-if)#description p2p_r1_r2
 R1(config-if)#ip address 10.10.0.1 255.255.255.252
 R1(config-if)#exit
 ```
-
-
-Блок команд:
-
+- Блок команд:
 ```
 configure terminal
 interface GigabitEthernet0/1
@@ -228,9 +225,9 @@ end
 wr
 ```
 
-### 1.3. Настройка VLAN и интерфесов коммутатора S1.
+### 1.4. Настройка VLAN и интерфесов коммутаторов.
 
-- Настроим VLAN'ы
+- Настроим VLAN'ы S1
 ```
 S1> enable
 S1#configure terminal
@@ -244,8 +241,7 @@ S1(config-vlan)vlan 1000
 S1(config-vlan)#name native
 S1(config-vlan)#exit
 ```
-
-- Поместим неиспользуемые интерфейсы в vlan 1000 (parking_lot)
+- Поместим неиспользуемые интерфейсы S1 в vlan 1000 (parking_lot)
 ```
 S1(config)#interface range fa0/1-4 , fa0/7-24 , gi0/1-2
 S1(config)#switchport access vlan 999
@@ -253,17 +249,21 @@ S1(config)#switchport access vlan 999
 - Настроим интерфейсы на коммутарое S1:  
 
 ```
+S1(config)#interface vlan100
+S1(config-if)#ip address 192.168.1.2 255.255.255.192
+S1(config)#interface vlan200
+S1(config-if)#ip address 192.168.1.66 255.255.255.224
 S1(config)#interface fa0/6
 S1(config-if)#description client_pc_a
 S1(config-if)#switchport mode access
-S1(config-if)#switchport access vlan 200
+S1(config-if)#switchport access vlan 100
 S1(config-if)#interface fa0/5
 S1(config-if)#description trunk_to_r1
 S1(config-if)#switchport mode trunk
 S1(config-if)#switchport trunk allowed vlan 100,200,1000
 S1(config-if)#switchport trunk native vlan 1000
 ```
--Общий блок команд для ввода:
+- Общий блок команд для ввода:
 ```
 configure terminal
 vlan 999
@@ -277,10 +277,14 @@ name native
 exit
 interface range fa0/1-4 , fa0/7-24 , gi0/1-2
 switchport access vlan 999
+interface vlan100
+ip address 192.168.1.2 255.255.255.192
+interface vlan200
+ip address 192.168.1.66 255.255.255.224
 interface fa0/6
 description client_pc_a
 switchport mode access
-switchport access vlan 200
+switchport access vlan 100
 interface fa0/5
 description trunk_to_r1
 switchport mode trunk
@@ -289,7 +293,7 @@ switchport trunk native vlan 1000
 end
 wr
 ```
-### 1.4. Настройка VLAN и интерфесов коммутатора S2.
+- Настройка VLAN и интерфесов коммутатора S2.
 
 ```
 S2(config)#interface fa0/18
@@ -306,6 +310,35 @@ switchport mode access
 end
 wr
 ```
+
+## 2. Настройка и проверка двух серверов DHCPv4 на R1.
+### 2.1. Настройка исключения первых 5 ip-адресов из подсетей А и С на R1. 
+```
+R1> enable
+R1#configure terminal
+R1(config)#ip dhcp excluded-address 192.168.1.1 192.168.1.5
+R1(config)#ip dhcp excluded-address 192.168.1.97 192.168.1.101
+```
+### 2.1. Настройка пула для подсети А на R1 (определение подсети, шлюза по умолчанию, адресов DNS, имени домена, времени аренды адреса в днях). 
+```
+R1(config)#ip dhcp pool lan_poolA
+R1(dhcp-config)#network 192.168.1.0 255.255.255.192
+R1(dhcp-config)#default-router 192.168.1.1
+R1(dhcp-config)#dns-server 192.168.1.1
+R1(dhcp-config)#domain-name ccna-lab.com
+R1(dhcp-config)#lease 2 12 30
+```
+*Примечание: по неизвестной причине команды lease нет в списке команд настройки dhcp в packet-tracer
+
+### 2.1. Настройка пула для подсети С на R1 (определение подсети, шлюза по умолчанию, адресов DNS, имени домена, времени аренды адреса в днях). 
+```
+R1(config)#ip dhcp pool lan_poolС
+R1(dhcp-config)#network 192.168.1.96 255.255.255.240
+R1(dhcp-config)#default-router 192.168.1.97
+R1(dhcp-config)#dns-server 192.168.1.97
+R1(dhcp-config)#domain-name ccna-lab.com
+```
+
 
 #### 5. Файл лабораторной работы в программе cisco packet tracer. 
 
