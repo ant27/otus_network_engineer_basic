@@ -356,7 +356,9 @@ IP address       Client-ID/              Lease expiration        Type
 
 ### 3.1. Настройка команды DHCP-ретрансляции на R2
 ```
-ip helper-address
+R2(config)#interface GigabitEthernet0/1
+R2(config)#ip helper-address 10.10.0.1
+
 ```
 ### 3.2. 
 
