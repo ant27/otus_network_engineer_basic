@@ -421,13 +421,21 @@ R1(config)#interface GigabitEthernet0/0
 R1(config-if)#description connect_to_R2
 R1(config-if)#ipv6 address 2001:db8:acad:2::1/64
 R1(config-if)#ipv6 address fe80::1 link-local
+R1(config-if)#no shut
 R1(config-subif)#exit
 R1(config)#interface GigabitEthernet0/1
 R1(config-if)#description connect_to_S1
 R1(config-if)#ipv6 address 2001:db8:acad:1::1/64
 R1(config-if)#ipv6 address fe80::1 link-local
+R1(config-if)#no shut
 R1(config-subif)#exit
 ```
+
+- Включим поддержку IPv6 маршрутизации, которая по умолчанию выключена:
+```
+R1(config)#ipv6 unicast-routing
+```
+
 - Настроим маршрутизацию по умолчанию на маршрутизаторе R1 для перенаправления пакетов на R2 с его адресом 2001:db8:acad:2::2 :
 ```
 R1(config)#ipv6 route ::/0 2001:db8:acad:2::2
@@ -440,12 +448,15 @@ interface GigabitEthernet0/0
 description connect_to_R2
 ipv6 address 2001:db8:acad:2::1/64
 ipv6 address fe80::1 link-local
+no sh
 exit
 interface GigabitEthernet0/1
 description connect_to_S1
 ipv6 address 2001:db8:acad:1::1/64
 ipv6 address fe80::1 link-local
+no sh
 exit
+ipv6 unicast-routing
 ipv6 route ::/0 2001:db8:acad:2::2
 end
 wr
@@ -460,13 +471,20 @@ R2(config)#interface GigabitEthernet0/0
 R2(config-if)#description connect_to_R1
 R2(config-if)#ipv6 address 2001:db8:acad:2::2/64
 R2(config-if)#ipv6 address fe80::2 link-local
+R2(config-if)#no shut
 R2(config-subif)#exit
 R2(config)#interface GigabitEthernet0/1
 R2(config-if)#description connect_to_S2
 R2(config-if)#ipv6 address 2001:db8:acad:3::1/64
 R2(config-if)#ipv6 address fe80::1 link-local
+R2(config-if)#no shut
 R2(config-subif)#exit
 ```
+- Включим поддержку IPv6 маршрутизации, которая по умолчанию выключена:
+```
+R2(config)#ipv6 unicast-routing
+```
+
 - Настроим маршрутизацию по умолчанию на маршрутизаторе R2 для перенаправления пакетов на R1 с его адресом 2001:db8:acad:2::1 :
 ```
 R2(config)#ipv6 route ::/0 2001:db8:acad:2::1
@@ -480,12 +498,15 @@ interface GigabitEthernet0/0
 description connect_to_R1
 ipv6 address 2001:db8:acad:2::2/64
 ipv6 address fe80::2 link-local
+no sh
 exit
 interface GigabitEthernet0/1
 description connect_to_S2
 ipv6 address 2001:db8:acad:3::1/64
 ipv6 address fe80::1 link-local
+no sh
 exit
+ipv6 unicast-routing
 ipv6 route ::/0 2001:db8:acad:2::1
 end
 wr
