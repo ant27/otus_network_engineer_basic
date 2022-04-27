@@ -168,7 +168,7 @@ R1(config-if)#exit
 ```
 - Настроим статический маршрут по умолчанию для R1: 
 ```
-Н
+R1(config)#ip route 0.0.0.0 0.0.0.0 10.10.0.2
 ```
 
 Блок команд:
@@ -194,6 +194,8 @@ interface GigabitEthernet0/0
 description p2p_r1_r2
 ip address 10.10.0.1 255.255.255.252
 no shutdown
+exit
+ip route 0.0.0.0 0.0.0.0 10.10.0.2
 end
 wr
 ```
@@ -215,6 +217,11 @@ R1(config-if)#description p2p_r1_r2
 R1(config-if)#ip address 10.10.0.1 255.255.255.252
 R1(config-if)#exit
 ```
+- Настроим статический маршрут по умолчанию для R2: 
+```
+R2(config)#ip route 0.0.0.0 0.0.0.0 10.10.0.1
+```
+
 - Блок команд:
 ```
 configure terminal
