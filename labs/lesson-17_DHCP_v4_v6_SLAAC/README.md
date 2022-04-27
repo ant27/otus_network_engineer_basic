@@ -432,6 +432,25 @@ R1(config-subif)#exit
 ```
 R1(config)#ipv6 route ::/0 2001:db8:acad:2::2
 ```
+- Набор команд:
+
+```
+configure terminal
+interface GigabitEthernet0/0
+description connect_to_R2
+ipv6 address 2001:db8:acad:2::1/64
+ipv6 address fe80::1 link-local
+exit
+interface GigabitEthernet0/1
+description connect_to_S1
+ipv6 address 2001:db8:acad:1::1/64
+ipv6 address fe80::1 link-local
+exit
+ipv6 route ::/0 2001:db8:acad:2::2
+end
+wr
+```
+
 ### 2.4. Настройка маршрутизатора R2.
 - Настроим подинтерфейсы G0/0 и G0/1 на маршрутизаторе R2:
 ```
@@ -448,10 +467,30 @@ R2(config-if)#ipv6 address 2001:db8:acad:3::1/64
 R2(config-if)#ipv6 address fe80::1 link-local
 R2(config-subif)#exit
 ```
-- Настроим маршрутизацию по умолчанию на маршрутизаторе R1 для перенаправления пакетов на R2 с его адресом 2001:db8:acad:2::2 :
+- Настроим маршрутизацию по умолчанию на маршрутизаторе R2 для перенаправления пакетов на R1 с его адресом 2001:db8:acad:2::1 :
 ```
-R1(config)#ipv6 route ::/0 2001:db8:acad:2::1
+R2(config)#ipv6 route ::/0 2001:db8:acad:2::1
 ```
+
+- Набор команд:
+
+```
+configure terminal
+interface GigabitEthernet0/0
+description connect_to_R1
+ipv6 address 2001:db8:acad:2::2/64
+ipv6 address fe80::2 link-local
+exit
+interface GigabitEthernet0/1
+description connect_to_S2
+ipv6 address 2001:db8:acad:3::1/64
+ipv6 address fe80::1 link-local
+exit
+ipv6 route ::/0 2001:db8:acad:2::1
+end
+wr
+```
+
 
 #### 5. Файл лабораторной работы в программе cisco packet tracer. 
 
