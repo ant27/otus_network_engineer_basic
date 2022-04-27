@@ -232,6 +232,8 @@ interface GigabitEthernet0/0
 description p2p_r1_r2
 ip address 10.10.0.2 255.255.255.252
 no shutdown
+exit
+ip route 0.0.0.0 0.0.0.0 10.10.0.1
 end
 wr
 ```
