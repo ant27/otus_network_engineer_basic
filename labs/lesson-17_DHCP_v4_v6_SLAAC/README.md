@@ -403,4 +403,4 @@ IP address       Client-ID/              Lease expiration        Type
 
 #### 5. Файл лабораторной работы в программе cisco packet tracer. 
 
-![lesson_17.pkt](lesson_17.pkt)
+![lesson-17.pkt](lesson-17.pkt)
