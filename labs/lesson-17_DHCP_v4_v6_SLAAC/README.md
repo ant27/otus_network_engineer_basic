@@ -511,7 +511,72 @@ ipv6 route ::/0 2001:db8:acad:2::1
 end
 wr
 ```
+### 2.5. Убедимся, что PC_A присваивается IPv6 адерс по SLAAC:
 
+```
+C:\>ipconfig /all
+
+FastEthernet0 Connection:(default port)
+
+   Connection-specific DNS Suffix..: 
+   Physical Address................: 00E0.B0CC.2EC1
+   Link-local IPv6 Address.........: FE80::2E0:B0FF:FECC:2EC1
+   IPv6 Address....................: 2001:DB8:ACAD:1:2E0:B0FF:FECC:2EC1
+   IPv4 Address....................: 0.0.0.0
+   Subnet Mask.....................: 0.0.0.0
+   Default Gateway.................: FE80::1
+                                     0.0.0.0
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 
+   DHCPv6 Client DUID..............: 00-01-00-01-E2-25-BA-B9-00-E0-B0-CC-2E-C1
+   DNS Servers.....................: ::
+                                     0.0.0.0
+```
+Примечание: часть адреса с идентификатором хоста формируется на основе MAC адреса интерфейса.
+
+### 2.6. Настройка и проверка сервера DHCPv6 на R1
+
+### 2.6.1. Настройка R1 для предоставления stateless DHCPv6 (DHCPv6 без запоминания состояний или SLAAC+DHCPv6) для PC-A.
+```
+R1(config)# ipv6 dhcp pool R1-STATELESS
+R1(config-dhcp)# dns-server 2001:db8:acad::254
+R1(config-dhcp)# domain-name STATELESS.com
+R1(config)# interface g0/1
+R1(config-if)# ipv6 nd other-config-flag 
+R1(config-if)# ipv6 dhcp server R1-STATELESS
+```
+
+- Убедимся, что PC_A присваивается IPv6 адерс по SLAAC, а также адрес DNS и суффикс DNS:
+
+```
+C:\>ipconfig /all
+
+FastEthernet0 Connection:(default port)
+
+   Connection-specific DNS Suffix..: STATELESS.com 
+   Physical Address................: 00E0.B0CC.2EC1
+   Link-local IPv6 Address.........: FE80::2E0:B0FF:FECC:2EC1
+   IPv6 Address....................: 2001:DB8:ACAD:1:2E0:B0FF:FECC:2EC1
+   IPv4 Address....................: 0.0.0.0
+   Subnet Mask.....................: 0.0.0.0
+   Default Gateway.................: FE80::1
+                                     0.0.0.0
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 2044494489
+   DHCPv6 Client DUID..............: 00-01-00-01-E2-25-BA-B9-00-E0-B0-CC-2E-C1
+   DNS Servers.....................: 2001:DB8:ACAD::254
+                                     0.0.0.0
+```
+### 2.6.2. Настройка R1 для предоставления statelfull DHCPv6 (DHCPv6 c запоминанием состояний) для PC-A.
+
+```
+R1(config)# ipv6 dhcp pool R2-STATEFUL
+R1(config-dhcp)# address prefix 2001:db8:acad:3:aaa::/80
+R1(config-dhcp)# dns-server 2001:db8:acad::254
+R1(config-dhcp)# domain-name STATEFUL.com
+R1(config)# interface g0/0
+R1(config-if)# ipv6 dhcp server R2-STATEFUL
+```
 
 #### 5. Файл лабораторной работы в программе cisco packet tracer. 
 
