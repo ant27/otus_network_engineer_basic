@@ -369,9 +369,37 @@ R2(config)#interface GigabitEthernet0/1
 R2(config)#ip helper-address 10.10.0.1
 
 ```
-### 3.2. 
+### 3.2. Проверка выдачи IP адреса хосту PC_B.
 
+- Вывод команды ipconfig /all на PC_B
+```
+C:\>ipconfig /all
 
+FastEthernet0 Connection:(default port)
+
+   Connection-specific DNS Suffix..: ccna-lab.com
+   Physical Address................: 0040.0BC7.B270
+   Link-local IPv6 Address.........: FE80::240:BFF:FEC7:B270
+   IPv6 Address....................: ::
+   IPv4 Address....................: 192.168.1.102
+   Subnet Mask.....................: 255.255.255.240
+   Default Gateway.................: ::
+                                     192.168.1.97
+   DHCP Servers....................: 10.10.0.1
+   DHCPv6 IAID.....................: 
+   DHCPv6 Client DUID..............: 00-01-00-01-7C-A4-11-0E-00-40-0B-C7-B2-70
+   DNS Servers.....................: ::
+                                     192.168.1.97
+```
+### 3.3. Проверка выдачи адреса хоту PC-B командой show ip dhcp bindings
+
+```
+R1#show ip dhcp binding 
+IP address       Client-ID/              Lease expiration        Type
+                 Hardware address
+192.168.1.6      00E0.A35C.3404           --                     Automatic
+192.168.1.102    0040.0BC7.B270           --                     Automatic
+```
 
 #### 5. Файл лабораторной работы в программе cisco packet tracer. 
 
