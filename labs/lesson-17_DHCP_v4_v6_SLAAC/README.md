@@ -577,6 +577,13 @@ R1(config-dhcp)# domain-name STATEFUL.com
 R1(config)# interface g0/0
 R1(config-if)# ipv6 dhcp server R2-STATEFUL
 ```
+### 2.6.3. Настройка R2 в качестве агента DHCP-ретрансляции для локальной сети на G0/0/1.
+
+R2(config)#interface g0/1
+R2(config-if)#ipv6 nd managed-config-flag
+R2(config-if)#ipv6 dhcp relay destination 2001:db8:acad:2::1 g0/0
+
+*К сожалению, команда ipv6 dhcp relay не реализована в packet tracer, поэтому проверить это проблематично.
 
 #### 5. Файл лабораторной работы в программе cisco packet tracer. 
 
