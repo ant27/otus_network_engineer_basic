@@ -588,4 +588,5 @@ R2(config-if)#ipv6 dhcp relay destination 2001:db8:acad:2::1 g0/0
 #### 5. Файл лабораторной работы в программе cisco packet tracer. 
 
 ![lesson-17.pkt](lesson-17.pkt)
+
 ![lesson-17-IPV6.pkt](lesson-17-IPV6.pkt)
