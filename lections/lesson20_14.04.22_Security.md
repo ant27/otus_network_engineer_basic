@@ -195,4 +195,13 @@ S1(config-if)#arp inspection trust
 ```
 S1(config)#ip arp inspection validate src-mac dst-mac ip
 ```
+### Защита от атак на STP
 
+Для защиты от атак STP, необходимо установить на порты доступа (И ТОЛЬКО НА НИХ) настройку port-fast и bpdu-guard. 
+
+```
+S1(config)#interace f0/1
+S1(config-if)#spanning-tree portfast
+S1(config-if)#spanning-tree bpduguard enable
+```
+*Примечание: Если какие-либо BPDU получены на порте с поддержкой BPDU Guard, этот порт переводится в состояние с ошибкой. Это означает, что порт отключен и должен быть повторно включен вручную или автоматически восстановлен с помощью глобальной команды errdisable recovery cause psecure-violation
