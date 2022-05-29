@@ -159,3 +159,40 @@ S1(config-if)#ip dhcp snooping trust
 S1(config)#interace range f0/5 -24
 S1(config-if)#ip dhcp snooping limit rate
 ```
+Просмотр конфигурации dhcp snooping:
+```
+S1(config)#show ip dhcp snooping
+S1(config)#ip dhcp snooping binding
+```
+
+### Защита от атак на ARP (DAI).
+
+Динамическая защита ARP (DAI) предотвращяет атаки на ARP путем:
+- Запрета ретрансляции недопустимых или незапрошенных ответов ARP на другие порты в той же VLAN.
+- Перехват всех ARP-запросов и ответов на ненадежных портах.
+- Проверка каждого перехваченного пакета на предмет правильной привязки IP-к-MAC.
+- Отключение интерфейса, если настроенное число DAI пакетов ARP превышено.
+
+DAI работает в связке с отслеживанием DHCP (dhcp snooping).
+
+Порядок настройки DAI:
+- Включение dhcp snooping
+```
+S1(config)#ip dhcp snooping vlan 10
+```
+- Включение режима проверки arp:
+```
+S1(config)#ip arp inspection vlan 10
+```
+- Назначение доверенных портов для отлеживания ARP и DHCP (uplink связи с коммутатором или маршрутизатором):
+```
+S1(config)#interace f0/1
+S1(config-if)#ip dhcp snooping trust
+S1(config-if)#arp inspection trust
+```
+- Также можно дополнительно настроить проверку сравнения MAC в заголовке Ethernet на соответствие MAC-адреса в теле ARP и проверку на наличие недопустимых и неожиданных IP-адресов, включая адреса 0.0.0.0, 255.255.255.255 и все IP-адреса многоадресной рассылки. 
+
+```
+S1(config)#ip arp inspection validate src-mac dst-mac ip
+```
+
