@@ -135,3 +135,25 @@ S1(config)#show port-security interface fa0/18
 ```
 S1(config)#show port-security address 
 ```
+### Защита от атак на VLAN.
+
+- Перевод всех несипользуемых портов в режим shutdown
+- Перевод всех портов доступа в режим access
+- Перевод всех транковых портов в режим trunk
+- Установка нативной VLAN, отличной от VLAN1
+
+### Защита от атак на DHCP.
+
+Включение отслеживания атак DHCP командой ip dhcp snooping для всех VLAN или для определнных:
+
+```
+S1(config)#ip dhcp snooping vlan 5,10,50-52
+```
+Назначение доверенных портов без ограничения на сообщения DHCP:
+```
+S1(config)#ip dhcp snooping vlan 5,10,50-52
+```
+
+```
+S1(config)#ip dhcp snooping vlan 5,10,50-52
+```
