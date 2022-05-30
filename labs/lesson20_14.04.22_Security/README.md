@@ -13,11 +13,30 @@
 
 ![](lesson-20_net_topology.png)
 
-### 1.2 Создание сети.
+### 1.2 Настройка маршрутизатора R1.
 
-По условиям задания маршрутизаторам и коммутаторам небходимо выделить адреса в определенных подсетях сети 192.168.1.0/24
-1. Подсеть A должна содержать 58 хостов, что соответствует подсети с маской /26, содержащей до 62 хостов.
-Параметры подсети: 
-- адрес подсети: 192.168.1.0/26 (255.255.255.192)
-- первый IP-адрес хоста: 192.168.1.1 
-
+- Исключение двух диапазонов IP-адресов из выдачи DHCP-сервера:
+```
+R1(config)#ip dhcp excluded-address 192.168.10.1 192.168.10.9
+R1(config)#ip dhcp excluded-address 192.168.10.201 192.168.10.202
+```
+- Настройка DHCP-пула:
+```
+R1(config)#ip dhcp pool Students
+R1(dhcp-config)#network 192.168.10.0 255.255.255.0
+R1(dhcp-config)#default-router 192.168.10.1
+R1(dhcp-config)#domain-name CCNA2.Lab-11.6.1
+```
+- Настройка loopback интерфейса:
+```
+R1(config)#interface Loopback0
+R1(config-if)#ip address 10.10.1.1 255.255.255.0
+```
+- Настройка интерфейса GigabitEthernet0/0/1:
+```
+R1(config)#interface GigabitEthernet0/0/1
+R1(config-if)#description Link to S1
+R1(config-if)#ip dhcp relay information trusted
+R1(config-if)#ip address 192.168.10.1 255.255.255.0
+R1(config-if)#no shutdown
+```
