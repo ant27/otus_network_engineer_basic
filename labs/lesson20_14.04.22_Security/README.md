@@ -58,11 +58,13 @@ S1(config-vlan)#name ParkingLot
 ```
 S1(config)#interface vlan 10
 S1(config-if)#ip address 192.168.10.201 255.255.255.0
-S1(config-if)#ip default-gateway 192.168.10.1
+S1(config-if)#exit
+S1(config)#ip default-gateway 192.168.10.1
 ```
 ```
 S2(config)#interface vlan 10
 S2(config-if)#ip address 192.168.10.202 255.255.255.0
-S2(config-if)#ip default-gateway 192.168.10.1
+S2(config-if)#exit
+S2(config)#ip default-gateway 192.168.10.1
 ```
 
