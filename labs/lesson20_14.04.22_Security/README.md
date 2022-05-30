@@ -71,7 +71,30 @@ S2(config)#ip default-gateway 192.168.10.1
 ```
 S1(config)#interface fa0/1
 S1(config-if)#switchport mode trunk
-S1(config-if)#switchpot trunk vlan allowed vlan 10,333,999
-S1(config-if)#switchpot trunk native vlan 333
+S1(config-if)#switchport trunk allowed vlan 10,333,999
+S1(config-if)#switchport trunk native vlan 333
 ```
 В качестве native vlan устанавливается специально заведенная vlan, отличная от 1, для предотвращения атаки на vlan
+
+- Отключение согласования DTP
+
+```
+S1(config)#interface fa0/1
+S1(config-if)#switchport nonegotiate
+```
+
+- Проверка сделанных настроек
+```
+S1#show interface trunk
+Port        Mode         Encapsulation  Status        Native vlan
+Fa0/1       on           802.1q         trunking      333
+
+Port        Vlans allowed on trunk
+Fa0/1       10,333,999
+
+Port        Vlans allowed and active in management domain
+Fa0/1       10,333,999
+
+Port        Vlans in spanning tree forwarding state and not pruned
+Fa0/1       10,333,999
+```
