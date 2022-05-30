@@ -67,4 +67,11 @@ S2(config-if)#ip address 192.168.10.202 255.255.255.0
 S2(config-if)#exit
 S2(config)#ip default-gateway 192.168.10.1
 ```
-
+- Настройка транковых портов коммутаторов S1 и S2
+```
+S1(config)#interface fa0/1
+S1(config-if)#switchport mode trunk
+S1(config-if)#switchpot trunk vlan allowed vlan 10,333,999
+S1(config-if)#switchpot trunk native vlan 333
+```
+В качестве native vlan устанавливается специально заведенная vlan, отличная от 1, для предотвращения атаки на vlan
