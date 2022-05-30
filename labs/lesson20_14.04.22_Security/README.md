@@ -44,7 +44,7 @@ R1(config-if)#no shutdown
 
 ### 1.3 Настройка коммутаторов.
 
-- Добавление необходимых VLAN на коммутаторы 
+- Добавление необходимых VLAN на коммутаторы S1 и S2 (показано для S1, для S2 аналогично)
 ```
 S1#conf t
 S1(config)#vlan 10
@@ -54,11 +54,12 @@ S1(config-vlan)#name Native
 S1(config)#vlan 999
 S1(config-vlan)#name ParkingLot
 ```
-- Настройка интерфеса SVI на VLAN 10
+- Настройка интерфеса SVI на VLAN 10 коммутаторов S1 и S2
 ```
 S1(config)#interface vlan 10
 S1(config-if)#ip address 192.168.10.201 255.255.255.0
 S1(config-if)#ip default-gateway 192.168.10.1
+```
 ```
 S2(config)#interface vlan 10
 S2(config-if)#ip address 192.168.10.202 255.255.255.0
