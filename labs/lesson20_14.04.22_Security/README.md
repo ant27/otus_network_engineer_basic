@@ -67,7 +67,7 @@ S2(config-if)#ip address 192.168.10.202 255.255.255.0
 S2(config-if)#exit
 S2(config)#ip default-gateway 192.168.10.1
 ```
-- Настройка транковых портов коммутаторов S1 и S2
+- Настройка транковых портов коммутаторов S1 и S2 (показано для S1, для S2 аналогично)
 ```
 S1(config)#interface fa0/1
 S1(config-if)#switchport mode trunk
@@ -76,7 +76,7 @@ S1(config-if)#switchport trunk native vlan 333
 ```
 В качестве native vlan устанавливается специально заведенная vlan, отличная от 1, для предотвращения атаки на vlan
 
-- Отключение согласования DTP
+- Отключение согласования DTP (показано для S1, для S2 аналогично)
 
 ```
 S1(config)#interface fa0/1
@@ -101,3 +101,33 @@ Fa0/1       10,333,999
 S1#show interfaces f0/1 switchport | include Negotiation
 Negotiation of Trunking: Off
 ```
+- Настройка портов доступа S1 и S2
+
+```
+S1(config)#interface range fa0/5 - 6
+S1(config-if)#switchport mode access
+S1(config-if)#switchport access vlan 10
+```
+
+```
+S1(config)#interface range fa0/18
+S1(config-if)#switchport mode access
+S1(config-if)#switchport access vlan 10
+```
+- Перевод несипользуемых портов в VLAN999 (ParkingLot) и выключение
+
+```
+S1(config)#interface range fa0/2 - 5, fa0/7 - 24, Gi0/1 - 2
+S1(config-if)#switchport mode access
+S1(config-if)#switchport access vlan 999
+S1(config-if)#shut
+```
+
+```
+S1(config)#interface range fa0/2 - 17, fa0/18 - 24, Gi0/1 - 2
+S1(config-if)#switchport mode access
+S1(config-if)#switchport access vlan 999
+S1(config-if)#shut
+```
+
+
