@@ -116,14 +116,14 @@ S1(config-if)#switchport access vlan 10
 - Перевод неиспользуемых портов в VLAN999 (ParkingLot) и их выключение
 
 ```
-S1(config)#interface range fa0/2 - 5, fa0/7 - 24, Gi0/1 - 2
+S1(config)#interface range fa0/2 - 4, fa0/7 - 24, Gi0/1 - 2
 S1(config-if)#switchport mode access
 S1(config-if)#switchport access vlan 999
 S1(config-if)#shut
 ```
 
 ```
-S1(config)#interface range fa0/2 - 17, fa0/18 - 24, Gi0/1 - 2
+S1(config)#interface range fa0/2 - 17, fa0/19 - 24, Gi0/1 - 2
 S1(config-if)#switchport mode access
 S1(config-if)#switchport access vlan 999
 S1(config-if)#shut
@@ -132,7 +132,37 @@ S1(config-if)#shut
 
 ```
 S1# show interfaces status
+S1(config-if-range)#do show interfaces status
+Port      Name               Status       Vlan       Duplex  Speed Type
+Fa0/1                        connected    1          auto    auto  10/100BaseTX
+Fa0/2                        disabled 999        auto    auto  10/100BaseTX
+Fa0/3                        disabled 999        auto    auto  10/100BaseTX
+Fa0/4                        disabled 999        auto    auto  10/100BaseTX
+Fa0/5                        notconnect   10         auto    auto  10/100BaseTX
+Fa0/6                        connected    10         auto    auto  10/100BaseTX
+Fa0/7                        disabled 999        auto    auto  10/100BaseTX
+Fa0/8                        disabled 999        auto    auto  10/100BaseTX
+Fa0/9                        disabled 999        auto    auto  10/100BaseTX
+Fa0/10                       disabled 999        auto    auto  10/100BaseTX
+Fa0/11                       disabled 999        auto    auto  10/100BaseTX
+Fa0/12                       disabled 999        auto    auto  10/100BaseTX
+Fa0/13                       disabled 999        auto    auto  10/100BaseTX
+Fa0/14                       disabled 999        auto    auto  10/100BaseTX
+Fa0/15                       disabled 999        auto    auto  10/100BaseTX
+Fa0/16                       disabled 999        auto    auto  10/100BaseTX
+Fa0/17                       disabled 999        auto    auto  10/100BaseTX
+Fa0/18                       disabled 999        auto    auto  10/100BaseTX
+Fa0/19                       disabled 999        auto    auto  10/100BaseTX
+Fa0/20                       disabled 999        auto    auto  10/100BaseTX
+Fa0/21                       disabled 999        auto    auto  10/100BaseTX
+Fa0/22                       disabled 999        auto    auto  10/100BaseTX
+Fa0/23                       disabled 999        auto    auto  10/100BaseTX
+Fa0/24                       disabled 999        auto    auto  10/100BaseTX
+Gig0/1                       disabled 999        auto    auto  10/100BaseTX
+Gig0/2                       disabled 999        auto    auto  10/100BaseTX
 ```
 ## 2. Дополнительные настройки безопасности коммутаторов.
 
+### Настройка безопасности порта 
 
+show port-security interface f0/6
