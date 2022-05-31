@@ -167,8 +167,7 @@ Gig0/2                       disabled 999        auto    auto  10/100BaseTX
 
 - Вывод команды show port-security interface коммутатора S1 с настройками по умолчанию
 ```
-S1#
-show port-security interface f0/6
+S1#show port-security interface f0/6
 Port Security              : Disabled
 Port Status                : Secure-down
 Violation Mode             : Shutdown
@@ -197,4 +196,14 @@ Security Violation Count   : 0
 - Режим безопасности: restrict
 - Aging time: 60 мин.
 - Aging type: неактивный
+
+```
+S1#conf t 
+S1(config)#interface fa0/6
+S1(config-if)#switchport port-security maximum 3
+S1(config-if)#switchport port-security violation restrict
+S1(config-if)#switchport port-security aging time 10
+S1(config-if)#switchport port-security aging type inactivity 
+```
+*Примечание: команда switchport port-security aging type в PacketTracer не реализована.
 
