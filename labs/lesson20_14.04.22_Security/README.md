@@ -165,4 +165,36 @@ Gig0/2                       disabled 999        auto    auto  10/100BaseTX
 
 ### Настройка безопасности порта 
 
+- Вывод команды show port-security interface коммутатора S1 с настройками по умолчанию
+```
+S1#
 show port-security interface f0/6
+Port Security              : Disabled
+Port Status                : Secure-down
+Violation Mode             : Shutdown
+Aging Time                 : 0 mins
+Aging Type                 : Absolute
+SecureStatic Address Aging : Disabled
+Maximum MAC Addresses      : 1
+Total MAC Addresses        : 0
+Configured MAC Addresses   : 0
+Sticky MAC Addresses       : 0
+Last Source Address:Vlan   : 0000.0000.0000:0
+Security Violation Count   : 0
+```
+Значения параметров по умолчанию: 
+
+- Защита портов - выключена
+- Максимальное количество записей MAC-адресов - 0
+- Режим проверки на нарушение безопасности - shutdown
+- Aging Time - 0 mins
+- Aging Type - Absolute
+- Secure Static Address Aging - Disabled
+- Sticky MAC Address - 0
+
+Установим для порта следующие настройки (по условию задания):
+- Максимальное количество записей MAC-адресов: 3
+- Режим безопасности: restrict
+- Aging time: 60 мин.
+- Aging type: неактивный
+
