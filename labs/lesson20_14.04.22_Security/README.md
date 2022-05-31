@@ -163,7 +163,7 @@ Gig0/2                       disabled 999        auto    auto  10/100BaseTX
 ```
 ## 2. Дополнительные настройки безопасности коммутаторов.
 
-### Настройка безопасности порта 
+### Настройка безопасности порта коммутатора S1
 
 - Вывод команды show port-security interface коммутатора S1 с настройками по умолчанию
 ```
@@ -200,6 +200,7 @@ Security Violation Count   : 0
 ```
 S1#conf t 
 S1(config)#interface fa0/6
+S1(config-if)#switchport port-security
 S1(config-if)#switchport port-security maximum 3
 S1(config-if)#switchport port-security violation restrict
 S1(config-if)#switchport port-security aging time 10
@@ -207,3 +208,53 @@ S1(config-if)#switchport port-security aging type inactivity
 ```
 *Примечание: команда switchport port-security aging type в PacketTracer не реализована.
 
+
+- Вывод команды show port-security interface коммутатора S1 после настройки
+```
+S1#show port-security interface fa0/6
+Port Security              : Enabled
+Port Status                : Secure-up
+Violation Mode             : Restrict
+Aging Time                 : 10 mins
+Aging Type                 : Absolute
+SecureStatic Address Aging : Disabled
+Maximum MAC Addresses      : 3
+Total MAC Addresses        : 0
+Configured MAC Addresses   : 0
+Sticky MAC Addresses       : 0
+Last Source Address:Vlan   : 0000.0000.0000:0
+Security Violation Count   : 0
+```
+### Настройка безопасности порта коммутатора S2
+
+Установим для порта следующие настройки (по условию задания):
+- Максимальное количество записей MAC-адресов: 2
+- Тип безопасности: Protect
+- Aging time: 60 мин.
+- Автоматическое добавление адресов МАС, изученных на порту в конфигурацию.
+
+```
+S2#conf t 
+S2(config)#interface fa0/18
+S2(config-if)#switchport port-security
+S2(config-if)#switchport port-security maximum 2
+S2(config-if)#switchport port-security violation protect
+S2(config-if)#switchport port-security aging time 60
+S2(config-if)#switchport port-security mac-address sticky
+```
+- Вывод команды show port-security interface коммутатора S1 после настройки
+```
+S2(config-if)#do show port-security interface f0/18
+Port Security              : Enabled
+Port Status                : Secure-up
+Violation Mode             : Protect
+Aging Time                 : 60 mins
+Aging Type                 : Absolute
+SecureStatic Address Aging : Disabled
+Maximum MAC Addresses      : 2
+Total MAC Addresses        : 0
+Configured MAC Addresses   : 0
+Sticky MAC Addresses       : 0
+Last Source Address:Vlan   : 0000.0000.0000:0
+Security Violation Count   : 0
+```
