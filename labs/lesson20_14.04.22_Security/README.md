@@ -285,9 +285,39 @@ Interface                  Trusted    Rate limit (pps)
 FastEthernet0/1            yes        unlimited       
 FastEthernet0/18           no         5     
 ```
-- 
+- Проверка привязки отслеживания DHCP
+```
+S2#show ip dhcp snooping binding
+MacAddress          IpAddress        Lease(sec)  Type           VLAN  Interface
+------------------  ---------------  ----------  -------------  ----  -----------------
+00:0B:BE:49:3C:B1   192.168.10.11    0           dhcp-snooping  10    FastEthernet0/18
+Total number of bindings: 1
+```
 
+*Примечание: почему то хост PC-B не видит DHCP при настройке ip dhcp snooping limit rate 5, а видит только при настройке ip dhcp snooping trust
 
-
-
-Реализация PortFast и BPDU Guard
+### Включение PortFast и BPDU Guard
+```
+S1(config)#interace f0/6
+S1(config-if)#spanning-tree portfast
+S1(config-if)#spanning-tree bpduguard enable
+```
+```
+S1(config)#interace f0/18
+S1(config-if)#spanning-tree portfast
+S1(config-if)#spanning-tree bpduguard enable
+```
+- Проверка сделанных настроек
+```
+S1#show spanning-tree interface f0/6 detail
+Port 6 (FastEthernet0/6) of VLAN0010 is designated forwarding
+  Port path cost 19, Port priority 128, Port Identifier 128.6
+  Designated root has priority 32778, address 0000.0C8D.2100
+  Designated bridge has priority 32778, address 0060.2FD0.3884
+  Designated port id is 128.6, designated path cost 19
+  Timers: message age 16, forward delay 0, hold 0
+  Number of transitions to forwarding state: 1
+  The port is in the portfast mode
+  Link type is point-to-point by default
+show spanning-tree interface f0/6 detail
+```
