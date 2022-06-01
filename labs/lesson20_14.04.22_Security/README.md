@@ -31,9 +31,9 @@ R1(dhcp-config)#domain-name CCNA2.Lab-11.6.1
 R1(config)#interface Loopback0
 R1(config-if)#ip address 10.10.1.1 255.255.255.0
 ```
-- Настройка интерфейса GigabitEthernet0/0/1:
+- Настройка интерфейса GigabitEthernet0/0:
 ```
-R1(config)#interface GigabitEthernet0/0/1
+R1(config)#interface GigabitEthernet0/0
 R1(config-if)#description Link to S1
 R1(config-if)#ip dhcp relay information trusted
 R1(config-if)#ip address 192.168.10.1 255.255.255.0
@@ -258,3 +258,36 @@ Sticky MAC Addresses       : 0
 Last Source Address:Vlan   : 0000.0000.0000:0
 Security Violation Count   : 0
 ```
+### Включение DHCP snooping
+
+- Выполним настройки в соответствии с заданием:
+```
+S2#conf t 
+S2(config)#ip dhcp snooping
+S2(config)#ip dhcp snooping vlan 10
+S2(config)#interace f0/1
+S2(config-if)#ip dhcp snooping trust
+S2(config-if)#interace f0/18
+S2(config-if)#ip dhcp snooping limit rate 5
+```
+```
+- Проверка сделанных настроек
+```
+S2#show ip dhcp snooping
+Switch DHCP snooping is enabled
+DHCP snooping is configured on following VLANs:
+10
+Insertion of option 82 is enabled
+Option 82 on untrusted port is not allowed
+Verification of hwaddr field is enabled
+Interface                  Trusted    Rate limit (pps)
+-----------------------    -------    ----------------
+FastEthernet0/1            yes        unlimited       
+FastEthernet0/18           no         5     
+```
+- 
+
+
+
+
+Реализация PortFast и BPDU Guard
