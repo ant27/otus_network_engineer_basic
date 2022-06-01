@@ -270,7 +270,7 @@ S2(config-if)#ip dhcp snooping trust
 S2(config-if)#interace f0/18
 S2(config-if)#ip dhcp snooping limit rate 5
 ```
-```
+
 - Проверка сделанных настроек
 ```
 S2#show ip dhcp snooping
