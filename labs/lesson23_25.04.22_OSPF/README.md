@@ -255,3 +255,18 @@ Neighbor ID     Pri   State           Dead Time   Address         Interface
 Как видно из вывода команд, смежность ospf между маршрутизаторами имеется. 
 
 Маршрутизатором DR стал R2, BDR стал R1. Это связано с тем, что R2 имеет больший идентификатор router-id по сравнению c R1.
+
+### 1.5. Проверка таблицы маршрутизации на R1.
+
+```
+R1#show ip route ospf 
+     192.168.1.0/32 is subnetted, 1 subnets
+O       192.168.1.1 [110/2] via 10.53.0.2, 00:19:01, GigabitEthernet0/1
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.1.1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 0/0/1 ms
+```
+
+Как мы видно из вывода команд, маршрут до Loopback интерфейса R2 прописался на R1 посредством ospf. Пинг до него успешен с R1.
