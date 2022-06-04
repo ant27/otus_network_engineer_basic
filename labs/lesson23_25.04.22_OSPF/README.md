@@ -172,6 +172,40 @@ R2(config-if)#ip ospf 56 area 0
 ### 1.4. Проверка настройки OSPFv2 на маршрутизаторах.
 
 ```
-R1#show ip protocols
+R1#show ip protocols 
+Routing Protocol is "ospf 56"
+  Outgoing update filter list for all interfaces is not set 
+  Incoming update filter list for all interfaces is not set 
+  Router ID 1.1.1.1
+  Number of areas in this router is 1. 1 normal 0 stub 0 nssa
+  Maximum path: 4
+  Routing for Networks:
+    10.53.0.0 0.0.0.255 area 0
+  Routing Information Sources:  
+    Gateway         Distance      Last Update 
+    1.1.1.1              110      00:00:25
+    2.2.2.2              110      00:00:25
+  Distance: (default is 110)
+
+R1#show ip ospf interface 
+GigabitEthernet0/1 is up, line protocol is up
+  Internet address is 10.53.0.1/24, Area 0
+  Process ID 56, Router ID 1.1.1.1, Network Type BROADCAST, Cost: 1
+  Transmit Delay is 1 sec, State BDR, Priority 1
+  Designated Router (ID) 2.2.2.2, Interface address 10.53.0.2
+  Backup Designated Router (ID) 1.1.1.1, Interface address 10.53.0.1
+  Timer intervals configured, Hello 10, Dead 40, Wait 40, Retransmit 5
+    Hello due in 00:00:07
+  Index 1/1, flood queue length 0
+  Next 0x0(0)/0x0(0)
+  Last flood scan length is 1, maximum is 1
+  Last flood scan time is 0 msec, maximum is 0 msec
+  Neighbor Count is 1, Adjacent neighbor count is 1
+    Adjacent with neighbor 2.2.2.2  (Designated Router)
+  Suppress hello for 0 neighbor(s)
+
+R1#show ip ospf neighbor 
+Neighbor ID     Pri   State           Dead Time   Address         Interface
+2.2.2.2           1   FULL/DR         00:00:32    10.53.0.2       GigabitEthernet0/1
 
 ```
