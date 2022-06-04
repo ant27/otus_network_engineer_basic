@@ -166,3 +166,10 @@ R2(config)#int loopback1
 R2(config-if)#ip ospf 56 area 0
 
 ```
+
+### 1.4. Проверка настройки OSPFv2 на маршрутизаторах.
+
+```
+R1#show ip protocols
+
+```
