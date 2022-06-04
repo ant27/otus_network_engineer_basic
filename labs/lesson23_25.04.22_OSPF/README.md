@@ -108,13 +108,15 @@ R1(config)#interface loopback1
 R1(config-if)#ip address 172.16.1.1 255.255.255.0 
 R1(config)#interface g0/1
 R1(config-if)#ip address 10.53.0.1 255.255.255.0 
+R1(config-if)#no sh 
 ```
 
 ```
-R1(config)#interface loopback1
-R1(config-if)#ip address 192.168.1.1 255.255.255.0 
-R1(config)#interface g0/1
-R1(config-if)#ip address 10.53.0.2 255.255.255.0 
+R2(config)#interface loopback1
+R2(config-if)#ip address 192.168.1.1 255.255.255.0 
+R2(config)#interface g0/1
+R2(config-if)#ip address 10.53.0.2 255.255.255.0 
+R2(config-if)#no sh 
 ```
 
 ### 1.3. Настройка OSPFv2.
