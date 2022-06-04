@@ -101,9 +101,7 @@ exit
 
 Выполним данный блок на всех маршрутизаторах и коммутаторах нашей сети.
 
-#### 1.3. Выполнение настроек интерфейсов машрутизаторов и коммутаторов.
-
-##### Настройка интерфейсов маршрутизатора R1
+### Настройка интерфейсов маршрутизатора R1
 
 ```
 R1(config)#interface loopback1
@@ -114,6 +112,30 @@ R1(config-if)#ip address 10.53.0.1 255.255.255.0
 
 ```
 R1(config)#interface loopback1
+R1(config-if)#ip address 192.168.1.1 255.255.255.0 
+R1(config)#interface g0/1
+R1(config-if)#ip address 10.53.0.2 255.255.255.0 
+```
+
+### 1.3. Настройка OSPFv2.
+
+- Включение процесса ospf на маршрутизаторе с идентификатором процесса 56
+
+```
+R1(config)#router ospf 56
+R1(config)#no shut
+R2(config)#router ospf 56
+R2(config)#no shut
+```
+- Настройка идентификатора маршрутизаторов
+```
+R1(config)#router-id 1.1.1.1
+R2(config)#router-id 2.2.2.2
+```
+
+
+
+
 R1(config-if)#ip address 192.168.1.1 255.255.255.0 
 R1(config)#interface g0/1
 R1(config-if)#ip address 10.53.0.2 255.255.255.0 
