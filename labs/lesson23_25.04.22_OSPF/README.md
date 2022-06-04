@@ -123,21 +123,46 @@ R1(config-if)#ip address 10.53.0.2 255.255.255.0
 
 ```
 R1(config)#router ospf 56
-R1(config)#no shut
+R1(config-router)#no shut
+```
+```
 R2(config)#router ospf 56
-R2(config)#no shut
+R2(config-router)#no shut
 ```
-- Настройка идентификатора маршрутизаторов
+- Настройка ospf идентификаторов маршрутизаторов
 ```
-R1(config)#router-id 1.1.1.1
-R2(config)#router-id 2.2.2.2
+R1(config-router)#router-id 1.1.1.1
+```
+```
+R2(config-router)#router-id 2.2.2.2
+```
+- Настройка сетей (интерфейсов), включенных в ospf
+
+```
+R1(config-router)#network 10.53.0.0 0.0.0.255 area 0
+
+```
+```
+R2(config-router)#network 10.53.0.0 0.0.0.255 area 0
+
+```
+- Настройка интерфейса loopback на R2, включенных в ospf
+
+```
+R2(config-router)#network 192.168.1.0 0.0.0.255 area 0
+
 ```
 
+- Альтернативный способ настройки включения интерфейсов в ospf
 
-
-
-R1(config-if)#ip address 192.168.1.1 255.255.255.0 
-R1(config)#interface g0/1
-R1(config-if)#ip address 10.53.0.2 255.255.255.0 
 ```
+R1(config)#int f0/1
+R1(config-if)#ip ospf 56 area 0 
+```
+```
+R2(config)#int f0/1
+R2(config-if)#ip ospf 56 area 0 
+R2(config)#int loopback1
+R2(config-if)#ip ospf 56 area 0
 
+```
