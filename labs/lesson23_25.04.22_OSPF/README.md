@@ -251,3 +251,6 @@ R2#show ip ospf neighbor
 Neighbor ID     Pri   State           Dead Time   Address         Interface
 1.1.1.1           1   FULL/BDR        00:00:35    10.53.0.1       GigabitEthernet0/1
 ```
+
+Как видно из вывода команд, смежность ospf между маршрутизаторами имеется. 
+Маршрутизатором DR стал R1, BDR стал R2.
