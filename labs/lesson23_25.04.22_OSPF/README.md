@@ -101,7 +101,7 @@ exit
 
 Выполним данный блок на всех маршрутизаторах и коммутаторах нашей сети.
 
-### Настройка интерфейсов маршрутизатора R1
+#### 1.3. Настройка интерфейсов маршрутизатора R1
 
 ```
 R1(config)#interface loopback1
@@ -119,7 +119,9 @@ R2(config-if)#ip address 10.53.0.2 255.255.255.0
 R2(config-if)#no sh 
 ```
 
-### 1.3. Настройка OSPFv2.
+### 2. Настройка и проверка базовой работы протокола  OSPFv2 для одной области
+
+#### 2.1. Настройка OSPFv2.
 
 - Включение процесса ospf на маршрутизаторе с идентификатором процесса 56
 
@@ -169,7 +171,7 @@ R2(config-if)#ip ospf 56 area 0
 
 ```
 
-### 1.4. Проверка настройки OSPFv2 на маршрутизаторах.
+#### 2.2. Проверка настройки OSPFv2 на маршрутизаторах.
 
 ```
 R1#show ip protocols 
@@ -256,7 +258,7 @@ Neighbor ID     Pri   State           Dead Time   Address         Interface
 
 Маршрутизатором DR стал R2, BDR стал R1. Это связано с тем, что R2 имеет больший идентификатор router-id по сравнению c R1.
 
-### 1.5. Проверка таблицы маршрутизации на R1.
+#### 2.3. Проверка таблицы маршрутизации на R1.
 
 ```
 R1#show ip route ospf 
@@ -270,3 +272,41 @@ Success rate is 100 percent (5/5), round-trip min/avg/max = 0/0/1 ms
 ```
 
 Как мы видно из вывода команд, маршрут до Loopback интерфейса R2 прописался на R1 посредством ospf. Пинг до него успешен с R1.
+
+### 3. Оптимизация и проверка конфигурации OSPFv2 для одной области
+
+- Сделаем R1 назначенным маршрутизатором, изменив ему приоритет.
+
+```
+R2(config)#int f0/1
+R2(config-if)#ip ospf priority 50
+R2(config-if)#end
+R2#clear ip ospf proccess
+```
+- Проверим, что он стал DR
+
+```
+R1#show ip ospf interface
+GigabitEthernet0/1 is up, line protocol is up
+  Internet address is 10.53.0.1/24, Area 0
+  Process ID 56, Router ID 1.1.1.1, Network Type BROADCAST, Cost: 1
+  Transmit Delay is 1 sec, State DR, Priority 50
+  Designated Router (ID) 1.1.1.1, Interface address 10.53.0.1
+  No backup designated router on this network
+  Timer intervals configured, Hello 10, Dead 40, Wait 40, Retransmit 5
+    Hello due in 00:00:00
+  Index 1/1, flood queue length 0
+  Next 0x0(0)/0x0(0)
+  Last flood scan length is 1, maximum is 1
+  Last flood scan time is 0 msec, maximum is 0 msec
+  Neighbor Count is 1, Adjacent neighbor count is 1
+    Adjacent with neighbor 2.2.2.2
+  Suppress hello for 0 neighbor(s)
+```
+
+- Установим hello-interval'ы для ospf в значение 30 (это надо сделать на обоих маршрутизаторах, иначе смежность не настроится). Показано для R1, для R2 аналогично.
+
+```
+R1(config)#int f0/1
+R1(config-if)#ip ospf hello-interval 30
+```
