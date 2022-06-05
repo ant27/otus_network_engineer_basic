@@ -376,5 +376,8 @@ Success rate is 100 percent (5/5), round-trip min/avg/max = 0/0/2 ms
 R2#traceroute 172.16.1.1
 Type escape sequence to abort.
 Tracing the route to 172.16.1.1
-``` 
+
   1   10.53.0.1       0 msec    0 msec    1 msec 
+``` 
+
+Мы не включали интерейс 172.16.1.1 (loopback 1 R1) в ospf, но на R2 он доступен, так как доступен маршрут по умолчанию, распостраненный с R1.
