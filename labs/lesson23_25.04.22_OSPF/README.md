@@ -366,3 +366,15 @@ O    192.168.1.0 [110/1012] via 10.53.0.2, 00:05:13, GigabitEthernet0/1
 R2#show ip route ospf
 O*E2 0.0.0.0/0 [110/1] via 10.53.0.1, 00:01:17, GigabitEthernet0/1
 ``` 
+- Пропингуем интерфейс 172.16.1.1 (loopback 1 R1) из R2 для проверки ospf
+``` 
+R2#ping 172.16.1.1
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 172.16.1.1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 0/0/2 ms
+R2#traceroute 172.16.1.1
+Type escape sequence to abort.
+Tracing the route to 172.16.1.1
+``` 
+  1   10.53.0.1       0 msec    0 msec    1 msec 
