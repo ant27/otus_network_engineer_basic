@@ -310,3 +310,54 @@ GigabitEthernet0/1 is up, line protocol is up
 R1(config)#int f0/1
 R1(config-if)#ip ospf hello-interval 30
 ```
+
+- Назначим маршрут по умолчанию на R1 через интерфейс loopback1
+```
+R1(config)#ip route 0.0.0.0 0.0.0.0 loopback1
+R1(config)#router ospf 56
+R1(config-router)#default-information originate
+```
+- Назначим на R2 интерфейс loopback1 как point-to-point для ospf
+```
+R2(config)#interface loopback 1
+R2(config-if)#ip ospf network point-to-point 
+```
+- Назначим режим passive на интерфейсе loopback1 R2
+
+```
+R2(config)#router ospf 56
+R2(config-router)#passive-interface loopback1
+```
+- Настроим базовую полосу пропускания в 100000 (100Gb) для ospf на обоих маршрутизаторах (показано только на R1)
+```
+R2(config)#router ospf 56
+R2(config-router)#auto-cost reference-bandwidth 100000
+% OSPF: Reference bandwidth is changed.
+        Please ensure reference bandwidth is consistent across all routers.
+```
+- Проверка новых настроек
+```
+R1#show ip ospf interface g0/1
+GigabitEthernet0/1 is up, line protocol is up
+  Internet address is 10.53.0.1/24, Area 0
+  Process ID 56, Router ID 1.1.1.1, Network Type BROADCAST, Cost: 1000
+  Transmit Delay is 1 sec, State DR, Priority 50
+  Designated Router (ID) 1.1.1.1, Interface address 10.53.0.1
+  Backup Designated Router (ID) 2.2.2.2, Interface address 10.53.0.2
+  Timer intervals configured, Hello 30, Dead 40, Wait 40, Retransmit 5
+    Hello due in 00:00:11
+  Index 1/1, flood queue length 0
+  Next 0x0(0)/0x0(0)
+  Last flood scan length is 1, maximum is 1
+  Last flood scan time is 0 msec, maximum is 0 msec
+  Neighbor Count is 1, Adjacent neighbor count is 1
+    Adjacent with neighbor 2.2.2.2  (Backup Designated Router)
+  Suppress hello for 0 neighbor(s)
+  ```
+Как мы видим, приоритет маршрутизатора изменен на 50, поэтому R1 стал DR, hello-interval изменен на 30.
+  
+- Проверим прописавшиеся на R1 маршруты ospf
+``` 
+R1#show ip route ospf
+O    192.168.1.0 [110/1012] via 10.53.0.2, 00:05:13, GigabitEthernet0/1
+```
