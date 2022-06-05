@@ -361,3 +361,8 @@ GigabitEthernet0/1 is up, line protocol is up
 R1#show ip route ospf
 O    192.168.1.0 [110/1012] via 10.53.0.2, 00:05:13, GigabitEthernet0/1
 ```
+- Проверим прописавшиеся на R2 маршруты ospf
+``` 
+R2#show ip route ospf
+O*E2 0.0.0.0/0 [110/1] via 10.53.0.1, 00:01:17, GigabitEthernet0/1
+``` 
