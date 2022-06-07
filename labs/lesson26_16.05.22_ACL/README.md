@@ -2,8 +2,10 @@
 
 ##  Задание:
 1. Создание сети и настройка основных параметров устройства
-2. Настройка VLAN и интерфейсов
-3. Настройка и проверка списков расширенного контроля доступа
+2. Настройка VLAN и интерфейсов коммутаторов
+3. Настройка интерфейсов маршрутизаторов
+4. Натсройка SSH на маршрутизаторе R1
+5. Настройка и проверка списков расширенного контроля доступа
 
 ##  Решение:
 
@@ -180,7 +182,9 @@ S2(config-if)#switchport trunk native vlan 1000
 
 show interfaces trunk
 
-#### 2.2. Настройка маршрутизатора R1 на router-on-stick.
+### 3. Настройка интерфейсов маршрутизаторов
+
+#### 3.1. Настройка маршрутизатора R1 как router-on-stick.
 ```
 R1(config)#interface GigabitEthernet0/1.20
 R1(config-subif)#description network_management_vlan
@@ -207,6 +211,54 @@ R1(config-subif)#ip address 172.16.1.1 255.255.255.0
 R1(config-subif)no shut
 R1(config-subif)#end
 R1(config)#interface GigabitEthernet0/1
-R1(config-subif)#no sh
-R1(config-subif)#end
+R1(config-if)#no sh
+R1(config-if)#end
 ```
+#### 3.2. Настройка маршрутизатора R2.
+
+```
+R2(config)#interface GigabitEthernet0/1
+R2(config-if)#ip address 10.20.0.4 255.255.255.0
+R2(config-if)#ip default-gateway 10.20.0.1
+R2(config-if)#no sh
+R2(config-if)#end
+```
+
+### 4. Настройка SSH на маршрутизаторе R1
+
+- Создадим пользователя для удаленного доступа по SSH
+```
+R1(config)#username SSHadmin privilege 15 secret $cisco123!
+```
+- Зададим доменное имя устройства
+```
+R1#configure terminal
+R1(config)#ip domain-name ccna-lab.com
+```
+- Сгенерируем ключ шифрования с длиной 1024 бита.
+```
+R1(config)#crypto key generate rsa general-keys modulus 1024
+```
+- Включаем SSH сервер v2 на R1
+```
+R1(config)#ip ssh version 2
+```
+- Активируем доступ по протоколу SSH на линиях VTY:
+```
+R1(config)#line vty 0 5 
+R1(config-line)#transport input ssh
+R1(config-line)#login local
+```
+
+### 5. Включение службы HTTP на маршрутизаторе R1
+```
+R1(config)#ip http secure-server
+R1(config)#ip http authentication local
+```
+### 6. Настройка PC-A и PC-B
+
+Настроим хосты в соответствии с заданием
+
+### 6. Проверка подключений
+
+
