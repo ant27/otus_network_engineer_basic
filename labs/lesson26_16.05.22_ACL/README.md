@@ -258,9 +258,25 @@ R1(config)#ip http authentication local
 ```
 *Примечание: команда ip http не реализована в packet tracer.
 
+Нужно что-то придумывать...Так как по условиям лабораторной работы, в дальнейшем мы должны исключить траффик этого протокола, возьмем какой-нибудь другой протокол и исключим ттраффик от него. Пуска таким протоколом будет dhcp. Настроем его на R1
+```
+R1(config)#ip dhcp excluded-address 10.30.0.1 
+R1(config)#ip dhcp excluded-address 10.40.0.1 
+R1(config)#ip dhcp pool lan_poolA
+R1(dhcp-config)#network 10.30.0.0 255.255.255.0
+R1(dhcp-config)#default-router 10.30.0.1
+R1(dhcp-config)#domain-name ccna-lab.com
+R1(dhcp-config)#ip dhcp pool lan_poolB
+R1(dhcp-config)#network 10.40.0.0 255.255.255.0
+R1(dhcp-config)#default-router 10.40.0.1
+R1(dhcp-config)#domain-name ccna-lab.com
+R1(dhcp-config)#end
+```
+
 ### 6. Настройка PC-A и PC-B
 
 Настроим хосты в соответствии с заданием
 
 ### 6. Проверка подключений
 
+D
