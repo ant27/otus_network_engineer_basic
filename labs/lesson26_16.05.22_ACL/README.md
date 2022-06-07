@@ -261,4 +261,3 @@ R1(config)#ip http authentication local
 
 ### 6. Проверка подключений
 
-
