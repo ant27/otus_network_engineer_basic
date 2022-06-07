@@ -189,26 +189,26 @@ R1(config)#interface GigabitEthernet0/1.20
 R1(config-subif)#description network_management_vlan
 R1(config-subif)#encapsulation dot1Q 20
 R1(config-subif)#ip address 10.20.0.1 255.255.255.0
-R1(config-subif)#end
+R1(config-subif)#exit
 R1(config)#interface GigabitEthernet0/1.30
 R1(config-subif)#description operations_vlan
 R1(config-subif)#encapsulation dot1Q 30
 R1(config-subif)#ip address 10.30.0.1 255.255.255.0
-R1(config-subif)#end
+R1(config-subif)#exit
 R1(config)#interface GigabitEthernet0/1.40
 R1(config-subif)#description sales_vlan
 R1(config-subif)#encapsulation dot1Q 40
 R1(config-subif)#ip address 10.40.0.1 255.255.255.0
-R1(config-subif)#end
+R1(config-subif)#exit
 R1(config)#interface GigabitEthernet0/1.1000
 R1(config-subif)#description native_vlan
 R1(config-subif)#encapsulation dot1Q 1000 native
-R1(config-subif)#end
+R1(config-subif)#exit
 R1(config)#interface loopback1
 R1(config-subif)#description loopback
 R1(config-subif)#ip address 172.16.1.1 255.255.255.0
-R1(config-subif)no shut
-R1(config-subif)#end
+R1(config-subif)#no shut
+R1(config-subif)#exit
 R1(config)#interface GigabitEthernet0/1
 R1(config-if)#no sh
 R1(config-if)#end
