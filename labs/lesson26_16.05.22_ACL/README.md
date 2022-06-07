@@ -171,12 +171,14 @@ S1(config)#interface range fa0/1, fa0/5
 S1(config-if)#switchport mode trunk
 S1(config-if)#switchport trunk allowed vlan 20,30,40,1000
 S1(config-if)#switchport trunk native vlan 1000
+S1(config-if)#no shut
 ```
 ```
 S2(config)#interface range fa0/1
 S2(config-if)#switchport mode trunk
 S2(config-if)#switchport trunk allowed vlan 20,30,40,1000
 S2(config-if)#switchport trunk native vlan 1000
+S1(config-if)#no shut
 ```
 - Проверка выполненных настроек
 
