@@ -218,8 +218,9 @@ R1(config-if)#end
 ```
 R2(config)#interface GigabitEthernet0/1
 R2(config-if)#ip address 10.20.0.4 255.255.255.0
-R2(config-if)#ip default-gateway 10.20.0.1
 R2(config-if)#no sh
+R2(config-if)#exit
+R2(config-if)#ip route 0.0.0.0 0.0.0.0 10.20.0.1
 R2(config-if)#end
 ```
 
