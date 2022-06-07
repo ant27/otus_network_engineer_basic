@@ -123,6 +123,7 @@ S1(config-vlan)#name Native
 #### 2.2.  Назначения VLAN интерфейсам S1 и S2.
 
 - Внесение всех портов в ParkingLot и их выключение.
+
 *Примечание: удобнее сначала внести все порты в ParkingLot, а потом перенастроить нужные - меньше возни с диапазонами.
 
 ```
@@ -255,6 +256,8 @@ R1(config-line)#login local
 R1(config)#ip http secure-server
 R1(config)#ip http authentication local
 ```
+*Примечание: команда ip http не реализована в packet tracer.
+
 ### 6. Настройка PC-A и PC-B
 
 Настроим хосты в соответствии с заданием
