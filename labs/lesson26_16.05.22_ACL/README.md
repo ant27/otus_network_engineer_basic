@@ -133,19 +133,16 @@ S1(config-if)#shut
 ```
 - Внесение портов в нужные VLAN на S1
 ```
-S1(config)#interface range fa0/6
-S1(config-if)#switchport mode access
+S1(config)#interface fa0/6
 S1(config-if)#switchport access vlan 30
 S1(config-if)#no shut
 ```
 - Аналогично на S2
 ```
-S2(config)#interface range fa0/5
-S2(config-if)#switchport mode access
+S2(config)#interface fa0/5
 S2(config-if)#switchport access vlan 20
 S2(config-if)#no shut
-S2(config)#interface range fa0/18
-S2(config-if)#switchport mode access
+S2(config)#interface fa0/18
 S2(config-if)#switchport access vlan 40
 S2(config-if)#no shut
 ```
