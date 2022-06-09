@@ -46,6 +46,7 @@ ACL, пронумерованные 1-99 или 1300-1999, являются ст
 ```
 R1(config)# access-list access-list-number {deny|permit|remark text} source [source-wildcard] [log]
 ```
+
 ## Синтаксис создания именованных стандартных списков ACL
 ```
 R1(config)# ip access-list standard FTP-FILTER
@@ -61,8 +62,42 @@ R1 (config-ext-nacl) # permit tcp 192.168.10.0 0.0.255 any eq ftp-data
 R1(config-if)# ip access-group {access-list-number | access-list-name} {in|out}
 R1(config-if)# no ip access-group
 ```
-
 *Примечание!!! Если удалить примененный к каком-либо интерфейсу ACL без отмены применения его на интерфейсе, траффик через этот интерфейс блокируется, так как начинает действовать запрещающее правило по умолчанию.
+
+
+## Пример создания и применения стандартного нумерованного ACL
+
+```
+R1(config)# access-list 10 remark ACE permits ONLY host 192.168.10.10 to WAN
+R1(config)# access-list 10 permit host 192.168.10.10
+R1(config)# interface S0/1
+R1(config-if)# ip access-group 10 out
+```
+
+## Пример создания и применения стандартного именованного ACL
+
+```
+R1(config)# ip access-list standard PERMIT-ACCESS
+R1(config-std-nacl)#remark ACE permits ONLY host 192.168.10.10 to WAN
+R1(config-std-nacl)#permit host 192.168.10.10
+R1(config)# interface S0/1
+R1(config-if)# ip access-group PERMIT-ACCESS out
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ```
 R1(config)# ip access-list extended FTP-FILTER
