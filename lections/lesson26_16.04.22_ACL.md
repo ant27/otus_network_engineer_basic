@@ -89,24 +89,28 @@ R1(config-if)# ip access-group PERMIT-ACCESS out
 R1#show access-lists
 ```
 
+## Очистка счетчиков сработки ACL
+```
+R1#clear access-list counters NO-ACCESS
+```
+
+
 ## Просмотр примененных на интерфейсе ACL
 ```
 R1#show ip int S0/1 | include access list
 ```
 
-
-
-
-
-
-
-
-
-
-
+## Редактирование правил методом порядковых номеров
+```
+R1(config)#ip access-list standard PERMIT-ACCESS
+R1(config-std-nacl)#no 10
+R1(config-std-nacl)#10 permit host 192.168.10.10
+```
+В данном примере удаляется первое правило и заменяется новым. 
 
 ```
-R1(config)# ip access-list extended FTP-FILTER
-R1(config-ext-nacl)# permit tcp 192.168.10.0 0.0.0.255 any eq ftp
-R1 (config-ext-nacl) # permit tcp 192.168.10.0 0.0.255 any eq ftp-data
+R1(config)#ip access-list standard PERMIT-ACCESS
+R1(config-std-nacl)#15 permit host 192.168.10.10
 ```
+В данном примере правило добавится между 10 и 20 правилами (1-м и 2-м). 
+
