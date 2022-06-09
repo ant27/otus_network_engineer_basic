@@ -91,7 +91,7 @@ R1#show access-lists
 
 ## Просмотр примененных на интерфейсе ACL
 ```
-R1#show access-lists
+R1#show ip int S0/1 | include access list
 ```
 
 
