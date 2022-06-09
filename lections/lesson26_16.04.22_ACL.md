@@ -50,8 +50,8 @@ R1(config)# access-list access-list-number {deny|permit|remark text} source [sou
 ## Синтаксис создания именованных стандартных списков ACL
 ```
 R1(config)# ip access-list standard FTP-FILTER
-R1(config-ext-nacl)# permit tcp 192.168.10.0 0.0.0.255 any eq ftp
-R1 (config-ext-nacl) # permit tcp 192.168.10.0 0.0.255 any eq ftp-data
+R1(config-ext-nacl)#remark ACE permits ONLY host 192.168.10.10 to WAN
+R1(config-ext-nacl)#permit host 192.168.10.10
 ```
 
 ## Применение стандартного списка ACL
