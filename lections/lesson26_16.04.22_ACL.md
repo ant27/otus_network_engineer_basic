@@ -44,9 +44,7 @@ ACL, пронумерованные 1-99 или 1300-1999, являются ст
 
 ## Синтаксис стандартных нумерованных списков ACL
 ```
-R1(config)# access-list access-list-number {deny|permit|remark text} source [source-wildcard] [log]            extended FTP-FILTER
-R1(config-ext-nacl)# permit tcp 192.168.10.0 0.0.0.255 any eq ftp
-R1 (config-ext-nacl) # permit tcp 192.168.10.0 0.0.255 any eq ftp-data
+R1(config)# access-list access-list-number {deny|permit|remark text} source [source-wildcard] [log]
 ```
 
 
