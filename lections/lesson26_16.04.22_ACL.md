@@ -116,3 +116,7 @@ R1(config-std-nacl)#15 permit host 192.168.10.10
 
 ## Настройка расширенных списков контроля доступа ACL
 
+```
+R1(config)# access-list 110 remark ACE permits HTTP from 192.168.10.0 to everywhere
+R1(config)# access-list 1110 permit tcp 192.168.10.0 0.0.0.255 any eq 443
+```
