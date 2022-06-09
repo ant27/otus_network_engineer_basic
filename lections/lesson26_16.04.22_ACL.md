@@ -77,16 +77,22 @@ R1(config-if)# ip access-group 10 out
 ## Пример создания и применения стандартного именованного ACL
 
 ```
-R1(config)# ip access-list standard PERMIT-ACCESS
+R1(config)#ip access-list standard PERMIT-ACCESS
 R1(config-std-nacl)#remark ACE permits ONLY host 192.168.10.10 to WAN
 R1(config-std-nacl)#permit host 192.168.10.10
-R1(config)# interface S0/1
+R1(config)#interface S0/1
 R1(config-if)# ip access-group PERMIT-ACCESS out
 ```
 
+## Просмотр созданных ACL
+```
+R1#show access-lists
+```
 
-
-
+## Просмотр примененных на интерфейсе ACL
+```
+R1#show access-lists
+```
 
 
 
