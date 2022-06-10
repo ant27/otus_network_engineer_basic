@@ -339,14 +339,13 @@ R1(config-if)#ip access-group DENY_ICMP_FROM_SALES_TO_MANAGEMENT_AND_OPERATIONS 
 
 *Политика 4: Cеть Operations  не может отправлять ICMP эхозапросы в сеть Sales. Разрешены эхо-запросы ICMP к другим адресатам.*
 
-Нужно создать access-list с первым правилом, запрещающим пакеты с ip источника, соответствующего диапазону сети Operations (10.30.0.0/24), ip назначения, соответствующего диапазону сети Sales (10.40.0.0/24), протоколом icmp.
+Нужно создать access-list с правилом, запрещающим пакеты с ip источника, соответствующего диапазону сети Operations (10.30.0.0/24), ip назначения, соответствующего диапазону сети Sales (10.40.0.0/24), протоколом icmp.
 И затем применить его на интерфейсе GigabitEthernet0/1.30 для входящего траффика.
 
 ```
 R1(config)#ip access-list extended DENY_ICMP_FROM_OPERATIONS_TO_SALES
-R1(config-std-nacl)#deny icmp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255
-R1(config-std-nacl)#deny icmp 10.40.0.0 0.0.0.255 10.30.0.0 0.0.0.255
+R1(config-std-nacl)#deny icmp 10.30.0.0 0.0.0.255 10.40.0.0 0.0.0.255
 R1(config-std-nacl)#permit any any
-R1(config)#GigabitEthernet0/1.40
+R1(config)#GigabitEthernet0/1.30
 R1(config-if)#ip access-group DENY_ICMP_FROM_OPERATIONS_TO_SALES in
 ```
