@@ -336,7 +336,7 @@ R1(config-std-nacl)#deny tcp any host 10.40.0.1 eq 80
 R1(config-std-nacl)#deny tcp any host 10.40.0.1 eq 443
 R1(config-std-nacl)#permit any any
 R1(config)#GigabitEthernet0/1.40
-R1(config-if)#no ip access-group
+R1(config-if)#no ip access-group DENY_SSH_FROM_SALES_TO_MANAGEMENT in
 R1(config-if)#ip access-group DENY_HTTP_HTTPS_FROM_SALES_TO_MANAGEMENT_AND_R1 in
 ```
 
@@ -353,7 +353,7 @@ R1(config-std-nacl)#deny icmp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255
 R1(config-std-nacl)#deny icmp 10.40.0.0 0.0.0.255 10.30.0.0 0.0.0.255
 R1(config-std-nacl)#permit any any
 R1(config)#GigabitEthernet0/1.40
-R1(config-if)#no ip access-group
+R1(config-if)#no ip access-group DENY_HTTP_HTTPS_FROM_SALES_TO_MANAGEMENT_AND_R1 in
 R1(config-if)#ip access-group DENY_ICMP_FROM_SALES_TO_MANAGEMENT_AND_OPERATIONS in
 ```
 #### 8.1. Политика 4
