@@ -323,10 +323,14 @@ Extended IP access list DENY_SSH_FROM_SALES_TO_MANAGEMENT
 Перед применением правила, нужно отключить применение старого правила, для чего выполним команду no ip access-group.
 ```
 R1(config)#ip access-list extended DENY_HTTP_HTTPS_FROM_SALES_TO_MANAGEMENT_AND_R1
-R1(config-std-nacl)#deny tcp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 eq range 80 443
-R1(config-std-nacl)#deny tcp any host 10.20.0.1 eq range 80 443
-R1(config-std-nacl)#deny tcp any host 10.30.0.1 eq range 80 443
-R1(config-std-nacl)#deny tcp any host 10.40.0.1 eq range 80 443
+R1(config-std-nacl)#deny tcp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 eq 80
+R1(config-std-nacl)#deny tcp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 eq 443
+R1(config-std-nacl)#deny tcp any host 10.20.0.1 eq 80
+R1(config-std-nacl)#deny tcp any host 10.20.0.1 eq 443
+R1(config-std-nacl)#deny tcp any host 10.30.0.1 eq 80
+R1(config-std-nacl)#deny tcp any host 10.30.0.1 eq 443
+R1(config-std-nacl)#deny tcp any host 10.40.0.1 eq 80
+R1(config-std-nacl)#deny tcp any host 10.40.0.1 eq 443
 R1(config-std-nacl)#permit any any
 R1(config)#GigabitEthernet0/1.40
 R1(config-if)#no ip access-group
