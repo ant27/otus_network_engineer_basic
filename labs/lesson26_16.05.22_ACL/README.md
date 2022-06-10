@@ -317,10 +317,36 @@ R1(config-std-nacl)#deny tcp any host 10.30.0.1 eq range 80 443
 R1(config-std-nacl)#deny tcp any host 10.40.0.1 eq range 80 443
 R1(config-std-nacl)#permit any any
 R1(config)#GigabitEthernet0/1.40
-R1(config)#GigabitEthernet0/1.40
 R1(config-if)#ip access-group DENY_HTTP_HTTPS_FROM_SALES_TO_MANAGEMENT_AND_R1 in
 ```
 
-4. Политика3. Сеть Sales не может отправлять эхо-запросы ICMP в сети Operations или Management. Разрешены эхо-запросы ICMP к другим адресатам. 
-5. Политика 4: Cеть Operations  не может отправлять ICMP эхозапросы в сеть Sales. Разрешены эхо-запросы ICMP к другим адресатам. 
+#### 8.1. Политика 3
 
+*Политика3. Сеть Sales не может отправлять эхо-запросы ICMP в сети Operations или Management. Разрешены эхо-запросы ICMP к другим адресатам.*
+
+Нужно создать access-list с первым правилом, запрещающим пакеты с ip источника, соответствующего диапазону сети Sales (10.40.0.0/24), ip назначения, соответствующего диапазону сети Management (10.20.0.0/24), протоколом icmp. Второе правило будет запрещать пакеты с ip источника, соответствующего диапазону сети Sales (10.40.0.0/24), ip назначения, соответствующего диапазону сети Operations (10.30.0.0/24) и протоколом icmp.
+И затем применить его на интерфейсе GigabitEthernet0/1.40 для входящего траффика.
+
+```
+R1(config)#ip access-list extended DENY_ICMP_FROM_SALES_TO_MANAGEMENT_AND_OPERATIONS
+R1(config-std-nacl)#deny icmp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255
+R1(config-std-nacl)#deny icmp 10.40.0.0 0.0.0.255 10.30.0.0 0.0.0.255
+R1(config-std-nacl)#permit any any
+R1(config)#GigabitEthernet0/1.40
+R1(config-if)#ip access-group DENY_ICMP_FROM_SALES_TO_MANAGEMENT_AND_OPERATIONS in
+```
+#### 8.1. Политика 4
+
+*Политика 4: Cеть Operations  не может отправлять ICMP эхозапросы в сеть Sales. Разрешены эхо-запросы ICMP к другим адресатам.*
+
+Нужно создать access-list с первым правилом, запрещающим пакеты с ip источника, соответствующего диапазону сети Operations (10.30.0.0/24), ip назначения, соответствующего диапазону сети Sales (10.40.0.0/24), протоколом icmp.
+И затем применить его на интерфейсе GigabitEthernet0/1.30 для входящего траффика.
+
+```
+R1(config)#ip access-list extended DENY_ICMP_FROM_OPERATIONS_TO_SALES
+R1(config-std-nacl)#deny icmp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255
+R1(config-std-nacl)#deny icmp 10.40.0.0 0.0.0.255 10.30.0.0 0.0.0.255
+R1(config-std-nacl)#permit any any
+R1(config)#GigabitEthernet0/1.40
+R1(config-if)#ip access-group DENY_ICMP_FROM_OPERATIONS_TO_SALES in
+```
