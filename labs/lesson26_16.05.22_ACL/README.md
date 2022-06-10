@@ -309,6 +309,7 @@ R1(config-if)#ip access-group DENY_SSH_FROM_SALES_TO_MANAGEMENT in
 
 Нужно создать access-list с первым правилом, запрещающим пакеты с ip источника, соответствующего диапазону сети Sales (10.40.0.0/24), ip назначения, соответствующего диапазону сети Management (10.20.0.0/24), протоколом tcp и портами 80 и 443. И затем применить его на интерфейсе GigabitEthernet0/1.40 для входящего траффика. Второе правило будет запрещать пакеты к хосту 10.20.0.1 по протоколу tcp и портам 80 и 443. Третье правило будет запрещать пакеты к хосту 10.30.0.1 по протоколу tcp и портам 80 и 443. Четвертое правило будет запрещать пакеты к хосту 10.40.0.1 по протоколу tcp и портам 80 и 443.
 
+Перед применением правила, нужно отключить применение старого правила, для чего выполним команду no ip access-group.
 ```
 R1(config)#ip access-list extended DENY_HTTP_HTTPS_FROM_SALES_TO_MANAGEMENT_AND_R1
 R1(config-std-nacl)#deny tcp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 eq range 80 443
@@ -317,6 +318,7 @@ R1(config-std-nacl)#deny tcp any host 10.30.0.1 eq range 80 443
 R1(config-std-nacl)#deny tcp any host 10.40.0.1 eq range 80 443
 R1(config-std-nacl)#permit any any
 R1(config)#GigabitEthernet0/1.40
+R1(config-if)#no ip access-group
 R1(config-if)#ip access-group DENY_HTTP_HTTPS_FROM_SALES_TO_MANAGEMENT_AND_R1 in
 ```
 
@@ -333,6 +335,7 @@ R1(config-std-nacl)#deny icmp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255
 R1(config-std-nacl)#deny icmp 10.40.0.0 0.0.0.255 10.30.0.0 0.0.0.255
 R1(config-std-nacl)#permit any any
 R1(config)#GigabitEthernet0/1.40
+R1(config-if)#no ip access-group
 R1(config-if)#ip access-group DENY_ICMP_FROM_SALES_TO_MANAGEMENT_AND_OPERATIONS in
 ```
 #### 8.1. Политика 4
