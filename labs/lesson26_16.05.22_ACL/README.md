@@ -285,7 +285,7 @@ R1(dhcp-config)#end
 
 #### 8.1. Политика 1
 
-```Политика 1. Сеть Sales не может использовать SSH в сети Management (но в  другие сети SSH разрешен). ```
+*Политика 1. Сеть Sales не может использовать SSH в сети Management (но в  другие сети SSH разрешен).*
 
 
 Маршрутизация в сеть Management (10.20.0.0/24) происходит через подинтерфейс GigabitEthernet0/1.20, в сеть Sales (10.40.0.0/24) через GigabitEthernet0/1.40.
@@ -299,6 +299,7 @@ R1(dhcp-config)#end
 ```
 R1(config)#ip access-list extended DENY_SSH_FROM_SALES_TO_MANAGEMENT
 R1(config-std-nacl)#deny tcp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 eq 22
+R1(config-std-nacl)#permit any any
 R1(config)#GigabitEthernet0/1.40
 R1(config-if)#ip access-group DENY_SSH_FROM_SALES_TO_MANAGEMENT in
 ```
@@ -306,8 +307,19 @@ R1(config-if)#ip access-group DENY_SSH_FROM_SALES_TO_MANAGEMENT in
 
 *Политика 2. Сеть Sales не имеет доступа к IP-адресам в сети Management с помощью любого веб-протокола (HTTP/HTTPS). Сеть Sales также не имеет доступа к интерфейсам R1 с помощью любого веб-протокола. Разрешён весь другой веб-трафик (обратите внимание — Сеть Sales  может получить доступ к интерфейсу Loopback 1 на R1).*
 
+Нужно создать access-list с первым правилом, запрещающим пакеты с ip источника, соответствующего диапазону сети Sales (10.40.0.0/24), ip назначения, соответствующего диапазону сети Management (10.20.0.0/24), протоколом tcp и портами 80 и 443. И затем применить его на интерфейсе GigabitEthernet0/1.40 для входящего траффика. Второе правило будет запрещать пакеты к хосту 10.20.0.1 по протоколу tcp и портам 80 и 443. Третье правило будет запрещать пакеты к хосту 10.30.0.1 по протоколу tcp и портам 80 и 443. Четвертое правило будет запрещать пакеты к хосту 10.40.0.1 по протоколу tcp и портам 80 и 443.
 
-
+```
+R1(config)#ip access-list extended DENY_HTTP_HTTPS_FROM_SALES_TO_MANAGEMENT_AND_R1
+R1(config-std-nacl)#deny tcp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 eq range 80 443
+R1(config-std-nacl)#deny tcp any host 10.20.0.1 eq range 80 443
+R1(config-std-nacl)#deny tcp any host 10.30.0.1 eq range 80 443
+R1(config-std-nacl)#deny tcp any host 10.40.0.1 eq range 80 443
+R1(config-std-nacl)#permit any any
+R1(config)#GigabitEthernet0/1.40
+R1(config)#GigabitEthernet0/1.40
+R1(config-if)#ip access-group DENY_HTTP_HTTPS_FROM_SALES_TO_MANAGEMENT_AND_R1 in
+```
 
 4. Политика3. Сеть Sales не может отправлять эхо-запросы ICMP в сети Operations или Management. Разрешены эхо-запросы ICMP к другим адресатам. 
 5. Политика 4: Cеть Operations  не может отправлять ICMP эхозапросы в сеть Sales. Разрешены эхо-запросы ICMP к другим адресатам. 
