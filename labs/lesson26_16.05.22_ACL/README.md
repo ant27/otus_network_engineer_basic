@@ -264,7 +264,7 @@ R1(config)#ip http authentication local
 ![](net_topology_new.png)
 
 
-Установим на Сервере адрес 10.20.0.5 255.255.255.0 и настроим S1:
+Установим на Сервере PT адрес 10.20.0.5 255.255.255.0 default gateway 10.20.0.1, а также настроим S1:
 
 ```
 S1(config)#interface f0/2
