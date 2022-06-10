@@ -407,7 +407,34 @@ Extended IP access list DENY_ICMP_FROM_SALES_TO_MANAGEMENT_AND_OPERATIONS
 ```
 R1(config)#ip access-list extended DENY_ICMP_FROM_OPERATIONS_TO_SALES
 R1(config-std-nacl)#deny icmp 10.30.0.0 0.0.0.255 10.40.0.0 0.0.0.255
-R1(config-std-nacl)#permit any any
-R1(config)#GigabitEthernet0/1.30
+R1(config-std-nacl)#permit ip any any
+R1(config)#int GigabitEthernet0/1.30
 R1(config-if)#ip access-group DENY_ICMP_FROM_OPERATIONS_TO_SALES in
 ```
+
+Проверка настроенных правил: до применения правил от PC-A, включенного в сеть Operations (10.30.0.10) пинги проходили на все адреса из сети Sales (10.40.0.0), после применения не проходят. Проходят пинги до сети Management (10.20.0.0) и до loopback интерфейса R1 172.16.1.1.
+
+```
+R1#show access-lists 
+Extended IP access list DENY_SSH_FROM_SALES_TO_MANAGEMENT
+    10 deny tcp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 eq 22 (12 match(es))
+    20 permit ip any any (67 match(es))
+Extended IP access list DENY_HTTP_HTTPS_FROM_SALES_TO_MANAGEMENT_AND_R1
+    10 deny tcp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 eq www (46 match(es))
+    20 deny tcp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 eq 443
+    30 deny tcp any host 10.20.0.1 eq www
+    40 deny tcp any host 10.20.0.1 eq 443
+    50 deny tcp any host 10.30.0.1 eq www
+    60 deny tcp any host 10.30.0.1 eq 443
+    70 deny tcp any host 10.40.0.1 eq www
+    80 deny tcp any host 10.40.0.1 eq 443
+    90 permit ip any any
+Extended IP access list DENY_ICMP_FROM_SALES_TO_MANAGEMENT_AND_OPERATIONS
+    10 deny icmp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 (4 match(es))
+    20 deny icmp 10.40.0.0 0.0.0.255 10.30.0.0 0.0.0.255 (4 match(es))
+    30 permit ip any any (8 match(es))
+Extended IP access list DENY_ICMP_FROM_OPERATIONS_TO_SALES
+    10 deny icmp 10.30.0.0 0.0.0.255 10.40.0.0 0.0.0.255 (8 match(es))
+    20 permit ip any any (12 match(es))
+```
+    
