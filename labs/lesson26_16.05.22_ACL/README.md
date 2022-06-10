@@ -178,10 +178,6 @@ S2(config-if)#switchport trunk allowed vlan 20,30,40,1000
 S2(config-if)#switchport trunk native vlan 1000
 S1(config-if)#no shut
 ```
-- Проверка выполненных настроек
-
-show interfaces trunk
-
 ### 3. Настройка интерфейсов маршрутизаторов
 
 #### 3.1. Настройка маршрутизатора R1 как router-on-stick.
