@@ -264,8 +264,7 @@ R1(config)#ip http authentication local
 ![](net_topology2.png)
 
 
-и установим на нем адрес 192.168.0.2 255.255.255.0.
-Настроим
+Установим на Сервере адрес 192.168.0.2 255.255.255.0 и настроим маршрутизатор:
 
 ```
 R1(config)#interface g0/0
@@ -303,6 +302,18 @@ R1(config-std-nacl)#permit any any
 R1(config)#GigabitEthernet0/1.40
 R1(config-if)#ip access-group DENY_SSH_FROM_SALES_TO_MANAGEMENT in
 ```
+
+Проверка настроенных правил: до применения правил от PC-B, включенного в сеть Sales (10.40.0.10) ping и ssh до 10.20.0.1 проходят, после применения проходит только ping.
+
+```
+R1#show access-lists 
+Extended IP access list DENY_SSH_FROM_SALES_TO_MANAGEMENT
+    10 deny tcp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 eq 22 (12 match(es))
+    20 permit ip any any (4 match(es))
+```
+
+Как видно из вывода команды, ACL сработал.
+
 #### 8.1. Политика 2
 
 *Политика 2. Сеть Sales не имеет доступа к IP-адресам в сети Management с помощью любого веб-протокола (HTTP/HTTPS). Сеть Sales также не имеет доступа к интерфейсам R1 с помощью любого веб-протокола. Разрешён весь другой веб-трафик (обратите внимание — Сеть Sales  может получить доступ к интерфейсу Loopback 1 на R1).*
