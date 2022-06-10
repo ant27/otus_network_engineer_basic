@@ -301,8 +301,8 @@ S1(config-if)#no sh
 ```
 R1(config)#ip access-list extended DENY_SSH_FROM_SALES_TO_MANAGEMENT
 R1(config-std-nacl)#deny tcp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 eq 22
-R1(config-std-nacl)#permit any any
-R1(config)#GigabitEthernet0/1.40
+R1(config-std-nacl)#permit ip any any
+R1(config)#int GigabitEthernet0/1.40
 R1(config-if)#ip access-group DENY_SSH_FROM_SALES_TO_MANAGEMENT in
 ```
 
@@ -334,11 +334,30 @@ R1(config-std-nacl)#deny tcp any host 10.30.0.1 eq 80
 R1(config-std-nacl)#deny tcp any host 10.30.0.1 eq 443
 R1(config-std-nacl)#deny tcp any host 10.40.0.1 eq 80
 R1(config-std-nacl)#deny tcp any host 10.40.0.1 eq 443
-R1(config-std-nacl)#permit any any
-R1(config)#GigabitEthernet0/1.40
+R1(config-std-nacl)#permit ip any any
+R1(config)#int GigabitEthernet0/1.40
 R1(config-if)#no ip access-group DENY_SSH_FROM_SALES_TO_MANAGEMENT in
 R1(config-if)#ip access-group DENY_HTTP_HTTPS_FROM_SALES_TO_MANAGEMENT_AND_R1 in
 ```
+Проверка настроенных правил: до применения правил от PC-B, включенного в сеть Sales (10.40.0.10) http-подключение до сервера PT (10.20.0.5) проходило, после применения нет. 
+
+```
+R1#show access-lists    
+Extended IP access list DENY_SSH_FROM_SALES_TO_MANAGEMENT
+    10 deny tcp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 eq 22 (12 match(es))
+    20 permit ip any any (67 match(es))
+Extended IP access list DENY_HTTP_HTTPS_FROM_SALES_TO_MANAGEMENT_AND_R1
+    10 deny tcp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 eq www (46 match(es))
+    20 deny tcp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 eq 443
+    30 deny tcp any host 10.20.0.1 eq www
+    40 deny tcp any host 10.20.0.1 eq 443
+    50 deny tcp any host 10.30.0.1 eq www
+    60 deny tcp any host 10.30.0.1 eq 443
+    70 deny tcp any host 10.40.0.1 eq www
+    80 deny tcp any host 10.40.0.1 eq 443
+    90 permit ip any any
+```
+Как видно из вывода команды show access-lists правило *deny tcp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 eq www* имеет 46 срабатываний.
 
 #### 8.1. Политика 3
 
@@ -351,11 +370,33 @@ R1(config-if)#ip access-group DENY_HTTP_HTTPS_FROM_SALES_TO_MANAGEMENT_AND_R1 in
 R1(config)#ip access-list extended DENY_ICMP_FROM_SALES_TO_MANAGEMENT_AND_OPERATIONS
 R1(config-std-nacl)#deny icmp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255
 R1(config-std-nacl)#deny icmp 10.40.0.0 0.0.0.255 10.30.0.0 0.0.0.255
-R1(config-std-nacl)#permit any any
-R1(config)#GigabitEthernet0/1.40
+R1(config-std-nacl)#permit ip any any
+R1(config)#int GigabitEthernet0/1.40
 R1(config-if)#no ip access-group DENY_HTTP_HTTPS_FROM_SALES_TO_MANAGEMENT_AND_R1 in
 R1(config-if)#ip access-group DENY_ICMP_FROM_SALES_TO_MANAGEMENT_AND_OPERATIONS in
 ```
+Проверка настроенных правил: до применения правил от PC-B, включенного в сеть Sales (10.40.0.10) пинги проходили на все адреса из сетей 10.20.0.0 и 10.30.0.0, после применения нет. Проходят пинги до loopback интерфейса R1 172.16.1.1.
+```
+R1#show access-lists 
+Extended IP access list DENY_SSH_FROM_SALES_TO_MANAGEMENT
+    10 deny tcp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 eq 22 (12 match(es))
+    20 permit ip any any (67 match(es))
+Extended IP access list DENY_HTTP_HTTPS_FROM_SALES_TO_MANAGEMENT_AND_R1
+    10 deny tcp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 eq www (46 match(es))
+    20 deny tcp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 eq 443
+    30 deny tcp any host 10.20.0.1 eq www
+    40 deny tcp any host 10.20.0.1 eq 443
+    50 deny tcp any host 10.30.0.1 eq www
+    60 deny tcp any host 10.30.0.1 eq 443
+    70 deny tcp any host 10.40.0.1 eq www
+    80 deny tcp any host 10.40.0.1 eq 443
+    90 permit ip any any
+Extended IP access list DENY_ICMP_FROM_SALES_TO_MANAGEMENT_AND_OPERATIONS
+    10 deny icmp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 (4 match(es))
+    20 deny icmp 10.40.0.0 0.0.0.255 10.30.0.0 0.0.0.255 (4 match(es))
+    30 permit ip any any (8 match(es))
+```
+
 #### 8.1. Политика 4
 
 *Политика 4: Cеть Operations  не может отправлять ICMP эхозапросы в сеть Sales. Разрешены эхо-запросы ICMP к другим адресатам.*
