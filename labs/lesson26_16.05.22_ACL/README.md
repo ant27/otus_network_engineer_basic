@@ -258,19 +258,22 @@ R1(config)#ip http authentication local
 ```
 *Примечание: команда ip http не реализована в packet tracer.
 
-Нужно что-то придумывать...Подключим к интерфейсу G0/0 R1 сервер PT.
+Нужно что-то придумывать...Подключим к интерфейсу f0/2 S1 сервер PT.
 Топология сети станет следующей:
 
 ![](net_topology2.png)
 
 
-Установим на Сервере адрес 192.168.0.2 255.255.255.0 и настроим маршрутизатор:
+Установим на Сервере адрес 10.20.0.5 255.255.255.0 и настроим S1:
 
 ```
-R1(config)#interface g0/0
-R1(config-if)#ip address 192.168.0.1 255.255.255.0
-R1(config-if)#no sh
+S1(config)#interface f0/2
+S1(config-if)#switchport mode access 
+S1(config-if)#switchport access vlan 20
+S1(config-if)#no sh
 ```
+
+Таким образом мы будем иметь в Management сети http-сервер c адресом 10.20.0.5.
 
 ### 6. Настройка PC-A и PC-B
 
