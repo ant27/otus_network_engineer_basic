@@ -72,12 +72,21 @@ R1(config-sacl)#permit 192.168.0.0 0.0.255.255
 ```
 R1(config)#ip nat pool NAT-POOL 209.165.200.226 209.165.200.240 netmask 255.255.255.224
 ```
-
+Затем настраиваем трансляцию
+```
 R1(config)#ip nat inside source list INSIDE-NET pool NAT-POOL
+```
+### Статический PAT.
+
+Чтобы настроить PAT нужно просто к текущиим командам настройки статического и динамического NAT добавить ключевое слово overload
 
 
-
-
+```
+ip nat inside source list 1 interface serial 0/1/0 overload
+```
+```
+R1(config)#ip nat inside source list INSIDE-NET pool NAT-POOL overload
+```
 
 show ip nat translations
 show ip nat statistics
