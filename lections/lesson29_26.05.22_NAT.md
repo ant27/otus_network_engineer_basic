@@ -33,9 +33,21 @@
 
 ## Формат команд для настройки NAT
 
-### Настройка статического NAT
+### Настройка интерфейсов как inside и outside
+
+Для работы NAT прежде всего надо настроить интерфейсы, которые будут участвовать в NAT преобразовании. Интерфейс маршрутизатора, подключенный к внутренней сети будет inside, к глобальной - outside.
 ```
-ip nat  inside source  static  <Inside Local IP>  <Inside Global IP>
+R1(config)#interface fa0/0
+R1(config-if)#ip nat outside
+ ``` 
+```
+R1(config)#interface fa0/1
+R1(config-if)#ip nat inside
+``` 
+
+### Cтатический NAT
+```
+R1(config)#ip nat  inside source  static  <Inside Local IP>  <Inside Global IP>
 ```
 - **ip nat** - начало команды (всегда одинаковое) 	
 - **inside source** - данные параметры команды означают, что транслируются адреса источника пакетов, приходящих на интерфейс, настроенный как ip nat inside.
@@ -43,5 +55,29 @@ ip nat  inside source  static  <Inside Local IP>  <Inside Global IP>
 
 Пример
 ```
-ip nat inside source static 192.168.10.254 209.165.201.5
+R1(config)#ip nat inside source static 192.168.10.254 209.165.201.5
 ```
+
+
+### Динамический NAT
+
+- Сначала нужно определить диапазон адресов, подлежащих трансляции с помощью ACL:
+```
+R1(config)#ip access-list standard INSIDE-NET
+R1(config-sacl)#permit 192.168.0.0 0.0.255.255
+```
+
+-Затем нужно настроить пул глобальных адресов
+
+```
+R1(config)#ip nat pool NAT-POOL 209.165.200.226 209.165.200.240 netmask 255.255.255.224
+```
+
+R1(config)#ip nat inside source list INSIDE-NET pool NAT-POOL
+
+
+
+
+
+show ip nat translations
+show ip nat statistics
