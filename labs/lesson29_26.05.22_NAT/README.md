@@ -246,3 +246,20 @@ icmp 209.165.200.227:50192.168.1.11:50    209.165.200.1:50   209.165.200.1:50
 
 ## 3. Настройка и проверка статического PAT по адресу интерфейса.
 
+- Для настройки статического PAT необходимо сначала удалить старое правило преобразования NAT
+
+```
+R1(config)#no ip nat inside source list LOCAL_NET pool GLOBAL_POOL overload
+```
+
+Также нужно удалить NAT пул
+
+```
+R1(config)#no ip nat pool GLOBAL_POOL overload
+```
+
+- И добавить новое правило статического PAT через интерфейс G0/0
+
+```
+R1(config)#no ip nat inside source list LOCAL_NET interface G0/0 overload
+```
