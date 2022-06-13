@@ -256,9 +256,15 @@ S2(config)#ntp server 10.22.0.1
 ```
 - Подождем нектрое время и проверим синхронизацию (показано для S1 на S2 аналогично)
 ```
+S1#show clock 
+0:13:57.793 UTC Mon Jan 1 2035
+```
+```
 S1#show clock detail 
 0:9:21.388 UTC Mon Jan 1 2035
 Time source is NTP
+```
+```
 S1#show ntp status 
 Clock is synchronized, stratum 5, reference is 10.22.0.1
 nominal freq is 250.0000 Hz, actual freq is 249.9990 Hz, precision is 2**24
@@ -270,7 +276,8 @@ S1#show ntp associations
 address         ref clock       st   when     poll    reach  delay          offset            disp
 *~10.22.0.1     127.127.1.1     4    14       16      17     0.00           1.00              0.12
  * sys.peer, # selected, + candidate, - outlyer, x falseticker, ~ configured
-S1#show ntp sta
+```
+```
 S1#show ntp status 
 Clock is synchronized, stratum 5, reference is 10.22.0.1
 nominal freq is 250.0000 Hz, actual freq is 249.9990 Hz, precision is 2**24
@@ -279,3 +286,4 @@ clock offset is 1.00 msec, root delay is 0.00  msec
 root dispersion is 18.70 msec, peer dispersion is 0.12 msec.
 loopfilter state is 'CTRL' (Normal Controlled Loop), drift is - 0.000001193 s/s system poll interval is 4, last update was 14 sec ago.
 ```
+Как мы видим, часы коммутаторов успешно синхронизировались со временем машрутизатора R1
