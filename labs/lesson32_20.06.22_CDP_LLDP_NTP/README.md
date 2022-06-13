@@ -109,6 +109,8 @@ R1(config)#interface loopback 1
 R1(config-if)#ip address 172.16.1.1 255.255.255.0
 R1(config-if)#no sh
 
+```
+
 ## 2.2. Настройка коммутатора S1
 
 ```
