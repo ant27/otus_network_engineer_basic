@@ -98,3 +98,31 @@ exit
 ```
 ## 2. Настройка интерфейсов маршрутизаторов и коммутаторов
 
+
+## 2.1. Настройка маршрутизатора R1
+
+```
+R1(config)#interface g0/1
+R1(config-if)#ip address 10.22.0.1 255.255.255.0
+R1(config-if)#no sh
+R1(config)#interface loopback 1
+R1(config-if)#ip address 172.16.1.1 255.255.255.0
+R1(config-if)#no sh
+
+## 2.2. Настройка коммутатора S1
+
+```
+S1(config)#interface vlan 1
+S1(config-if)#ip address 10.22.0.2 255.255.255.0
+S1(config-if)#no sh
+S1(config)#ip default-gateway 10.22.0.1
+```
+
+## 2.3. Настройка коммутатора S2
+
+```
+S2(config)#interface vlan 1
+S2(config-if)#ip address 10.22.0.3 255.255.255.0
+S2(config-if)#no sh
+S2(config)#ip default-gateway 10.22.0.1
+```
