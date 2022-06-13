@@ -99,7 +99,7 @@ exit
 ## 2. Настройка интерфейсов маршрутизаторов и коммутаторов
 
 
-## 2.1. Настройка маршрутизатора R1
+### 2.1. Настройка маршрутизатора R1
 
 ```
 R1(config)#interface g0/1
@@ -111,7 +111,7 @@ R1(config-if)#no sh
 
 ```
 
-## 2.2. Настройка коммутатора S1
+### 2.2. Настройка коммутатора S1
 
 ```
 S1(config)#interface vlan 1
@@ -120,11 +120,110 @@ S1(config-if)#no sh
 S1(config)#ip default-gateway 10.22.0.1
 ```
 
-## 2.3. Настройка коммутатора S2
+### 2.3. Настройка коммутатора S2
 
 ```
 S2(config)#interface vlan 1
 S2(config-if)#ip address 10.22.0.3 255.255.255.0
 S2(config-if)#no sh
 S2(config)#ip default-gateway 10.22.0.1
+```
+
+## 3. Обнаружение сетевых ресурсов с помощью протокола CDP
+
+- Проверим, на скольких интерфейсах включено CDP:
+
+```
+R1#show cdp interface 
+Vlan1 is administratively down, line protocol is down
+  Sending CDP packets every 60 seconds
+  Holdtime is 180 seconds
+GigabitEthernet0/0 is administratively down, line protocol is down
+  Sending CDP packets every 60 seconds
+  Holdtime is 180 seconds
+GigabitEthernet0/1 is up, line protocol is up
+  Sending CDP packets every 60 seconds
+  Holdtime is 180 seconds
+GigabitEthernet0/2 is administratively down, line protocol is down
+  Sending CDP packets every 60 seconds
+  Holdtime is 180 seconds
+```
+Как мы видим, CDP включен на всех интерфейсах. 
+
+- Посмотрим обнаруженных соседей:
+```
+R1#show cdp neighbors 
+Capability Codes: R - Router, T - Trans Bridge, B - Source Route Bridge
+                  S - Switch, H - Host, I - IGMP, r - Repeater, P - Phone
+Device ID    Local Intrfce   Holdtme    Capability   Platform    Port ID
+S1           Gig 0/1          134            S       2960        Fas 0/5
+```
+Как мы видим, к порту Fa 0/5 подключен коммутатор S1.
+
+- Посмотрим детальную информацию о нем:
+```
+R1#show cdp entry S1
+
+Device ID: S1
+Entry address(es): 
+  IP address : 10.22.0.2
+Platform: cisco 2960, Capabilities: Switch
+Interface: GigabitEthernet0/1, Port ID (outgoing port): FastEthernet0/5
+Holdtime: 154
+
+Version :
+Cisco IOS Software, C2960 Software (C2960-LANBASE-M), Version 12.2(25)FX, RELEASE SOFTWARE (fc1)
+Copyright (c) 1986-2005 by Cisco Systems, Inc.
+Compiled Wed 12-Oct-05 22:05 by pt_team
+
+advertisement version: 2
+Duplex: full
+```
+- Отключим CDP на всех устройствах (показано для R1, для остальных аналогично)
+```
+R1(config)#no cdp run 
+```
+## 3. Обнаружение сетевых ресурсов с помощью протокола LLDP
+
+- Включим LLDP на устройствах (показано для R1, для остальных аналогично)
+```
+R1(config)#lldp run
+```
+
+- Посмотрим обнаруженных соседей:
+```
+R1#show lldp neighbors 
+Capability codes:
+    (R) Router, (B) Bridge, (T) Telephone, (C) DOCSIS Cable Device
+    (W) WLAN Access Point, (P) Repeater, (S) Station, (O) Other
+Device ID           Local Intf     Hold-time  Capability      Port ID
+S1                  Gig0/1         120        B               Fa0/5
+
+Total entries displayed: 1
+```
+- Посмотрим детальную информацию о них:
+```
+R1#show lldp neighbors detail 
+------------------------------------------------
+Chassis id: 0060.3EBE.5005
+Port id: Fa0/5
+Port Description: FastEthernet0/5
+System Name: S1
+System Description:
+Cisco IOS Software, C2960 Software (C2960-LANBASE-M), Version 12.2(25)FX, RELEASE SOFTWARE (fc1)
+Copyright (c) 1986-2005 by Cisco Systems, Inc.
+Compiled Wed 12-Oct-05 22:05 by pt_team
+Time remaining: 90 seconds
+System Capabilities: B
+Enabled Capabilities: B
+Management Addresses - not advertised
+Auto Negotiation - supported, enabled
+Physical media capabilities:
+    100baseT(FD)
+    100baseT(HD)
+    1000baseT(HD)
+Media Attachment Unit type: 10
+Vlan ID: 1
+
+Total entries displayed: 1
 ```
