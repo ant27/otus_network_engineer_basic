@@ -255,10 +255,7 @@ S1(config)#ntp server 10.22.0.1
 S2(config)#ntp server 10.22.0.1
 ```
 - Подождем нектрое время и проверим синхронизацию (показано для S1 на S2 аналогично)
-```
-S1#show clock 
-0:13:57.793 UTC Mon Jan 1 2035
-```
+
 ```
 S1#show clock detail 
 0:9:21.388 UTC Mon Jan 1 2035
