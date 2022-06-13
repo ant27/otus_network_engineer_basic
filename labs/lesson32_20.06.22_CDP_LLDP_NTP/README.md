@@ -227,3 +227,55 @@ Vlan ID: 1
 
 Total entries displayed: 1
 ```
+
+### 5. Настройка и проверка NTP
+
+- Установим время на R1 (пусть оно будет будущим, для того чтобы сразу было понятно, когда другие устройства синхронизируются с него)
+```
+R1#clock set 00:00:00 1 JANUA 2035
+R1#show clock
+0:0:11.251 UTC Mon Jan 1 2035
+```
+
+- Сделаем R1 сервером NTP уровня 4
+
+```
+R1(config)#ntp master 4
+```
+- Проверим текущее время на S1 и S2 (до настройки на них синхронизации NTP)
+```
+S1#show clock 
+*1:9:39.400 UTC Mon Mar 1 1993
+S2#show clock 
+*1:9:58.509 UTC Mon Mar 1 1993
+```
+- Настроим синхронизацию NTP на S1 и S2 c R1
+```
+S1(config)#ntp server 10.22.0.1
+S2(config)#ntp server 10.22.0.1
+```
+- Подождем нектрое время и проверим синхронизацию (показано для S1 на S2 аналогично)
+```
+S1#show clock detail 
+0:9:21.388 UTC Mon Jan 1 2035
+Time source is NTP
+S1#show ntp status 
+Clock is synchronized, stratum 5, reference is 10.22.0.1
+nominal freq is 250.0000 Hz, actual freq is 249.9990 Hz, precision is 2**24
+reference time is FFFFFFFFFDC22B11.000003A0 (0:10:57.928 UTC Mon Jan 1 2035)
+clock offset is 0.00 msec, root delay is 0.00  msec
+root dispersion is 20.62 msec, peer dispersion is 0.24 msec.
+loopfilter state is 'CTRL' (Normal Controlled Loop), drift is - 0.000001193 s/s system poll interval is 4, last update was 16 sec ago.
+S1#show ntp associations 
+address         ref clock       st   when     poll    reach  delay          offset            disp
+*~10.22.0.1     127.127.1.1     4    14       16      17     0.00           1.00              0.12
+ * sys.peer, # selected, + candidate, - outlyer, x falseticker, ~ configured
+S1#show ntp sta
+S1#show ntp status 
+Clock is synchronized, stratum 5, reference is 10.22.0.1
+nominal freq is 250.0000 Hz, actual freq is 249.9990 Hz, precision is 2**24
+reference time is FFFFFFFFFDC22A91.00000280 (0:8:49.640 UTC Mon Jan 1 2035)
+clock offset is 1.00 msec, root delay is 0.00  msec
+root dispersion is 18.70 msec, peer dispersion is 0.12 msec.
+loopfilter state is 'CTRL' (Normal Controlled Loop), drift is - 0.000001193 s/s system poll interval is 4, last update was 14 sec ago.
+```
