@@ -22,3 +22,14 @@
 5. Ethernet Security
 6. NAT
 
+### Планирование VLAN ###
+
+Предполагается, что будут следующие VLAN:
+1. 1000 - ParkingLot
+2. 999 - Native
+3. 10 - Management
+4. 20 - Servers
+5. 30 - Users
+6. 40 - Telephones
+7. 50 - Technology_service_1 (PIVP)
+8. 60 - Technology_service_2 (SPPI)
