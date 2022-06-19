@@ -25,7 +25,7 @@
 ### Планирование VLAN ###
 
 Предполагается, что будут следующие VLAN:
-1. 1000 - ParkingLot
+1. 333 - ParkingLot
 2. 999 - Native
 3. 10 - Management
 4. 20 - Servers
@@ -33,3 +33,69 @@
 6. 40 - Telephones
 7. 50 - Technology_service_1 (PIVP)
 8. 60 - Technology_service_2 (SPPI)
+
+### Настройка коммутаторов L2 кольца ###
+
+Необходимо настроить коммутаторы с помощьью протоклов LACP и STP для построения отказоустойчивой СПД.
+
+Настройка VLAN (одинаково для всех коммутаторов)
+```
+SW1-OPTICAL(config)#vlan 333
+SW1-OPTICAL(config-vlan)#name ParkingLot
+SW1-OPTICAL(config-vlan)#exit
+SW1-OPTICAL(config)#vlan 999
+SW1-OPTICAL(config-vlan)#name Native
+SW1-OPTICAL(config-vlan)#exit
+SW1-OPTICAL(config)#vlan 10
+SW1-OPTICAL(config-vlan)#name Management
+SW1-OPTICAL(config-vlan)#exit
+SW1-OPTICAL(config)#vlan 20
+SW1-OPTICAL(config-vlan)#name Servers
+SW1-OPTICAL(config-vlan)#exit
+SW1-OPTICAL(config)#vlan 30
+SW1-OPTICAL(config-vlan)#name Users
+SW1-OPTICAL(config-vlan)#exit
+SW1-OPTICAL(config)#vlan 40
+SW1-OPTICAL(config-vlan)#name Telephones
+SW1-OPTICAL(config-vlan)#exit
+SW1-OPTICAL(config)#vlan 50
+SW1-OPTICAL(config-vlan)#name Technology_service_1
+SW1-OPTICAL(config-vlan)#exit
+SW1-OPTICAL(config)#vlan 60
+SW1-OPTICAL(config-vlan)#name Technology_service_2
+SW1-OPTICAL(config-vlan)#exit
+```
+- Внесение всех портов в ParkingLot и их выключение.
+```
+SW1-OPTICAL(config)#interface range fa0/1 - 24, Gi0/1 - 2
+SW1-OPTICAL(config-if)#switchport mode access
+SW1-OPTICAL(config-if)#switchport access vlan 333
+SW1-OPTICAL(config-if)#shut
+```
+- Настройка транкового EtherChannell
+```
+SW1-OPTICAL(config)#interface port-channel 1
+SW1-OPTICAL(config-if)#description ether-chanell_to_SW2-OPTICAL
+SW1-OPTICAL(config-if)#switchport mode trunk
+SW1-OPTICAL(config-if)#switchport trunk allowed vlan 10,20,30,40,50,60,333
+SW1-OPTICAL(config-if)#switchport trunk native vlan 333
+SW1-OPTICAL(config)#interface port-channel 2
+SW1-OPTICAL(config-if)#description ether-chanell_to_SW3-OPTICAL
+SW1-OPTICAL(config-if)#switchport mode trunk
+SW1-OPTICAL(config-if)#switchport trunk allowed vlan 10,20,30,40,50,60,333
+SW1-OPTICAL(config-if)#switchport trunk native vlan 333
+```
+
+Включение портов коммутаторов в EtherChannell
+```
+SW1-OPTICAL(config)#interface range fa0/1 - 2
+SW1-OPTICAL(config-if)#channel-group 1 mode active
+SW1-OPTICAL(config-if)#no shut
+SW1-OPTICAL(config)#interface range fa0/3 - 4
+SW1-OPTICAL(config-if)#channel-group 2 mode active
+SW1-OPTICAL(config-if)#no shut
+```
+
+
+Настройка транковых портов коммутаторов
+
