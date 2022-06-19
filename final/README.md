@@ -31,8 +31,9 @@
 4. 20 - Servers
 5. 30 - Users
 6. 40 - Telephones
-7. 50 - Technology_service_1 (PIVP)
-8. 60 - Technology_service_2 (SPPI)
+8. 50 - Technology_service_1 (PIVP)
+9. 60 - Technology_service_2 (SPPI)
+10. 70  - ISP-1
 
 ### Настройка коммутаторов L2 кольца ###
 
@@ -64,6 +65,9 @@ SW1-OPTICAL(config-vlan)#exit
 SW1-OPTICAL(config)#vlan 60
 SW1-OPTICAL(config-vlan)#name Technology_service_2
 SW1-OPTICAL(config-vlan)#exit
+SW1-OPTICAL(config)#vlan 70
+SW1-OPTICAL(config-vlan)#name ISP-1
+SW1-OPTICAL(config-vlan)#exit
 ```
 - Внесение всех портов в ParkingLot и их выключение.
 ```
@@ -77,7 +81,7 @@ SW1-OPTICAL(config-if)#shut
 SW1-OPTICAL(config)#interface port-channel 1
 SW1-OPTICAL(config-if)#description ether-chanell_to_SW2-OPTICAL
 SW1-OPTICAL(config-if)#switchport mode trunk
-SW1-OPTICAL(config-if)#switchport trunk allowed vlan 10,20,30,40,50,60,333
+SW1-OPTICAL(config-if)#switchport trunk allowed vlan 10,20,30,40,50,60,70,333
 SW1-OPTICAL(config-if)#switchport trunk native vlan 333
 SW1-OPTICAL(config)#interface port-channel 2
 SW1-OPTICAL(config-if)#description ether-chanell_to_SW3-OPTICAL
