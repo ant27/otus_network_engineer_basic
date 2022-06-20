@@ -91,6 +91,47 @@ SW1-OPTICAL(config-if)#switchport trunk allowed vlan 10,20,30,40,50,60,333
 SW1-OPTICAL(config-if)#switchport trunk native vlan 333
 ```
 
+Соберем все в единый набор правил для применения на всех коммутаторах разом
+```
+vlan 333
+name ParkingLot
+exit
+vlan 999
+name Native
+exit
+vlan 10
+name Management
+exit
+vlan 20
+name Servers
+exit
+vlan 30
+name Users
+exit
+vlan 40
+name Telephones
+exit
+vlan 50
+name Technology_service_1
+exit
+vlan 60
+name Technology_service_2
+exit
+vlan 70
+name ISP-1
+exit
+interface port-channel 1
+description ether-chanell_to_SW2-OPTICAL
+switchport mode trunk
+switchport trunk allowed vlan 10,20,30,40,50,60,70,333
+switchport trunk native vlan 333
+interface port-channel 2
+description ether-chanell_to_SW3-OPTICAL
+switchport mode trunk
+switchport trunk allowed vlan 10,20,30,40,50,60,333
+switchport trunk native vlan 333
+```
+
 Включение портов коммутаторов в EtherChannell
 ```
 SW1-OPTICAL(config)#interface range fa0/1 - 2
@@ -102,5 +143,4 @@ SW1-OPTICAL(config-if)#no shut
 ```
 
 
-Настройка транковых портов коммутаторов
 
