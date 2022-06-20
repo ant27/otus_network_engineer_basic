@@ -93,6 +93,7 @@ SW1-OPTICAL(config-if)#switchport trunk native vlan 333
 
 Соберем все в единый набор правил для применения на всех коммутаторах разом
 ```
+conf t
 vlan 333
 name ParkingLot
 exit
@@ -130,6 +131,8 @@ description ether-chanell_to_SW3-OPTICAL
 switchport mode trunk
 switchport trunk allowed vlan 10,20,30,40,50,60,333
 switchport trunk native vlan 333
+end
+wr
 ```
 
 Включение портов коммутаторов в EtherChannell
