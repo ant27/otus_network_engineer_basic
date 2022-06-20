@@ -150,5 +150,21 @@ SW1-OPTICAL(config-if)#channel-group 2 mode active
 SW1-OPTICAL(config-if)#no shut
 ```
 
+```
+SW2-OPTICAL(config)#interface range fa0/1 - 2
+SW2-OPTICAL(config-if)#channel-group 1 mode active
+SW2-OPTICAL(config-if)#no shut
+SW2-OPTICAL(config)#interface range fa0/3 - 4
+SW2-OPTICAL(config-if)#channel-group 3 mode active
+SW2-OPTICAL(config-if)#no shut
+```
 
+```
+SW3-OPTICAL(config)#interface range fa0/1 - 2
+SW3-OPTICAL(config-if)#channel-group 1 mode active
+SW3-OPTICAL(config-if)#no shut
+SW3-OPTICAL(config)#interface range fa0/3 - 4
+SW3-OPTICAL(config-if)#channel-group 3 mode active
+SW3-OPTICAL(config-if)#no shut
+```
 
