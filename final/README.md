@@ -26,6 +26,14 @@
 ### Планирование VLAN ###
 
 Предполагается, что будут следующие VLAN:
+
+| VLAN                 | Номер      |   Сеть     |  Маска подсети   | Шлюз по умолчанию |
+| -------------------- | :--------: | :--------- | :--------------: | :---------------- |
+| ParkingLot           | 333        | - |  -   | -      | 
+| ParkingLot           | 999        | - |  -   | -     | 
+| Management           | 10         | 10.10.10.0 |  255.255.255.0   | 10.10.10.100      | 
+
+
 1. 333 - ParkingLot
 2. 999 - Native
 3. 10 - Management
@@ -216,4 +224,22 @@ SW3-OPTICAL(config-if)#no shut
 
 - Настройка маршрутизаторов
 
-
+R1(config)#interface GigabitEthernet0/1.10
+R1(config-subif)#description network_management_vlan
+R1(config-subif)#encapsulation dot1Q 10
+R1(config-subif)#ip address 192.168.10.1 255.255.255.0
+R1(config-subif)#end
+R1(config)#interface GigabitEthernet0/1.20
+R1(config-subif)#description sales_vlan
+R1(config-subif)#encapsulation dot1Q 20
+R1(config-subif)#ip address 192.168.20.1 255.255.255.0
+R1(config-subif)#end
+R1(config)#interface GigabitEthernet0/1.30
+R1(config-subif)#description operations_vlan
+R1(config-subif)#encapsulation dot1Q 30
+R1(config-subif)#ip address 192.168.30.1 255.255.255.0
+R1(config-subif)#end
+R1(config)#interface GigabitEthernet0/1.1000
+R1(config-subif)#description native_vlan
+R1(config-subif)#encapsulation dot1Q 1000 native
+R1(config-subif)#end
