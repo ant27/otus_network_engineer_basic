@@ -197,4 +197,6 @@ SW3-OPTICAL(config-if)#no shut
 
 ### Настройка роутеров на палке для работы сервисов Technology_service_1 (PIVP) и Technology_service_2 (SPPI) ### 
 
+Для работы двух производственных (не административных) сервисов нужно обеспечить связность маршрутизаторов TechService1-RT, TechService2-RT, TechService1-2-RT и серверов "TCP SERVER ON PORT 8000", FTP и "FTP, TCP CLIENT". Также все три сервера должны иметь доступ к NTP-серверу, а сервер FTP должен иметь исходящий доступ к интернету. 
+
 
