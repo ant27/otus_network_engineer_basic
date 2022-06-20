@@ -38,9 +38,9 @@
 
 ### Настройка коммутаторов L2 кольца ###
 
-Необходимо настроить коммутаторы с помощьью протоклов LACP и STP для построения отказоустойчивой СПД.
+Необходимо настроить коммутаторы с помощьью протоколов LACP и STP для построения отказоустойчивой СПД.
 
-Настройка VLAN (одинаково для всех коммутаторов)
+- Настройка VLAN (одинаково для всех коммутаторов)
 ```
 SW1-OPTICAL(config)#vlan 333
 SW1-OPTICAL(config-vlan)#name ParkingLot
@@ -99,7 +99,7 @@ SW1-OPTICAL(config-if)#switchport trunk allowed vlan 10,20,30,40,50,60,333
 SW1-OPTICAL(config-if)#switchport trunk native vlan 333
 ```
 
-Соберем все в единый набор правил для применения на коммутаторах SW1, SW2
+- Соберем все в единый набор правил для применения на коммутаторах SW1, SW2
 ```
 conf t
 vlan 333
@@ -190,4 +190,11 @@ SW3-OPTICAL(config-if)#switchport mode trunk
 SW3-OPTICAL(config-if)#channel-group 3 mode active
 SW3-OPTICAL(config-if)#no shut
 ```
+
+- Настройка STP для оптимизации путей для траффика разных VLAN
+
+Раздел в разработке
+
+### Настройка роутеров на палке для работы сервисов Technology_service_1 (PIVP) и Technology_service_2 (SPPI) ### 
+
 
