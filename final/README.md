@@ -121,6 +121,11 @@ exit
 vlan 70
 name ISP-1
 exit
+interface range fa0/1 - 24, Gi0/1 - 2
+switchport mode access
+switchport access vlan 333
+shut
+exit
 interface port-channel 1
 description ether-chanell_to_SW2-OPTICAL
 switchport mode trunk
