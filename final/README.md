@@ -160,27 +160,33 @@ switchport trunk native vlan 333
 Включение портов коммутаторов в EtherChannell
 ```
 SW1-OPTICAL(config)#interface range fa0/1 - 2
+SW1-OPTICAL(config-if)#switchport mode trunk
 SW1-OPTICAL(config-if)#channel-group 1 mode active
 SW1-OPTICAL(config-if)#no shut
 SW1-OPTICAL(config)#interface range fa0/3 - 4
+SW1-OPTICAL(config-if)#switchport mode trunk
 SW1-OPTICAL(config-if)#channel-group 2 mode active
 SW1-OPTICAL(config-if)#no shut
 ```
 
 ```
 SW2-OPTICAL(config)#interface range fa0/1 - 2
+SW2-OPTICAL(config-if)#switchport mode trunk
 SW2-OPTICAL(config-if)#channel-group 1 mode active
 SW2-OPTICAL(config-if)#no shut
 SW2-OPTICAL(config)#interface range fa0/3 - 4
+SW2-OPTICAL(config-if)#switchport mode trunk
 SW2-OPTICAL(config-if)#channel-group 3 mode active
 SW2-OPTICAL(config-if)#no shut
 ```
 
 ```
 SW3-OPTICAL(config)#interface range fa0/1 - 2
+SW3-OPTICAL(config-if)#switchport mode trunk
 SW3-OPTICAL(config-if)#channel-group 1 mode active
 SW3-OPTICAL(config-if)#no shut
 SW3-OPTICAL(config)#interface range fa0/3 - 4
+SW3-OPTICAL(config-if)#switchport mode trunk
 SW3-OPTICAL(config-if)#channel-group 3 mode active
 SW3-OPTICAL(config-if)#no shut
 ```
