@@ -77,7 +77,7 @@ SW1-OPTICAL(config-if)#switchport mode access
 SW1-OPTICAL(config-if)#switchport access vlan 333
 SW1-OPTICAL(config-if)#shut
 ```
-- Настройка транкового EtherChannell
+- Настройка транкового EtherChannell для SW1--SW2 и SW1--SW3
 ```
 SW1-OPTICAL(config)#interface port-channel 1
 SW1-OPTICAL(config-if)#description ether-chanell_to_SW2-OPTICAL
@@ -90,8 +90,16 @@ SW1-OPTICAL(config-if)#switchport mode trunk
 SW1-OPTICAL(config-if)#switchport trunk allowed vlan 10,20,30,40,50,60,333
 SW1-OPTICAL(config-if)#switchport trunk native vlan 333
 ```
+- Настройка транкового EtherChannell между SW2--SW3
+```
+SW1-OPTICAL(config)#interface port-channel 3
+SW1-OPTICAL(config-if)#description ether-chanell_between_SW2_SW3-OPTICAL
+SW1-OPTICAL(config-if)#switchport mode trunk
+SW1-OPTICAL(config-if)#switchport trunk allowed vlan 10,20,30,40,50,60,333
+SW1-OPTICAL(config-if)#switchport trunk native vlan 333
+```
 
-Соберем все в единый набор правил для применения на всех коммутаторах разом
+Соберем все в единый набор правил для применения на коммутаторах SW1, SW2
 ```
 conf t
 vlan 333
@@ -139,6 +147,15 @@ switchport trunk native vlan 333
 end
 wr
 ```
+- Этот набор дополнительно выполяется на SW2, SW3
+```
+interface port-channel 3
+description ether-chanell_between_SW2_SW3-OPTICAL
+switchport mode trunk
+switchport trunk allowed vlan 10,20,30,40,50,60,333
+switchport trunk native vlan 333
+```
+
 
 Включение портов коммутаторов в EtherChannell
 ```
