@@ -376,12 +376,82 @@ SW2-OPTICAL(config-if)#no sh
 7. Настроить доступ в интернет из сети USERS по PAT.
 8. Настройка отказоустойчивости интернета.
 
+- Настройка VLAN на коммутаторах SW1-CORP и SW2-CORP (используем предыдущие наработки)
+```
+conf t
+vlan 333
+name ParkingLot
+exit
+vlan 999
+name Native
+exit
+vlan 10
+name Management
+exit
+vlan 20
+name Servers
+exit
+vlan 30
+name Users
+exit
+vlan 40
+name Telephones
+exit
+vlan 50
+name Production_service_1
+exit
+vlan 60
+name Production_service_2
+exit
+vlan 70
+name INTERNET
+exit
+interface range fa0/1 - 24, Gi0/1 - 2
+switchport mode access
+switchport access vlan 333
+shut
+```
+- Настройка транковых портов на коммутаторах SW1-CORP и SW2-CORP (одинаково для обоих коммутаторов)
+```
+SW1-CORP(config)interface F0/24, G0/1
+SW1-CORP(config-if)#switchport mode trunk
+SW1-CORP(config-if)#switchport trunk allowed vlan 10,20,30,40,50,60,70,333
+SW1-CORP(config-if)#switchport trunk native vlan 333
+SW1-CORP(config-if)#no sh
+```
+- Настройка портов доступа на коммутаторах SW1-CORP и SW2-CORP (одинаково для обоих коммутаторов)
+
+```
+SW1-CORP(config)interface F0/1 - 4
+SW1-CORP(config-if)#switchport mode access
+SW1-CORP(config-if)#switchport access vlan 20
+SW1-CORP(config-if)#no sh
+SW1-CORP(config)interface F0/5 - 10
+SW1-CORP(config-if)#switchport mode access
+SW1-CORP(config-if)#switchport access vlan 30
+SW1-CORP(config-if)#no sh
+SW1-CORP(config)interface F0/11
+SW1-CORP(config-if)#switchport mode access
+SW1-CORP(config-if)#switchport access vlan 20
+SW1-CORP(config-if)#no sh
+```
+
+```
+SW1-CORP(config)interface F0/4, G0/1
+SW1-CORP(config-if)#switchport mode trunk
+SW1-CORP(config-if)#switchport trunk allowed vlan 10,20,30,40,50,60,70,333
+SW1-CORP(config-if)#switchport trunk native vlan 333
+SW1-CORP(config-if)#no sh
+```
+
+
 ### Настройка сохранения логов и конфигураций сетевых устройств на syslog и ftp сервер в сети SERVERS ### 
 9. Настроить  сохранение конфигураций
 
 
 
-
+```
 SW1-OPTICAL(config-if)#switchport mode trunk
 SW1-OPTICAL(config-if)#switchport trunk allowed vlan 10,20,30,40,50,60,333
 SW1-OPTICAL(config-if)#switchport trunk native vlan 333
+```
