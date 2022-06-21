@@ -316,7 +316,7 @@ PROD3-RT(config-if)#no sh
 
 ```
 PROD1-RT(config)#ip route 192.168.3.0 255.255.255.0 10.10.50.1
-
+```
 ```
 PROD2-RT(config)#ip route 192.168.3.0 255.255.255.0 10.10.60.1
 ```
