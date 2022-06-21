@@ -377,6 +377,64 @@ SW2-OPTICAL(config-if)#no sh
 8. Настройка отказоустойчивости интернета.
 9. Настройка port-security на access портах сети USERS
 
+### Конфигурация корпоративной сети интерфейсов ###
+
+| Устройство           | Интерфейс  |   VLAN   |   IP-адрес   | Маска подсети   | Шлюз по умолчанию | Примечание |
+| :------------------: | :--------: | :------- | :----------: | :-------------- | :---------------- | :---------------- |
+| SW1-CORP             | VLAN333    | 333      |              |                 |                   | Parking Lot VLAN   |
+|                      | VLAN999    | 999      |              |                 |                   | Native VLAN      |
+|                      | VLAN10     | 10       | 10.10.10.7   | 255.255.255.0   | 10.10.10.100      | Management VLAN   |
+|                      | VLAN20     | 20       |              |                 |                   | Servers VLAN       |
+|                      | VLAN30     | 30       |              |                 |                   | Users VLAN       |
+|                      | VLAN40     | 40       |              |                 |                   | Telephones VLAN       |
+|                      | VLAN50     | 50       |              |                 |                   | Production Service 1 VLAN |
+|                      | VLAN60     | 60       |              |                 |                   | Production Service 2 VLAN |
+|                      | VLAN70     | 70       |              |                 |                   | Internet VLAN |
+|                      | G0/1       | Trunk    |              |                 |                   | Trunk link for all vlan to CORE-RT |
+|                      | F0/24      | Trunk    |              |                 |                   | Trunk link for all vlan to SW3-OPTICAL|
+|                      | F0/1 - 4   | 20       |              |                 |                   | Access ports to servers interfaces|
+|                      | F0/5 - 10  | 30       |              |                 |                   | Access ports to users hosts interfaces|
+|                      | F0/11      | 10       |              |                 |                   | Access port to SysAdmin hosts interface|
+| SW2-CORP             | VLAN333    | 333      |              |                 |                   | Parking Lot VLAN   |
+|                      | VLAN999    | 999      |              |                 |                   | Native VLAN      |
+|                      | VLAN10     | 10       | 10.10.10.8   | 255.255.255.0   | 10.10.10.100      | Management VLAN   |
+|                      | VLAN20     | 20       |              |                 |                   | Servers VLAN       |
+|                      | VLAN30     | 30       |              |                 |                   | Users VLAN       |
+|                      | VLAN40     | 40       |              |                 |                   | Telephones VLAN       |
+|                      | VLAN50     | 50       |              |                 |                   | Production Service 1 VLAN |
+|                      | VLAN60     | 60       |              |                 |                   | Production Service 2 VLAN |
+|                      | VLAN70     | 70       |              |                 |                   | Internet VLAN |
+|                      | G0/1       | Trunk    |              |                 |                   | Trunk link for all vlan to CORE-RT |
+|                      | F0/24      | Trunk    |              |                 |                   | Trunk link for all vlan to SW3-OPTICAL|
+|                      | F0/1 - 4   | 20       |              |                 |                   | Access ports to servers interfaces|
+|                      | F0/5 - 10  | 30       |              |                 |                   | Access ports to users hosts interfaces|
+|                      | F0/11      | 10       |              |                 |                   | Access port to SysAdmin hosts interface|
+|CORE-RT               | VLAN999    | 999      |              |                 |                   | Native VLAN      |
+|                      | VLAN10     | 10       | 10.10.10.100 | 255.255.255.0   |                   | Management VLAN   |
+|                      | VLAN20     | 20       |              |                 |                   | Servers VLAN       |
+|                      | VLAN30     | 30       |              |                 |                   | Users VLAN       |
+|                      | VLAN40     | 40       |              |                 |                   | Telephones VLAN       |
+|                      | VLAN50     | 50       |              |                 |                   | Production Service 1 VLAN |
+|                      | VLAN60     | 60       |              |                 |                   | Production Service 2 VLAN |
+|                      | VLAN70     | 70       |              |                 |                   | Internet VLAN |
+|                      | G0/0       | Trunk    |              |                 |                   | Trunk link for all vlan to SW2-CORP |
+|                      | G0/1       | Trunk    |              |                 |                   | Trunk link for all vlan to SW1-CORP |
+|                      | G0/2       |          |  ???         | ???             |                   | Link to ISP-1 |
+
+| NTP-CORP             | F0/0       |          | 10.10.20.10  |                 |                   | NTP server interface 1|
+| NTP-CORP             | F0/1       |          | 10.10.20.11  |                 |                   | NTP server interface 2|
+| LOG-CORP             | F0/0       |          | 10.10.20.12  |                 |                   | LOG server interface 1|
+| LOG-CORP             | F0/1       |          | 10.10.20.13  |                 |                   | LOG server interface 2|
+| FILE-BACKUP-CORP     | F0/0       |          | 10.10.20.14  |                 |                   | FILE-BACKUP server interface 1|
+| FILE-BACKUP-CORP     | F0/1       |          | 10.10.20.15  |                 |                   | FILE-BACKUP server interface 2|
+| WEB-CORP             | F0/0       |          | 10.10.20.16  |                 |                   | WEB server interface 1|
+| WEB-CORP             | F0/1       |          | 10.10.20.17  |                 |                   | WEB server interface 2|
+
+
+
+
+
+
 - Настройка VLAN на коммутаторах SW1-CORP и SW2-CORP (используем предыдущие наработки)
 ```
 conf t
