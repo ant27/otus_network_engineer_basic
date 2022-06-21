@@ -311,6 +311,19 @@ PROD2-RT(config)#interface GigabitEthernet0/1
 PROD2-RT(config-if)#ip address 192.168.3.1 255.255.255.0
 PROD2-RT(config-if)#no sh
 ```
+- Включаем порты на коммутаторе SW3-OPTICAL для связи с маршрутизаторами PROD1-RT и PROD2-RT
+```
+SW3-OPTICAL(config)#interface g0/1
+SW3-OPTICAL(config-if)#switchport mode trunk 
+SW3-OPTICAL(config-if)#switchport trunk allowed vlan 10,20,50
+SW3-OPTICAL(config-if)#no sh
+SW3-OPTICAL(config-if)#exit
+SW3-OPTICAL(config)#interface g0/2
+SW3-OPTICAL(config-if)#switchport mode trunk 
+SW3-OPTICAL(config-if)#switchport trunk allowed vlan 10,20,60
+SW3-OPTICAL(config-if)#no sh
+```
+
 
 - Настройка сохранения логов и конфигураций на syslog и ftp серверы
 
