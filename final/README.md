@@ -220,14 +220,14 @@ SW3-OPTICAL(config-if)#no shut
 | PROD2-RT             | VLAN10     | 10       | 10.10.10.5   | 255.255.255.0   | 10.10.10.100      | Management VLAN   |
 |                      | VLAN20     | 20       | 10.10.20.5   | 255.255.255.0   | 10.10.20.100      | Servers VLAN      |
 |                      | VLAN60     | 60       | 10.10.60.2   | 255.255.255.252 |                   | Production Service 2 VLAN |
-|                      | G0/0       | Trunk    |              |                 |                   | Trunk link vlan 10,20,50|
+|                      | G0/0       | Trunk    |              |                 |                   | Trunk link vlan 10,20,60|
 |                      | G0/1       |          | 192.168.2.1  | 255.255.255.0   |                   | RT Interface in Production Service 2 NET |
 | HTTPS_PROD           | F0/1       |          | 192.168.2.2  | 255.255.255.0   | 192.168.2.1       | HTTPS SERVER |
 | PROD3-RT             | VLAN10     | 10       | 10.10.10.6   | 255.255.255.0   | 10.10.10.100      | Management VLAN   |
 |                      | VLAN20     | 20       | 10.10.20.6   | 255.255.255.0   | 10.10.20.100      | Servers VLAN      |
 |                      | VLAN50     | 50       | 10.10.50.1   | 255.255.255.252 |                   | Production Service 1 VLAN |
 |                      | VLAN60     | 60       | 10.10.60.1   | 255.255.255.252 |                   | Production Service 2 VLAN|
-|                      | G0/0       | Trunk    |              |                 |                   | Trunk link vlan 10,20,50|
+|                      | G0/0       | Trunk    |              |                 |                   | Trunk link vlan 10,20,50,60|
 |                      | G0/1       |          | 192.168.3.1  | 255.255.255.0   |                   | RT Interface in Production Service 3 NET |
 | TCP-FTP-CLIENT       | F0/1       |          | 192.168.3.2  | 255.255.255.0   | 192.168.3.1       | HTTPS SERVER |
 
