@@ -285,31 +285,31 @@ PROD2-RT(config-if)#no sh
 ```
 
 ```
-PROD2-RT(config)#interface GigabitEthernet0/0.10
-PROD2-RT(config-subif)#description management
-PROD2-RT(config-subif)#encapsulation dot1Q 10
-PROD2-RT(config-subif)#ip address 10.10.10.5 255.255.255.0
-PROD2-RT(config-subif)#end
-PROD2-RT(config)#interface GigabitEthernet0/0.20
-PROD2-RT(config-subif)#description servers
-PROD2-RT(config-subif)#encapsulation dot1Q 20
-PROD2-RT(config-subif)#ip address 10.10.20.5 255.255.255.0
-PROD2-RT(config-subif)#end
-PROD2-RT(config)#interface GigabitEthernet0/0.50
-PROD2-RT(config-subif)#description production_service_1
-PROD2-RT(config-subif)#encapsulation dot1Q 50
-PROD2-RT(config-subif)#ip address 10.10.50.1 255.255.255.252
-PROD2-RT(config-subif)#end
-PROD2-RT(config)#interface GigabitEthernet0/0.60
-PROD2-RT(config-subif)#description production_service_2
-PROD2-RT(config-subif)#encapsulation dot1Q 60
-PROD2-RT(config-subif)#ip address 10.10.60.1 255.255.255.252
-PROD2-RT(config-subif)#end
-PROD2-RT(config)#interface GigabitEthernet0/0
-PROD2-RT(config-if)#no sh
-PROD2-RT(config)#interface GigabitEthernet0/1
-PROD2-RT(config-if)#ip address 192.168.3.1 255.255.255.0
-PROD2-RT(config-if)#no sh
+PROD3-RT(config)#interface GigabitEthernet0/0.10
+PROD3-RT(config-subif)#description management
+PROD3-RT(config-subif)#encapsulation dot1Q 10
+PROD3-RT(config-subif)#ip address 10.10.10.5 255.255.255.0
+PROD3-RT(config-subif)#end
+PROD3-RT(config)#interface GigabitEthernet0/0.20
+PROD3-RT(config-subif)#description servers
+PROD3-RT(config-subif)#encapsulation dot1Q 20
+PROD3-RT(config-subif)#ip address 10.10.20.5 255.255.255.0
+PROD3-RT(config-subif)#end
+PROD3-RT(config)#interface GigabitEthernet0/0.50
+PROD3-RT(config-subif)#description production_service_1
+PROD3-RT(config-subif)#encapsulation dot1Q 50
+PROD3-RT(config-subif)#ip address 10.10.50.1 255.255.255.252
+PROD3-RT(config-subif)#end
+PROD3-RT(config)#interface GigabitEthernet0/0.60
+PROD3-RT(config-subif)#description production_service_2
+PROD3-RT(config-subif)#encapsulation dot1Q 60
+PROD3-RT(config-subif)#ip address 10.10.60.1 255.255.255.252
+PROD3-RT(config-subif)#end
+PROD3-RT(config)#interface GigabitEthernet0/0
+PROD3-RT(config-if)#no sh
+PROD3-RT(config)#interface GigabitEthernet0/1
+PROD3-RT(config-if)#ip address 192.168.3.1 255.255.255.0
+PROD3-RT(config-if)#no sh
 ```
 - Включаем порты на коммутаторе SW3-OPTICAL для связи с маршрутизаторами PROD1-RT и PROD2-RT
 ```
@@ -324,6 +324,13 @@ SW3-OPTICAL(config-if)#switchport trunk allowed vlan 10,20,60
 SW3-OPTICAL(config-if)#no sh
 ```
 
+- Включаем порт на коммутаторе SW2-OPTICAL для связи с маршрутизатором PROD3-RT
+```
+SW2-OPTICAL(config)#interface g0/1
+SW2-OPTICAL(config-if)#switchport mode trunk 
+SW2-OPTICAL(config-if)#switchport trunk allowed vlan 10,20,50,60
+SW2-OPTICAL(config-if)#no sh
+```
 
 - Настройка сохранения логов и конфигураций на syslog и ftp серверы
 
