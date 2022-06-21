@@ -311,6 +311,24 @@ PROD3-RT(config)#interface GigabitEthernet0/1
 PROD3-RT(config-if)#ip address 192.168.3.1 255.255.255.0
 PROD3-RT(config-if)#no sh
 ```
+
+-Настраиваем статическую маршрутизацию для сетевой связности серверов 
+
+```
+PROD1-RT(config)#ip route 192.168.3.0 255.255.255.0 10.10.50.1
+
+```
+PROD2-RT(config)#ip route 192.168.3.0 255.255.255.0 10.10.60.1
+```
+
+```
+PROD3-RT(config)#ip route 192.168.1.0 255.255.255.0 10.10.50.1
+PROD3-RT(config)#ip route 192.168.2.0 255.255.255.0 10.10.60.1
+```
+
+
+
+
 - Включаем порты на коммутаторе SW3-OPTICAL для связи с маршрутизаторами PROD1-RT и PROD2-RT
 ```
 SW3-OPTICAL(config)#interface g0/1
