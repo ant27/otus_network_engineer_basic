@@ -253,9 +253,61 @@ PROD1-RT(config-subif)#end
 PROD1-RT(config)#interface GigabitEthernet0/0
 PROD1-RT(config-if)#no sh
 PROD1-RT(config)#interface GigabitEthernet0/1
-PROD1-RT(config-subif)#ip address 192.168.1.1 255.255.255.0
+PROD1-RT(config-if)#ip address 192.168.1.1 255.255.255.0
 PROD1-RT(config-if)#no sh
 ```
+
+```
+PROD2-RT(config)#interface GigabitEthernet0/0.10
+PROD2-RT(config-subif)#description management
+PROD2-RT(config-subif)#encapsulation dot1Q 10
+PROD2-RT(config-subif)#ip address 192.168.10.5 255.255.255.0
+PROD2-RT(config-subif)#end
+PROD2-RT(config)#interface GigabitEthernet0/0.20
+PROD2-RT(config-subif)#description servers
+PROD2-RT(config-subif)#encapsulation dot1Q 20
+PROD2-RT(config-subif)#ip address 192.168.20.5 255.255.255.0
+PROD2-RT(config-subif)#end
+PROD2-RT(config)#interface GigabitEthernet0/0.60
+PROD2-RT(config-subif)#description production_service_2
+PROD2-RT(config-subif)#encapsulation dot1Q 60
+PROD2-RT(config-subif)#ip address 192.168.60.2 255.255.255.252
+PROD2-RT(config-subif)#end
+PROD2-RT(config)#interface GigabitEthernet0/0
+PROD2-RT(config-if)#no sh
+PROD2-RT(config)#interface GigabitEthernet0/1
+PROD2-RT(config-if)#ip address 192.168.2.1 255.255.255.0
+PROD2-RT(config-if)#no sh
+```
+
+```
+PROD2-RT(config)#interface GigabitEthernet0/0.10
+PROD2-RT(config-subif)#description management
+PROD2-RT(config-subif)#encapsulation dot1Q 10
+PROD2-RT(config-subif)#ip address 192.168.10.5 255.255.255.0
+PROD2-RT(config-subif)#end
+PROD2-RT(config)#interface GigabitEthernet0/0.20
+PROD2-RT(config-subif)#description servers
+PROD2-RT(config-subif)#encapsulation dot1Q 20
+PROD2-RT(config-subif)#ip address 192.168.20.5 255.255.255.0
+PROD2-RT(config-subif)#end
+PROD2-RT(config)#interface GigabitEthernet0/0.50
+PROD2-RT(config-subif)#description production_service_1
+PROD2-RT(config-subif)#encapsulation dot1Q 50
+PROD2-RT(config-subif)#ip address 192.168.50.1 255.255.255.252
+PROD2-RT(config-subif)#end
+PROD2-RT(config)#interface GigabitEthernet0/0.60
+PROD2-RT(config-subif)#description production_service_2
+PROD2-RT(config-subif)#encapsulation dot1Q 60
+PROD2-RT(config-subif)#ip address 192.168.60.1 255.255.255.252
+PROD2-RT(config-subif)#end
+PROD2-RT(config)#interface GigabitEthernet0/0
+PROD2-RT(config-if)#no sh
+PROD2-RT(config)#interface GigabitEthernet0/1
+PROD2-RT(config-if)#ip address 192.168.3.1 255.255.255.0
+PROD2-RT(config-if)#no sh
+```
+
 
 *Примечание: нужно ли ставить шлюз по умолчанию на VLAN интерфейс или для маршрутизатора это не имеет смысла.
 
