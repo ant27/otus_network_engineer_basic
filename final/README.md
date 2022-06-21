@@ -37,8 +37,7 @@
 | Telephones           | 40         | 10.10.40.0 |  255.255.255.0   | 10.10.40.100      | 
 | Production_service_1 | 50         | 10.10.50.0 |  255.255.255.0   | 10.10.50.100      | 
 | Production_service_2 | 60         | 10.10.60.0 |  255.255.255.0   | 10.10.60.100      | 
-| ISP-1                | 70         | 10.10.70.0 |  255.255.255.0   | 10.10.70.100      | 
-| INTERNET             | 80         | 10.10.80.0 |  255.255.255.0   | 10.10.80.100      | 
+| INTERNET             | 70         | 10.10.70.0 |  255.255.255.0   | 10.10.70.100      | 
 
 
 ### Настройка коммутаторов L2 кольца ###
@@ -66,13 +65,13 @@ SW1-OPTICAL(config)#vlan 40
 SW1-OPTICAL(config-vlan)#name Telephones
 SW1-OPTICAL(config-vlan)#exit
 SW1-OPTICAL(config)#vlan 50
-SW1-OPTICAL(config-vlan)#name Technology_service_1
+SW1-OPTICAL(config-vlan)#name Production_service_1
 SW1-OPTICAL(config-vlan)#exit
 SW1-OPTICAL(config)#vlan 60
-SW1-OPTICAL(config-vlan)#name Technology_service_2
+SW1-OPTICAL(config-vlan)#name Production_service_2
 SW1-OPTICAL(config-vlan)#exit
 SW1-OPTICAL(config)#vlan 70
-SW1-OPTICAL(config-vlan)#name ISP-1
+SW1-OPTICAL(config-vlan)#name INTERNET
 SW1-OPTICAL(config-vlan)#exit
 ```
 - Внесение всех портов в ParkingLot и их выключение.
@@ -126,13 +125,13 @@ vlan 40
 name Telephones
 exit
 vlan 50
-name Technology_service_1
+name Production_service_1
 exit
 vlan 60
-name Technology_service_2
+name Production_service_2
 exit
 vlan 70
-name ISP-1
+name INTERNET
 exit
 interface range fa0/1 - 24, Gi0/1 - 2
 switchport mode access
