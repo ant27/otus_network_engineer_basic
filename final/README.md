@@ -422,25 +422,17 @@ SW1-CORP(config-if)#no sh
 - Настройка портов доступа на коммутаторах SW1-CORP и SW2-CORP (одинаково для обоих коммутаторов)
 
 ```
-SW1-CORP(config)interface F0/1 - 4
+SW1-CORP(config)interface range F0/1 - 4
 SW1-CORP(config-if)#switchport mode access
 SW1-CORP(config-if)#switchport access vlan 20
 SW1-CORP(config-if)#no sh
-SW1-CORP(config)interface F0/5 - 10
+SW1-CORP(config)interface range F0/5 - 10
 SW1-CORP(config-if)#switchport mode access
 SW1-CORP(config-if)#switchport access vlan 30
 SW1-CORP(config-if)#no sh
 SW1-CORP(config)interface F0/11
 SW1-CORP(config-if)#switchport mode access
-SW1-CORP(config-if)#switchport access vlan 20
-SW1-CORP(config-if)#no sh
-```
-
-```
-SW1-CORP(config)interface F0/4, G0/1
-SW1-CORP(config-if)#switchport mode trunk
-SW1-CORP(config-if)#switchport trunk allowed vlan 10,20,30,40,50,60,70,333
-SW1-CORP(config-if)#switchport trunk native vlan 333
+SW1-CORP(config-if)#switchport access vlan 10
 SW1-CORP(config-if)#no sh
 ```
 
