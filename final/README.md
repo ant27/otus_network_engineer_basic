@@ -35,8 +35,8 @@
 | Servers              | 20         | 10.10.20.0 |  255.255.255.0   | 10.10.20.100      | 
 | Users                | 30         | 10.10.30.0 |  255.255.255.0   | 10.10.30.100      | 
 | Telephones           | 40         | 10.10.40.0 |  255.255.255.0   | 10.10.40.100      | 
-| Technology_service_1 | 50         | 10.10.50.0 |  255.255.255.0   | 10.10.50.100      | 
-| Technology_service_2 | 60         | 10.10.60.0 |  255.255.255.0   | 10.10.60.100      | 
+| Production_service_1 | 50         | 10.10.50.0 |  255.255.255.0   | 10.10.50.100      | 
+| Production_service_2 | 60         | 10.10.60.0 |  255.255.255.0   | 10.10.60.100      | 
 | ISP-1                | 70         | 10.10.70.0 |  255.255.255.0   | 10.10.70.100      | 
 | INTERNET             | 80         | 10.10.80.0 |  255.255.255.0   | 10.10.80.100      | 
 
@@ -234,22 +234,29 @@ SW3-OPTICAL(config-if)#no shut
 
 - Настройка маршрутизаторов
 
-R1(config)#interface GigabitEthernet0/1.10
-R1(config-subif)#description network_management_vlan
-R1(config-subif)#encapsulation dot1Q 10
-R1(config-subif)#ip address 192.168.10.1 255.255.255.0
-R1(config-subif)#end
-R1(config)#interface GigabitEthernet0/1.20
-R1(config-subif)#description sales_vlan
-R1(config-subif)#encapsulation dot1Q 20
-R1(config-subif)#ip address 192.168.20.1 255.255.255.0
-R1(config-subif)#end
-R1(config)#interface GigabitEthernet0/1.30
-R1(config-subif)#description operations_vlan
-R1(config-subif)#encapsulation dot1Q 30
-R1(config-subif)#ip address 192.168.30.1 255.255.255.0
-R1(config-subif)#end
-R1(config)#interface GigabitEthernet0/1.1000
-R1(config-subif)#description native_vlan
-R1(config-subif)#encapsulation dot1Q 1000 native
-R1(config-subif)#end
+```
+PROD1-RT(config)#interface GigabitEthernet0/0.10
+PROD1-RT(config-subif)#description management
+PROD1-RT(config-subif)#encapsulation dot1Q 10
+PROD1-RT(config-subif)#ip address 192.168.10.4 255.255.255.0
+PROD1-RT(config-subif)#end
+PROD1-RT(config)#interface GigabitEthernet0/0.20
+PROD1-RT(config-subif)#description servers
+PROD1-RT(config-subif)#encapsulation dot1Q 20
+PROD1-RT(config-subif)#ip address 192.168.20.4 255.255.255.0
+PROD1-RT(config-subif)#end
+PROD1-RT(config)#interface GigabitEthernet0/0.50
+PROD1-RT(config-subif)#description production_service_1
+PROD1-RT(config-subif)#encapsulation dot1Q 50
+PROD1-RT(config-subif)#ip address 192.168.50.2 255.255.255.252
+PROD1-RT(config-subif)#end
+PROD1-RT(config)#interface GigabitEthernet0/0
+PROD1-RT(config-if)#no sh
+PROD1-RT(config)#interface GigabitEthernet0/1
+PROD1-RT(config-subif)#ip address 192.168.1.1 255.255.255.0
+PROD1-RT(config-if)#no sh
+```
+
+*Примечание: нужно ли ставить шлюз по умолчанию на VLAN интерфейс или для маршрутизатора это не имеет смысла.
+
+
