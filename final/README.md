@@ -419,6 +419,13 @@ SW1-CORP(config-if)#switchport trunk allowed vlan 10,20,30,40,50,60,70,333
 SW1-CORP(config-if)#switchport trunk native vlan 333
 SW1-CORP(config-if)#no sh
 ```
+
+- Включение транковых портов со стороны SW2-OPTICAL, который подключен к SW1-CORP и SW2-CORP
+```
+SW2-OPTICAL(config)#interface range f0/5 - 6
+SW2-OPTICAL(config-if-range)#switchport trunk allowed vlan 10,20,30,40,50,60,70,333
+SW2-OPTICAL(config-if-range)#no sh
+```
 - Настройка портов доступа на коммутаторах SW1-CORP и SW2-CORP (одинаково для обоих коммутаторов)
 
 ```
