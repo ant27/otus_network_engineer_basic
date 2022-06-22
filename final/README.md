@@ -434,9 +434,9 @@ SW2-OPTICAL(config-if)#no sh
 |                      | VLAN20     | 20       | 10.10.20.100 | 255.255.255.0   |                   | Servers VLAN       |
 |                      | VLAN30     | 30       | 10.10.30.100 | 255.255.255.0   |                   | Users VLAN       |
 |                      | VLAN40     | 40       | 10.10.40.100 | 255.255.255.0   |                   | Telephones VLAN       |
-|                      | VLAN50     | 50       |              |                 |                   | Production Service 1 VLAN |
-|                      | VLAN60     | 60       |              |                 |                   | Production Service 2 VLAN |
-|                      | VLAN70     | 70       |              |                 |                   | Internet VLAN |
+|                      | VLAN50     | 50       | 10.10.50.3   | 255.255.255.252 |                   | Production Service 1 VLAN |
+|                      | VLAN60     | 60       | 10.10.60.3   | 255.255.255.252 |                   | Production Service 2 VLAN |
+|                      | VLAN70     | 70       | ???          | ???             |                   | Internet VLAN |
 |                      | G0/0       | Trunk    |              |                 |                   | Trunk link for all vlan to SW2-CORP |
 |                      | G0/1       | Trunk    |              |                 |                   | Trunk link for all vlan to SW1-CORP |
 |                      | G0/2       |          |  ???         | ???             |                   | Link to ISP-1 |
@@ -560,12 +560,12 @@ PROD3-RT(config-subif)#end
 PROD3-RT(config)#interface GigabitEthernet0/0.50
 PROD3-RT(config-subif)#description production_service_1
 PROD3-RT(config-subif)#encapsulation dot1Q 50
-PROD3-RT(config-subif)#ip address 10.10.50.100 255.255.255.252
+PROD3-RT(config-subif)#ip address 10.10.50.3 255.255.255.252
 PROD3-RT(config-subif)#end
 PROD3-RT(config)#interface GigabitEthernet0/0.60
 PROD3-RT(config-subif)#description production_service_2
 PROD3-RT(config-subif)#encapsulation dot1Q 60
-PROD3-RT(config-subif)#ip address 10.10.60.100 255.255.255.252
+PROD3-RT(config-subif)#ip address 10.10.60.3 255.255.255.252
 PROD3-RT(config-subif)#end
 PROD3-RT(config)#interface GigabitEthernet0/0
 PROD3-RT(config-if)#no sh
