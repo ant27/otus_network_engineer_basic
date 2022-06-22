@@ -584,7 +584,7 @@ CORE-RT(config)#interface GigabitEthernet0/1
 CORE-RT(config-if)#no sh
 ```
 
-- Настройка интерфейсов до провайдеров интернета (обратите внимание, что первый провайдер приходит через VLAN, потому что оборудование провайдера находится в другом от CORE-RT помещении)
+- Настройка интерфейсов CORE-RT до провайдеров интернета (обратите внимание, что первый провайдер приходит через VLAN, потому что оборудование провайдера находится в другом от CORE-RT помещении)
 
 ```
 CORE-RT(config)#interface GigabitEthernet0/0.70
@@ -596,18 +596,27 @@ CORE-RT(config-if)#no sh
 CORE-RT(config-if)#end
 ```
 
-- Настройка маршрутизаторов провайдеров интернета (внешний непровайдерский IP сымитируем через интерфейс loopback1)
+- Настройка маршрутизаторов провайдеров интернета ISP-1 и ISP-2 (внешний непровайдерский IP сымитируем через интерфейс loopback1)
 
 ```
-CORE-RT(config)#interface GigabitEthernet0/0
-CORE-RT(config-if)#ip address 213.87.113.1 255.255.255.248
-CORE-RT(config-if)#no sh
-CORE-RT(config-subif)#end
-CORE-RT(config-subif)#end
-CORE-RT(config)#interface GigabitEthernet0/2
-CORE-RT(config-if)#ip address 109.127.128.2 255.255.255.248
-CORE-RT(config-if)#no sh
-CORE-RT(config-if)#end
+ISP-1(config)#interface GigabitEthernet0/0
+ISP-1(config-if)#ip address 213.87.113.1 255.255.255.248
+ISP-1(config-if)#no sh
+ISP-1(config-if)#end
+ISP-1(config)#interface loopback1
+ISP-1(config-if)#ip address 8.8.8.8 0.0.0.0
+ISP-1(config-if)#no sh
+ISP-1(config-if)#end
+```
+```
+ISP-2(config)#interface GigabitEthernet0/0
+ISP-2(config-if)#ip address 109.127.128.2 255.255.255.248
+ISP-2(config-if)#no sh
+ISP-2(config-if)#end
+ISP-2(config)#interface loopback1
+ISP-2(config-if)#ip address 8.8.8.8 0.0.0.0
+ISP-2(config-if)#no sh
+ISP-2(config-if)#end
 ```
 
 ### Настройка сохранения логов и конфигураций сетевых устройств на syslog и ftp сервер в сети SERVERS ### 
