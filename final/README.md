@@ -610,7 +610,7 @@ ISP-1(config-if)#end
 ```
 ```
 ISP-2(config)#interface GigabitEthernet0/0
-ISP-2(config-if)#ip address 109.127.128.2 255.255.255.248
+ISP-2(config-if)#ip address 109.127.128.1 255.255.255.248
 ISP-2(config-if)#no sh
 ISP-2(config-if)#end
 ISP-2(config)#interface loopback1
@@ -618,14 +618,16 @@ ISP-2(config-if)#ip address 8.8.8.8 0.0.0.0
 ISP-2(config-if)#no sh
 ISP-2(config-if)#end
 ```
+- Включение порта коммутатора SW1-OPTICAL, к которому подключен провайдер ISP-1
+```
+SW1-OPTICAL(config)#interface g0/1
+SW1-OPTICAL(config-if)#switchport mode access 
+SW1-OPTICAL(config-if)#switchport access vlan 70
+SW1-OPTICAL(config-if)#no sh
+```
 
 ### Настройка сохранения логов и конфигураций сетевых устройств на syslog и ftp сервер в сети SERVERS ### 
 9. Настроить  сохранение конфигураций
 
-
-
-```
-SW1-OPTICAL(config-if)#switchport mode trunk
-SW1-OPTICAL(config-if)#switchport trunk allowed vlan 10,20,30,40,50,60,333
-SW1-OPTICAL(config-if)#switchport trunk native vlan 333
-```
+### Настройка Port Security ### 
+Не забыть настроить port security на порта провайдеров
