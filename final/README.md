@@ -434,7 +434,7 @@ SW2-OPTICAL(config-if)#no sh
 |                      | VLAN20     | 20       | 10.10.20.100 | 255.255.255.0   |                   | Servers VLAN       |
 |                      | VLAN30     | 30       | 10.10.30.100 | 255.255.255.0   |                   | Users VLAN       |
 |                      | VLAN40     | 40       | 10.10.40.100 | 255.255.255.0   |                   | Telephones VLAN       |
-|                      | VLAN70     | 70       | ???          | ???             |                   | Internet VLAN |
+|                      | VLAN70     | 70       | 10.10.70.100 | 255.255.255.0   |                   | Internet VLAN |
 |                      | G0/0       | Trunk    |              |                 |                   | Trunk link for all vlan to SW2-CORP |
 |                      | G0/1       | Trunk    |              |                 |                   | Trunk link for all vlan to SW1-CORP |
 |                      | G0/2       |          |  ???         | ???             |                   | Link to ISP-1 |
