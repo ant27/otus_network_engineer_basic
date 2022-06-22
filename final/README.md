@@ -411,26 +411,27 @@ SW2-OPTICAL(config-if)#no sh
 |                      | F0/11      | 10       |              |                 |                   | Access port to SysAdmin host interface|
 |CORE-RT               | VLAN999    | 999      |              |                 |                   | Native VLAN      |
 |                      | VLAN10     | 10       | 10.10.10.100 | 255.255.255.0   |                   | Management VLAN   |
-|                      | VLAN20     | 20       |              |                 |                   | Servers VLAN       |
-|                      | VLAN30     | 30       |              |                 |                   | Users VLAN       |
-|                      | VLAN40     | 40       |              |                 |                   | Telephones VLAN       |
+|                      | VLAN20     | 20       | 10.10.20.100 | 255.255.255.0   |                   | Servers VLAN       |
+|                      | VLAN30     | 30       | 10.10.30.100 | 255.255.255.0   |                   | Users VLAN       |
+|                      | VLAN40     | 40       | 10.10.40.100 | 255.255.255.0   |                   | Telephones VLAN       |
 |                      | VLAN50     | 50       |              |                 |                   | Production Service 1 VLAN |
 |                      | VLAN60     | 60       |              |                 |                   | Production Service 2 VLAN |
 |                      | VLAN70     | 70       |              |                 |                   | Internet VLAN |
 |                      | G0/0       | Trunk    |              |                 |                   | Trunk link for all vlan to SW2-CORP |
 |                      | G0/1       | Trunk    |              |                 |                   | Trunk link for all vlan to SW1-CORP |
 |                      | G0/2       |          |  ???         | ???             |                   | Link to ISP-1 |
-| NTP-CORP             | F0/0       |          | 10.10.20.10  |                 |                   | NTP server interface 1|
-| NTP-CORP             | F0/1       |          | 10.10.20.11  |                 |                   | NTP server interface 2|
-| LOG-CORP             | F0/0       |          | 10.10.20.12  |                 |                   | LOG server interface 1|
-| LOG-CORP             | F0/1       |          | 10.10.20.13  |                 |                   | LOG server interface 2|
-| FILE-BACKUP-CORP     | F0/0       |          | 10.10.20.14  |                 |                   | FILE-BACKUP server interface 1|
-| FILE-BACKUP-CORP     | F0/1       |          | 10.10.20.15  |                 |                   | FILE-BACKUP server interface 2|
-| WEB-CORP             | F0/0       |          | 10.10.20.16  |                 |                   | WEB server interface 1|
-| WEB-CORP             | F0/1       |          | 10.10.20.17  |                 |                   | WEB server interface 2|
-| ZABBIX-CORP          | F0/0       |          | 10.10.10.9   |                 |                   | ZABBIX server interface 1|
-| ZABBIX-CORP          | F0/1       |          | 10.10.10.10  |                 |                   | ZABBIX server interface 2|
-
+| NTP-CORP             | F0/0       |          | 10.10.20.10  |                 | 10.10.20.100      | NTP server interface 1|
+| NTP-CORP             | F0/1       |          | 10.10.20.11  |                 | 10.10.20.100      | NTP server interface 2|
+| LOG-CORP             | F0/0       |          | 10.10.20.12  |                 | 10.10.20.100      | LOG server interface 1|
+| LOG-CORP             | F0/1       |          | 10.10.20.13  |                 | 10.10.20.100      | LOG server interface 2|
+| FILE-BACKUP-CORP     | F0/0       |          | 10.10.20.14  |                 | 10.10.20.100      | FILE-BACKUP server interface 1|
+| FILE-BACKUP-CORP     | F0/1       |          | 10.10.20.15  |                 | 10.10.20.100      | FILE-BACKUP server interface 2|
+| WEB-CORP             | F0/0       |          | 10.10.20.16  |                 | 10.10.20.100      | WEB server interface 1|
+| WEB-CORP             | F0/1       |          | 10.10.20.17  |                 | 10.10.20.100      | WEB server interface 2|
+| ZABBIX-CORP          | F0/0       |          | 10.10.10.9   |                 | 10.10.10.100      | ZABBIX server interface 1|
+| ZABBIX-CORP          | F0/1       |          | 10.10.10.10  |                 | 10.10.10.100      | ZABBIX server interface 2|
+| USER1-CORP           | F0/0       |          | 10.10.30.1   |                 | 10.10.30.100      | User1 host interface|
+| USER2-CORP           | F0/0       |          | 10.10.30.2   |                 | 10.10.30.100      | User2 host interface|
 
 - Настройка VLAN на коммутаторах SW1-CORP и SW2-CORP (используем предыдущие наработки)
 ```
