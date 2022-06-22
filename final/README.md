@@ -385,7 +385,11 @@ SW2-OPTICAL(config-if)#no sh
 
 ### Настройка коммутаторов и роутера корпоративной сети ### 
 
-Имееется небольшая корпоративная сеть, использующая инфраструктуру технологической. Имеется два провайдера интернета ISP-1 и ISP2.
+Имееется небольшая корпоративная сеть, использующая инфраструктуру технологической. Имеется два провайдера интернета ISP-1 и ISP2 со следующими подсетями
+
+- ISP-1 (МТС), предоставленные IP: 213.87.113.2 - 4/29, шлюз, DNS: 213.87.113.1
+- ISP-2 (Ростелеком), предоставленные IP: 109.127.128.2 - 4/29, шлюз, DNS: 109.127.128.1
+
 Задачи:
 1. Обеспечить доступ из сети USERS в сеть SERVERS
 2. Настроить работу DHCP-сервера в сети USERS
@@ -400,7 +404,7 @@ SW2-OPTICAL(config-if)#no sh
 ### Конфигурация интерфейсов корпоративной сети ###
 
 | Устройство           | Интерфейс  |   VLAN   |   IP-адрес   | Маска подсети   | Шлюз по умолчанию | Примечание |
-| :------------------: | :--------: | :------- | :----------: | :-------------- | :---------------- | :---------------- |
+|  ------------------: | :--------: | :------- | :----------: | :-------------- | :---------------- | :---------------- |
 | SW1-CORP             | VLAN333    | 333      |              |                 |                   | Parking Lot VLAN   |
 |                      | VLAN999    | 999      |              |                 |                   | Native VLAN      |
 |                      | VLAN10     | 10       | 10.10.10.6   | 255.255.255.0   | 10.10.10.100      | Management VLAN   |
@@ -434,10 +438,10 @@ SW2-OPTICAL(config-if)#no sh
 |                      | VLAN20     | 20       | 10.10.20.100 | 255.255.255.0   |                   | Servers VLAN       |
 |                      | VLAN30     | 30       | 10.10.30.100 | 255.255.255.0   |                   | Users VLAN       |
 |                      | VLAN40     | 40       | 10.10.40.100 | 255.255.255.0   |                   | Telephones VLAN       |
-|                      | VLAN70     | 70       | 10.10.70.100 | 255.255.255.0   |                   | Internet VLAN |
+|                      | VLAN70     | 70       | 213.87.113.2 | 255.255.255.248 |213.87.113.1       | Internet ISP-1 VLAN |
 |                      | G0/0       | Trunk    |              |                 |                   | Trunk link for all vlan to SW2-CORP |
 |                      | G0/1       | Trunk    |              |                 |                   | Trunk link for all vlan to SW1-CORP |
-|                      | G0/2       |          |  ???         | ???             |                   | Link to ISP-1 |
+|                      | G0/2       |          | 109.127.128.2| 255.255.255.248 | 109.127.128.2     | Link to ISP-2 |
 | NTP-CORP             | F0/0       |          | 10.10.20.10  |                 | 10.10.20.100      | NTP server interface 1|
 | NTP-CORP             | F0/1       |          | 10.10.20.11  |                 | 10.10.20.100      | NTP server interface 2|
 | LOG-CORP             | F0/0       |          | 10.10.20.12  |                 | 10.10.20.100      | LOG server interface 1|
@@ -530,56 +534,61 @@ SW2-CORP(config-if)#ip address 10.10.10.7 255.255.255.0
 SW2-CORP(config-if)#exit 
 SW2-CORP(config)#ip default-gateway 10.10.10.100
 ```
-#### Настройка маршрутизатора CORE-RT#### 
+#### Настройка маршрутизатора CORE-RT #### 
 
 - Настройка VLAN на маршрутизаторе CORE-RT
 
 ```
-PROD3-RT(config)#interface GigabitEthernet0/0.10
-PROD3-RT(config-subif)#description management
-PROD3-RT(config-subif)#encapsulation dot1Q 10
-PROD3-RT(config-subif)#ip address 10.10.10.100 255.255.255.0
-PROD3-RT(config-subif)#end
-PROD3-RT(config)#interface GigabitEthernet0/0.20
-PROD3-RT(config-subif)#description servers
-PROD3-RT(config-subif)#encapsulation dot1Q 20
-PROD3-RT(config-subif)#ip address 10.10.20.100 255.255.255.0
-PROD3-RT(config-subif)#end
-PROD3-RT(config)#interface GigabitEthernet0/0.30
-PROD3-RT(config-subif)#description users
-PROD3-RT(config-subif)#encapsulation dot1Q 30
-PROD3-RT(config-subif)#ip address 10.10.30.100 255.255.255.0
-PROD3-RT(config-subif)#end
-PROD3-RT(config)#interface GigabitEthernet0/0.40
-PROD3-RT(config-subif)#description telephones
-PROD3-RT(config-subif)#encapsulation dot1Q 40
-PROD3-RT(config-subif)#ip address 10.10.40.100 255.255.255.0
-PROD3-RT(config-subif)#end
-PROD3-RT(config)#interface GigabitEthernet0/0.70
-PROD3-RT(config-subif)#description internet
-PROD3-RT(config-subif)#encapsulation dot1Q 70
-PROD3-RT(config-subif)#ip address 10.10.70.100 255.255.255.0
-PROD3-RT(config-subif)#end
-PROD3-RT(config)#interface GigabitEthernet0/0
-PROD3-RT(config-if)#no sh
-PROD3-RT(config)#interface GigabitEthernet0/1.10
-PROD3-RT(config-subif)#description management
-PROD3-RT(config-subif)#encapsulation dot1Q 10
-PROD3-RT(config)#interface GigabitEthernet0/1.20
-PROD3-RT(config-subif)#description servers
-PROD3-RT(config-subif)#encapsulation dot1Q 20
-PROD3-RT(config)#interface GigabitEthernet0/1.30
-PROD3-RT(config-subif)#description users
-PROD3-RT(config-subif)#encapsulation dot1Q 30
-PROD3-RT(config)#interface GigabitEthernet0/1.40
-PROD3-RT(config-subif)#description telephones
-PROD3-RT(config-subif)#encapsulation dot1Q 40
-PROD3-RT(config)#interface GigabitEthernet0/1.70
-PROD3-RT(config-subif)#description internet
-PROD3-RT(config-subif)#encapsulation dot1Q 70
-PROD3-RT(config)#interface GigabitEthernet0/1
-PROD3-RT(config-if)#no sh
+CORE-RT(config)#interface GigabitEthernet0/0.10
+CORE-RT(config-subif)#description management
+CORE-RT(config-subif)#encapsulation dot1Q 10
+CORE-RT(config-subif)#ip address 10.10.10.100 255.255.255.0
+CORE-RT(config-subif)#end
+CORE-RT(config)#interface GigabitEthernet0/0.20
+CORE-RT(config-subif)#description servers
+CORE-RT(config-subif)#encapsulation dot1Q 20
+CORE-RT(config-subif)#ip address 10.10.20.100 255.255.255.0
+CORE-RT(config-subif)#end
+CORE-RT(config)#interface GigabitEthernet0/0.30
+CORE-RT(config-subif)#description users
+CORE-RT(config-subif)#encapsulation dot1Q 30
+CORE-RT(config-subif)#ip address 10.10.30.100 255.255.255.0
+CORE-RT(config-subif)#end
+CORE-RT(config)#interface GigabitEthernet0/0.40
+CORE-RT(config-subif)#description telephones
+CORE-RT(config-subif)#encapsulation dot1Q 40
+CORE-RT(config-subif)#ip address 10.10.40.100 255.255.255.0
+CORE-RT(config-subif)#end
+CORE-RT(config)#interface GigabitEthernet0/0.70
+CORE-RT(config-subif)#description ISP-1-MTS
+CORE-RT(config-subif)#encapsulation dot1Q 70
+CORE-RT(config-subif)#ip address 213.87.113.2 255.255.255.248
+CORE-RT(config-subif)#end
+CORE-RT(config)#interface GigabitEthernet0/0
+CORE-RT(config-if)#no sh
+CORE-RT(config)#interface GigabitEthernet0/1.10
+CORE-RT(config-subif)#description management
+CORE-RT(config-subif)#encapsulation dot1Q 10
+CORE-RT(config)#interface GigabitEthernet0/1.20
+CORE-RT(config-subif)#description servers
+CORE-RT(config-subif)#encapsulation dot1Q 20
+CORE-RT(config)#interface GigabitEthernet0/1.30
+CORE-RT(config-subif)#description users
+CORE-RT(config-subif)#encapsulation dot1Q 30
+CORE-RT(config)#interface GigabitEthernet0/1.40
+CORE-RT(config-subif)#description telephones
+CORE-RT(config-subif)#encapsulation dot1Q 40
+CORE-RT(config)#interface GigabitEthernet0/1.70
+CORE-RT(config-subif)#description internet
+CORE-RT(config-subif)#encapsulation dot1Q 70
+CORE-RT(config)#interface GigabitEthernet0/1
+CORE-RT(config-if)#no sh
 ```
+
+- Настройка интерфейсов провайдеров
+
+
+
 
 ### Настройка сохранения логов и конфигураций сетевых устройств на syslog и ftp сервер в сети SERVERS ### 
 9. Настроить  сохранение конфигураций
