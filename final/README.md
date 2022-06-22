@@ -441,7 +441,7 @@ SW2-OPTICAL(config-if)#no sh
 |                      | VLAN70     | 70       | 213.87.113.2 | 255.255.255.248 |213.87.113.1       | Internet ISP-1 VLAN |
 |                      | G0/0       | Trunk    |              |                 |                   | Trunk link for all vlan to SW2-CORP |
 |                      | G0/1       | Trunk    |              |                 |                   | Trunk link for all vlan to SW1-CORP |
-|                      | G0/2       |          | 109.127.128.2| 255.255.255.248 | 109.127.128.2     | Link to ISP-2 |
+|                      | G0/2       |          | 109.127.128.2| 255.255.255.248 | 109.127.128.1     | Link to ISP-2 |
 | NTP-CORP             | F0/0       |          | 10.10.20.10  |                 | 10.10.20.100      | NTP server interface 1|
 | NTP-CORP             | F0/1       |          | 10.10.20.11  |                 | 10.10.20.100      | NTP server interface 2|
 | LOG-CORP             | F0/0       |          | 10.10.20.12  |                 | 10.10.20.100      | LOG server interface 1|
