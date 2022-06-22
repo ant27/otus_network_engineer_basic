@@ -403,7 +403,7 @@ SW2-OPTICAL(config-if)#no sh
 | :------------------: | :--------: | :------- | :----------: | :-------------- | :---------------- | :---------------- |
 | SW1-CORP             | VLAN333    | 333      |              |                 |                   | Parking Lot VLAN   |
 |                      | VLAN999    | 999      |              |                 |                   | Native VLAN      |
-|                      | VLAN10     | 10       | 10.10.10.7   | 255.255.255.0   | 10.10.10.100      | Management VLAN   |
+|                      | VLAN10     | 10       | 10.10.10.6   | 255.255.255.0   | 10.10.10.100      | Management VLAN   |
 |                      | VLAN20     | 20       |              |                 |                   | Servers VLAN       |
 |                      | VLAN30     | 30       |              |                 |                   | Users VLAN       |
 |                      | VLAN40     | 40       |              |                 |                   | Telephones VLAN       |
@@ -417,7 +417,7 @@ SW2-OPTICAL(config-if)#no sh
 |                      | F0/11      | 10       |              |                 |                   | Access port to SysAdmin host interface|
 | SW2-CORP             | VLAN333    | 333      |              |                 |                   | Parking Lot VLAN   |
 |                      | VLAN999    | 999      |              |                 |                   | Native VLAN      |
-|                      | VLAN10     | 10       | 10.10.10.8   | 255.255.255.0   | 10.10.10.100      | Management VLAN   |
+|                      | VLAN10     | 10       | 10.10.10.7   | 255.255.255.0   | 10.10.10.100      | Management VLAN   |
 |                      | VLAN20     | 20       |              |                 |                   | Servers VLAN       |
 |                      | VLAN30     | 30       |              |                 |                   | Users VLAN       |
 |                      | VLAN40     | 40       |              |                 |                   | Telephones VLAN       |
@@ -522,13 +522,13 @@ SW1-CORP(config-if)#no sh
 - Настройка виртуального интерфейса management vlan и шлюза по умолчанию
 ```
 SW1-CORP(config)#interface vlan10
-SW1-CORP(config-if)#ip address 10.10.10.7 255.255.255.0 
+SW1-CORP(config-if)#ip address 10.10.10.6 255.255.255.0 
 SW1-CORP(config-if)#exit 
 SW1-CORP(config)#ip default-gateway 10.10.10.100
 ```
 ```
 SW2-CORP(config)#interface vlan10
-SW2-CORP(config-if)#ip address 10.10.10.8 255.255.255.0 
+SW2-CORP(config-if)#ip address 10.10.10.7 255.255.255.0 
 SW2-CORP(config-if)#exit 
 SW2-CORP(config)#ip default-gateway 10.10.10.100
 ```
