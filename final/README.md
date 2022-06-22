@@ -404,7 +404,7 @@ SW2-OPTICAL(config-if)#no sh
 ### Конфигурация интерфейсов корпоративной сети ###
 
 | Устройство           | Интерфейс  |   VLAN   |   IP-адрес   | Маска подсети   | Шлюз по умолчанию | Примечание |
-|  ------------------: | :--------: | :------- | :----------: | :-------------- | :---------------- | :---------------- |
+|:------------------- | :--------: | :------- | :----------: | :-------------- | :---------------- | :---------------- |
 | SW1-CORP             | VLAN333    | 333      |              |                 |                   | Parking Lot VLAN   |
 |                      | VLAN999    | 999      |              |                 |                   | Native VLAN      |
 |                      | VLAN10     | 10       | 10.10.10.6   | 255.255.255.0   | 10.10.10.100      | Management VLAN   |
@@ -562,7 +562,6 @@ CORE-RT(config-subif)#end
 CORE-RT(config)#interface GigabitEthernet0/0.70
 CORE-RT(config-subif)#description ISP-1-MTS
 CORE-RT(config-subif)#encapsulation dot1Q 70
-CORE-RT(config-subif)#ip address 213.87.113.2 255.255.255.248
 CORE-RT(config-subif)#end
 CORE-RT(config)#interface GigabitEthernet0/0
 CORE-RT(config-if)#no sh
@@ -579,16 +578,21 @@ CORE-RT(config)#interface GigabitEthernet0/1.40
 CORE-RT(config-subif)#description telephones
 CORE-RT(config-subif)#encapsulation dot1Q 40
 CORE-RT(config)#interface GigabitEthernet0/1.70
-CORE-RT(config-subif)#description internet
+CORE-RT(config-subif)#description ISP-1-MTS
 CORE-RT(config-subif)#encapsulation dot1Q 70
 CORE-RT(config)#interface GigabitEthernet0/1
 CORE-RT(config-if)#no sh
 ```
 
-- Настройка интерфейсов провайдеров
+- Настройка интерфейсов провайдеров (обратите внимание, что первый провайдер приходит через VLAN, потому что оборудование провайдера находится в другом от CORE-RT помещении)
 
-
-
+CORE-RT(config)#interface GigabitEthernet0/0.70
+CORE-RT(config-subif)#ip address 213.87.113.2 255.255.255.248
+CORE-RT(config-subif)#end
+CORE-RT(config)#interface GigabitEthernet0/2
+CORE-RT(config-if)#ip address 109.127.128.2 255.255.255.248
+CORE-RT(config-if)#nos sh
+CORE-RT(config-if)#end
 
 ### Настройка сохранения логов и конфигураций сетевых устройств на syslog и ftp сервер в сети SERVERS ### 
 9. Настроить  сохранение конфигураций
