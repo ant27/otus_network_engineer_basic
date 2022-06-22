@@ -555,10 +555,29 @@ PROD3-RT(config-subif)#description telephones
 PROD3-RT(config-subif)#encapsulation dot1Q 40
 PROD3-RT(config-subif)#ip address 10.10.40.100 255.255.255.0
 PROD3-RT(config-subif)#end
+PROD3-RT(config)#interface GigabitEthernet0/0.70
+PROD3-RT(config-subif)#description internet
+PROD3-RT(config-subif)#encapsulation dot1Q 70
+PROD3-RT(config-subif)#ip address 10.10.70.100 255.255.255.0
+PROD3-RT(config-subif)#end
 PROD3-RT(config)#interface GigabitEthernet0/0
 PROD3-RT(config-if)#no sh
+PROD3-RT(config)#interface GigabitEthernet0/1.10
+PROD3-RT(config-subif)#description management
+PROD3-RT(config-subif)#encapsulation dot1Q 10
+PROD3-RT(config)#interface GigabitEthernet0/1.20
+PROD3-RT(config-subif)#description servers
+PROD3-RT(config-subif)#encapsulation dot1Q 20
+PROD3-RT(config)#interface GigabitEthernet0/1.30
+PROD3-RT(config-subif)#description users
+PROD3-RT(config-subif)#encapsulation dot1Q 30
+PROD3-RT(config)#interface GigabitEthernet0/1.40
+PROD3-RT(config-subif)#description telephones
+PROD3-RT(config-subif)#encapsulation dot1Q 40
+PROD3-RT(config)#interface GigabitEthernet0/1.70
+PROD3-RT(config-subif)#description internet
+PROD3-RT(config-subif)#encapsulation dot1Q 70
 PROD3-RT(config)#interface GigabitEthernet0/1
-PROD3-RT(config-if)#ip address 192.168.3.1 255.255.255.0
 PROD3-RT(config-if)#no sh
 ```
 
