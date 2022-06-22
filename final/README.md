@@ -160,7 +160,6 @@ switchport trunk allowed vlan 10,20,30,40,50,60,333
 switchport trunk native vlan 333
 ```
 
-
 Включение портов коммутаторов в EtherChannell
 ```
 SW1-OPTICAL(config)#interface range fa0/1 - 2
@@ -194,6 +193,27 @@ SW3-OPTICAL(config-if)#switchport mode trunk
 SW3-OPTICAL(config-if)#channel-group 3 mode active
 SW3-OPTICAL(config-if)#no shut
 ```
+
+- Настройка виртуального интерфейса management vlan и шлюза по умолчанию
+```
+SW1-OPTICAL(config)#interface vlan10
+SW1-OPTICAL(config-if)#ip address 10.10.10.1 255.255.255.0 
+SW1-OPTICAL(config-if)#exit 
+SW1-OPTICAL(config)#ip default-gateway 10.10.10.100
+```
+```
+SW2-OPTICAL(config)#interface vlan10
+SW2-OPTICAL(config-if)#ip address 10.10.10.2 255.255.255.0 
+SW2-OPTICAL(config-if)#exit 
+SW2-OPTICAL(config)#ip default-gateway 10.10.10.100
+```
+```
+SW3-OPTICAL(config)#interface vlan10
+SW3-OPTICAL(config-if)#ip address 10.10.10.3 255.255.255.0 
+SW3-OPTICAL(config-if)#exit 
+SW3-OPTICAL(config)#ip default-gateway 10.10.10.100
+```
+
 
 - Настройка STP для оптимизации путей для траффика разных VLAN
 
@@ -499,8 +519,19 @@ SW1-CORP(config-if)#switchport mode access
 SW1-CORP(config-if)#switchport access vlan 10
 SW1-CORP(config-if)#no sh
 ```
-
-
+- Настройка виртуального интерфейса management vlan и шлюза по умолчанию
+```
+SW1-CORP(config)#interface vlan10
+SW1-CORP(config-if)#ip address 10.10.10.7 255.255.255.0 
+SW1-CORP(config-if)#exit 
+SW1-CORP(config)#ip default-gateway 10.10.10.100
+```
+```
+SW2-CORP(config)#interface vlan10
+SW2-CORP(config-if)#ip address 10.10.10.8 255.255.255.0 
+SW2-CORP(config-if)#exit 
+SW2-CORP(config)#ip default-gateway 10.10.10.100
+```
 ### Настройка сохранения логов и конфигураций сетевых устройств на syslog и ftp сервер в сети SERVERS ### 
 9. Настроить  сохранение конфигураций
 
