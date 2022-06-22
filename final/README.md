@@ -584,15 +584,31 @@ CORE-RT(config)#interface GigabitEthernet0/1
 CORE-RT(config-if)#no sh
 ```
 
-- Настройка интерфейсов провайдеров (обратите внимание, что первый провайдер приходит через VLAN, потому что оборудование провайдера находится в другом от CORE-RT помещении)
+- Настройка интерфейсов до провайдеров интернета (обратите внимание, что первый провайдер приходит через VLAN, потому что оборудование провайдера находится в другом от CORE-RT помещении)
 
+```
 CORE-RT(config)#interface GigabitEthernet0/0.70
 CORE-RT(config-subif)#ip address 213.87.113.2 255.255.255.248
 CORE-RT(config-subif)#end
 CORE-RT(config)#interface GigabitEthernet0/2
 CORE-RT(config-if)#ip address 109.127.128.2 255.255.255.248
-CORE-RT(config-if)#nos sh
+CORE-RT(config-if)#no sh
 CORE-RT(config-if)#end
+```
+
+- Настройка маршрутизаторов провайдеров интернета (внешний непровайдерский IP сымитируем через интерфейс loopback1)
+
+```
+CORE-RT(config)#interface GigabitEthernet0/0
+CORE-RT(config-if)#ip address 213.87.113.1 255.255.255.248
+CORE-RT(config-if)#no sh
+CORE-RT(config-subif)#end
+CORE-RT(config-subif)#end
+CORE-RT(config)#interface GigabitEthernet0/2
+CORE-RT(config-if)#ip address 109.127.128.2 255.255.255.248
+CORE-RT(config-if)#no sh
+CORE-RT(config-if)#end
+```
 
 ### Настройка сохранения логов и конфигураций сетевых устройств на syslog и ftp сервер в сети SERVERS ### 
 9. Настроить  сохранение конфигураций
