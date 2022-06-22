@@ -252,7 +252,7 @@ SW3-OPTICAL(config)#ip default-gateway 10.10.10.100
 |                      | VLAN60     | 60       | 10.10.60.1   | 255.255.255.252 |                   | Production Service 2 VLAN|
 |                      | G0/0       | Trunk    |              |                 |                   | Trunk link vlan 10,20,50,60|
 |                      | G0/1       |          | 192.168.3.1  | 255.255.255.0   |                   | RT Interface in Production Service 3 NET |
-| TCP-FTP-CLIENT       | F0/1       |          | 192.168.3.2  | 255.255.255.0   | 192.168.3.1       | HTTPS SERVER |
+| TCP-FTP-CLIENT       | F0/1       |          | 192.168.3.2  | 255.255.255.0   | 192.168.3.1       | PROD3 SERVER |
 
 
 - Настройка интерфейсов маршрутизаторов
