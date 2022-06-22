@@ -397,7 +397,7 @@ SW2-OPTICAL(config-if)#no sh
 8. Настройка отказоустойчивости интернета.
 9. Настройка port-security на access портах сети USERS
 
-### Конфигурация корпоративной сети интерфейсов ###
+### Конфигурация интерфейсов корпоративной сети ###
 
 | Устройство           | Интерфейс  |   VLAN   |   IP-адрес   | Маска подсети   | Шлюз по умолчанию | Примечание |
 | :------------------: | :--------: | :------- | :----------: | :-------------- | :---------------- | :---------------- |
@@ -519,7 +519,7 @@ SW1-CORP(config-if)#switchport mode access
 SW1-CORP(config-if)#switchport access vlan 10
 SW1-CORP(config-if)#no sh
 ```
-- Настройка виртуального интерфейса management vlan и шлюза по умолчанию
+- Настройка виртуального интерфейса management vlan и шлюза по умолчанию на коммутаторах SW1-CORP и SW2-CORP
 ```
 SW1-CORP(config)#interface vlan10
 SW1-CORP(config-if)#ip address 10.10.10.6 255.255.255.0 
@@ -532,6 +532,48 @@ SW2-CORP(config-if)#ip address 10.10.10.7 255.255.255.0
 SW2-CORP(config-if)#exit 
 SW2-CORP(config)#ip default-gateway 10.10.10.100
 ```
+#### Настройка маршрутизатора CORE-RT#### 
+
+- Настройка VLAN на маршрутизаторе CORE-RT
+
+```
+PROD3-RT(config)#interface GigabitEthernet0/0.10
+PROD3-RT(config-subif)#description management
+PROD3-RT(config-subif)#encapsulation dot1Q 10
+PROD3-RT(config-subif)#ip address 10.10.10.100 255.255.255.0
+PROD3-RT(config-subif)#end
+PROD3-RT(config)#interface GigabitEthernet0/0.20
+PROD3-RT(config-subif)#description servers
+PROD3-RT(config-subif)#encapsulation dot1Q 20
+PROD3-RT(config-subif)#ip address 10.10.20.100 255.255.255.0
+PROD3-RT(config-subif)#end
+PROD3-RT(config)#interface GigabitEthernet0/0.30
+PROD3-RT(config-subif)#description production_service_1
+PROD3-RT(config-subif)#encapsulation dot1Q 30
+PROD3-RT(config-subif)#ip address 10.10.30.100 255.255.255.0
+PROD3-RT(config-subif)#end
+PROD3-RT(config)#interface GigabitEthernet0/0.40
+PROD3-RT(config-subif)#description production_service_1
+PROD3-RT(config-subif)#encapsulation dot1Q 40
+PROD3-RT(config-subif)#ip address 10.10.40.100 255.255.255.0
+PROD3-RT(config-subif)#end
+PROD3-RT(config)#interface GigabitEthernet0/0.50
+PROD3-RT(config-subif)#description production_service_1
+PROD3-RT(config-subif)#encapsulation dot1Q 50
+PROD3-RT(config-subif)#ip address 10.10.50.100 255.255.255.252
+PROD3-RT(config-subif)#end
+PROD3-RT(config)#interface GigabitEthernet0/0.60
+PROD3-RT(config-subif)#description production_service_2
+PROD3-RT(config-subif)#encapsulation dot1Q 60
+PROD3-RT(config-subif)#ip address 10.10.60.100 255.255.255.252
+PROD3-RT(config-subif)#end
+PROD3-RT(config)#interface GigabitEthernet0/0
+PROD3-RT(config-if)#no sh
+PROD3-RT(config)#interface GigabitEthernet0/1
+PROD3-RT(config-if)#ip address 192.168.3.1 255.255.255.0
+PROD3-RT(config-if)#no sh
+```
+
 ### Настройка сохранения логов и конфигураций сетевых устройств на syslog и ftp сервер в сети SERVERS ### 
 9. Настроить  сохранение конфигураций
 
