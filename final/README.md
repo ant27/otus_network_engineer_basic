@@ -391,15 +391,15 @@ SW2-OPTICAL(config-if)#no sh
 - ISP-2 (Ростелеком), предоставленные IP: 109.127.128.2 - 4/29, шлюз, DNS: 109.127.128.1
 
 Задачи:
-1. Разрешение доступа из сети USERS в сеть SERVERS только к IP серверов WEB-CORP по HTTPS, FILE-BACKUP-CORP по SAMBA, и NTP-CORP по NTP. 
-2. Настройка в CORE-RT DHCP-сервера в сети USERS.
-3. Настройка в CORE-RT DNS-сервера в сети USERS для локальных ресурсов WEB-CORP, FILE-BACKUP-CORP, NTP-CORP.
-4. Настроить работу NTP-сервера для сети USERS, MANAGEMENT и серверов в комплексах PROD1, PROD2, PROD3.
-5. Настроить доступ с ноутбука SYSADM в сеть USERS, MANAGEMENT,SERVERS
-6. Настроить доступ к WEB-CORP серверу из интернета по статитескому NAT.
-7. Настроить доступ в интернет из сети USERS по PAT.
-8. Настройка отказоустойчивости интернета.
-9. Настройка port-security на access портах сети USERS
+1. Настройка в CORE-RT DHCP-сервера в сети USERS.
+2. Настройка в CORE-RT DNS-сервера в сети USERS для локальных ресурсов WEB-CORP, FILE-BACKUP-CORP, NTP-CORP.
+3. Разрешение доступа из сети USERS в сеть SERVERS только к IP серверов WEB-CORP по HTTPS, FILE-BACKUP-CORP по SAMBA, и NTP-CORP по NTP.
+4. Запрещение доступа по SSH из любых сетей в сеть MANAGEMENT и в сеть SERVERS, кроме как с IP-адреса SYSADM. 
+7. Настроить работу NTP-сервера для всех устройств в MANAGEMENT и серверов в комплексах PROD1, PROD2, PROD3.
+8. Настроить доступ к WEB-CORP серверу из интернета по статитескому NAT.
+9. Настроить доступ в интернет из сети USERS по PAT.
+10. Настройка отказоустойчивости интернета.
+11. Настройка port-security на access портах сети USERS
 
 ### Конфигурация интерфейсов корпоративной сети ###
 
@@ -626,14 +626,46 @@ SW1-OPTICAL(config-if)#switchport mode access
 SW1-OPTICAL(config-if)#switchport access vlan 70
 SW1-OPTICAL(config-if)#no sh
 ```
+### 1. Настройка в CORE-RT DHCP-сервера в сети USERS. ###
 
+- Настройка исключения первых 10 ip-адресов из DHCP сети USERS для ручного назначения их устройствам (например, принтерам)
+```
+CORE-RT(config)#ip dhcp excluded-address 10.10.30.1 10.10.30.10
+```
+- Настройка пула для сети USERS (определение подсети, шлюза по умолчанию, адресов DNS, имени домена, времени аренды адреса в днях).
+```
+CORE-RT(config)#ip dhcp pool USERS_DHCP_POOL
+CORE-RT(dhcp-config)#network 10.10.30.0 255.255.255.0
+CORE-RT(dhcp-config)#default-router 10.10.30.100
+CORE-RT(dhcp-config)#dns-server 10.10.30.100
+CORE-RT(dhcp-config)#domain-name megacompany.com
+CORE-RT(dhcp-config)#lease 2 12 30
+```
 
 ### Разрешение доступа из сети USERS в сеть SERVERS только к IP серверов WEB-CORP по HTTPS, FILE-BACKUP-CORP по SAMBA, и NTP-CORP по NTP. ### 
 
 Пользователи сети USERS (обычные юзвери) могут ходить во все VLAN'ы без ограничений за счет маршрутизации CORE-RT. Это нехорошо.
 Настроим ACL для доступа из сети USERS ТОЛЬКО в сеть SERVERS ТОЛЬКО к IP серверов WEB-CORP по HTTPS, FILE-BACKUP-CORP по SAMBA, и NTP-CORP по NTP. К остальным серверам доступа у юзверей быть не должно.
 
-Нужно создать access-list с первым правилом, разрешающим пакеты с ip источника, соответствующего диапазону сети USERS (10.10.30.0/24), ip назначения, соответствующего хосту WEB-CORP (10.20.0.0/24), протоколом tcp и портом 443. И затем применить его на интерфейсе GigabitEthernet0/1.40 для входящего траффика.
+Описание 1-го правила: Нужно создать access-list с правилом, разрешающим пакеты с ip источника, соответствующего диапазону сети USERS (10.10.30.0/24), ip назначения, соответствующего хосту WEB-CORP (10.10.20.16), протоколом tcp и портом 443. И затем применить его на интерфейсе GigabitEthernet0/1.30 для входящего траффика.
+Описание 2-го правила: Нужно создать access-list с правилом, разрешающим пакеты с ip источника, соответствующего диапазону сети USERS (10.10.30.0/24), ip назначения, соответствующего хосту FILE-BACKUP-CORP (10.10.20.14), протоколом tcp и портами 139, 445. И затем применить его на интерфейсе GigabitEthernet0/1.30 для входящего траффика.
+Описание 3-го правила: Нужно создать access-list с правилом, разрешающим пакеты с ip источника, соответствующего диапазону сети USERS (10.10.30.0/24), ip назначения, соответствующего хосту FILE-BACKUP-CORP (10.10.20.10), протоколом udp и портами 1023. И затем применить его на интерфейсе GigabitEthernet0/1.30 для входящего траффика.
+
+Весь остальной траффик запрещается.
+
+```
+CORE-RT(config)#ip access-list extended USERS_TO_SERVERS
+CORE-RT(config-std-nacl)#accept tcp 10.10.30.0 0.0.0.255 host 10.10.20.16 eq 443
+CORE-RT(config-std-nacl)#accept tcp 10.10.30.0 0.0.0.255 host 10.10.20.14 eq 139
+CORE-RT(config-std-nacl)#accept tcp 10.10.30.0 0.0.0.255 host 10.10.20.14 eq 445
+CORE-RT(config-std-nacl)#accept tcp 10.10.30.0 0.0.0.255 host 10.10.20.10 eq ntp
+CORE-RT(config-std-nacl)#deny ip any any
+CORE-RT(config)#int GigabitEthernet0/1.30
+CORE-RT(config-if)#ip access-group USERS_TO_SERVERS in
+```
+
+### Разрешение доступа к NTP-сервера из сети USERS, MANAGEMENT и серверов в комплексах PROD1, PROD2, PROD3.###
+
 
 
 ### Настройка сохранения логов и конфигураций сетевых устройств на syslog и ftp сервер в сети SERVERS ### 
