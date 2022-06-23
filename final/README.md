@@ -393,9 +393,10 @@ SW2-OPTICAL(config-if)#no sh
 Задачи:
 1. Настройка в CORE-RT DHCP-сервера в сети USERS.
 2. Настройка в CORE-RT DNS-сервера в сети USERS для локальных ресурсов WEB-CORP, FILE-BACKUP-CORP, NTP-CORP.
-3. Разрешение доступа из сети USERS в сеть SERVERS только к IP серверов WEB-CORP по HTTPS, FILE-BACKUP-CORP по SAMBA, и NTP-CORP по NTP.
-4. Запрещение доступа по SSH из любых сетей в сеть MANAGEMENT и в сеть SERVERS, кроме как с IP-адреса SYSADM. 
-7. Настроить работу NTP-сервера для всех устройств в MANAGEMENT и серверов в комплексах PROD1, PROD2, PROD3.
+3. Настройка синхронизации по NTP всех устройств в MANAGEMENT сети и серверов в сети SERVERS и серверов в комплексах PROD1, PROD2, PROD3.
+4. Разрешение доступа из сети USERS в сеть SERVERS только к IP серверов WEB-CORP по HTTPS, FILE-BACKUP-CORP по SAMBA, и NTP-CORP по NTP.
+5. Запрещение доступа по SSH из любых сетей в сеть MANAGEMENT и в сеть SERVERS, кроме как с IP-адреса SYSADM. 
+7. 
 8. Настроить доступ к WEB-CORP серверу из интернета по статитескому NAT.
 9. Настроить доступ в интернет из сети USERS по PAT.
 10. Настройка отказоустойчивости интернета.
@@ -642,6 +643,24 @@ CORE-RT(dhcp-config)#domain-name megacompany.com
 CORE-RT(dhcp-config)#lease 2 12 30
 ```
 
+### 2. Настройка в CORE-RT DNS-сервера в сети USERS для локальных ресурсов WEB-CORP, FILE-BACKUP-CORP, NTP-CORP. ###
+
+- Настройка DNS-сервера на CORE-RT для разрешения локальных адресов
+```
+CORE-RT(config)ip dns server
+CORE-RT(config)ip host web-corp.local 10.10.20.16
+CORE-RT(config)ip host file-backup-corp.local 10.10.20.16
+CORE-RT(config)ip host ntp-corp.local 10.10.20.16
+```
+К сожалению в packet-tracer не реализована команда "ip dns server".
+
+- Настройка CORE-RT как DNS-клиента для разрешения глобальных адресов (в проекте настроен google.com)
+```
+CORE-RT(config)ip domain-lookup
+CORE-RT(config)ip name-server 8.8.8.8
+```
+
+
 ### Разрешение доступа из сети USERS в сеть SERVERS только к IP серверов WEB-CORP по HTTPS, FILE-BACKUP-CORP по SAMBA, и NTP-CORP по NTP. ### 
 
 Пользователи сети USERS (обычные юзвери) могут ходить во все VLAN'ы без ограничений за счет маршрутизации CORE-RT. Это нехорошо.
@@ -664,9 +683,34 @@ CORE-RT(config)#int GigabitEthernet0/1.30
 CORE-RT(config-if)#ip access-group USERS_TO_SERVERS in
 ```
 
-### Разрешение доступа к NTP-сервера из сети USERS, MANAGEMENT и серверов в комплексах PROD1, PROD2, PROD3.###
+### Настройка синхронизации по NTP всех устройств в MANAGEMENT сети и серверов в комплексах PROD1, PROD2, PROD3. ###
 
+На предприятии имеется промышленный NTP-сервер c синхронизацией по GPS и GLONASS.
 
+Необходимо настроить синхронизацию всех устройств в MANAGEMENT сети с NTP-сервером в сети SERVERS. Также необходимо осуществить доступность по ping серверов в комплексах PROD1, PROD2, PROD3 c NTP-сервером в сети SERVERS.
+В качестве резервного для всех устройств NTP-сервера будет использован CORE-RT, настроенный как master и тоже получающий данные от двух источников - локального NTP-сервера и глобального доступного из интернета time.google.com
+
+- Настройка NTP-клиентов на всех сетевых устройствах (показано для SW1-OPTICAL, для других аналогично)
+```
+SW1-OPTICAL(config)#ntp server 10.10.20.10 prefer
+SW1-OPTICAL(config)#ntp server 10.10.20.100
+```
+- Настройка CORE-RT как NTP-сервера
+```
+CORE-RT(config)#ntp master 2
+CORE-RT(config)#ntp server 10.10.20.10
+CORE-RT(config)#ntp server time.google.com
+```
+К сожалению cisco packet tracer по видимому, не поддерживает несколько записей "ntp server"
+
+- Настройка маршрутов для доступности NTP-сервера  для серверов в комплексах PROD1, PROD2, PROD3
+
+PROD1-RT(config)#ip route 10.10.20.0 255.255.255.0 10.10.10.100
+PROD2-RT(config)#ip route 10.10.20.0 255.255.255.0 10.10.10.100
+PROD3-RT(config)#ip route 10.10.20.0 255.255.255.0 10.10.10.100
+
+CORE-RT(config)#ip route 192.168.1.0 255.255.255.0 10.10.10.4
+CORE-RT(config)#ip route 192.168.2.0 255.255.255.0 10.10.10.5
 
 ### Настройка сохранения логов и конфигураций сетевых устройств на syslog и ftp сервер в сети SERVERS ### 
 9. Настроить  сохранение конфигураций
