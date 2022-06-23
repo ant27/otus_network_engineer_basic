@@ -307,12 +307,12 @@ PROD2-RT(config-if)#no sh
 PROD3-RT(config)#interface GigabitEthernet0/0.10
 PROD3-RT(config-subif)#description management
 PROD3-RT(config-subif)#encapsulation dot1Q 10
-PROD3-RT(config-subif)#ip address 10.10.10.5 255.255.255.0
+PROD3-RT(config-subif)#ip address 10.10.10.6 255.255.255.0
 PROD3-RT(config-subif)#end
 PROD3-RT(config)#interface GigabitEthernet0/0.20
 PROD3-RT(config-subif)#description servers
 PROD3-RT(config-subif)#encapsulation dot1Q 20
-PROD3-RT(config-subif)#ip address 10.10.20.5 255.255.255.0
+PROD3-RT(config-subif)#ip address 10.10.20.6 255.255.255.0
 PROD3-RT(config-subif)#end
 PROD3-RT(config)#interface GigabitEthernet0/0.50
 PROD3-RT(config-subif)#description production_service_1
