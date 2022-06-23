@@ -242,14 +242,14 @@ SW3-OPTICAL(config)#ip default-gateway 10.10.10.100
 | FTP_PROD             | F0/1       |          | 192.168.1.3  | 255.255.255.0   | 192.168.1.1       | FTP SERVER |
 | PROD2-RT             | VLAN10     | 10       | 10.10.10.5   | 255.255.255.0   | 10.10.10.100      | Management VLAN   |
 |                      | VLAN20     | 20       | 10.10.20.5   | 255.255.255.0   | 10.10.20.100      | Servers VLAN      |
-|                      | VLAN60     | 60       | 10.10.60.2   | 255.255.255.252 |                   | Production Service 2 VLAN |
+|                      | VLAN60     | 60       | 10.10.60.2   | 255.255.255.248 |                   | Production Service 2 VLAN |
 |                      | G0/0       | Trunk    |              |                 |                   | Trunk link vlan 10,20,60|
 |                      | G0/1       |          | 192.168.2.1  | 255.255.255.0   |                   | RT Interface in Production Service 2 NET |
 | HTTPS_PROD           | F0/1       |          | 192.168.2.2  | 255.255.255.0   | 192.168.2.1       | HTTPS SERVER |
-| PROD3-RT             | VLAN10     | 10       | 10.10.10.6   | 255.255.255.0   | 10.10.10.100      | Management VLAN   |
-|                      | VLAN20     | 20       | 10.10.20.6   | 255.255.255.0   | 10.10.20.100      | Servers VLAN      |
+| PROD3-RT             | VLAN10     | 10       | 10.10.10.26  | 255.255.255.0   | 10.10.10.100      | Management VLAN   |
+|                      | VLAN20     | 20       | 10.10.20.26  | 255.255.255.0   | 10.10.20.100      | Servers VLAN      |
 |                      | VLAN50     | 50       | 10.10.50.1   | 255.255.255.252 |                   | Production Service 1 VLAN |
-|                      | VLAN60     | 60       | 10.10.60.1   | 255.255.255.252 |                   | Production Service 2 VLAN|
+|                      | VLAN60     | 60       | 10.10.60.1   | 255.255.255.248 |                   | Production Service 2 VLAN|
 |                      | G0/0       | Trunk    |              |                 |                   | Trunk link vlan 10,20,50,60|
 |                      | G0/1       |          | 192.168.3.1  | 255.255.255.0   |                   | RT Interface in Production Service 3 NET |
 | TCP-FTP-CLIENT       | F0/1       |          | 192.168.3.2  | 255.255.255.0   | 192.168.3.1       | PROD3 SERVER |
@@ -294,7 +294,7 @@ PROD2-RT(config-subif)#end
 PROD2-RT(config)#interface GigabitEthernet0/0.60
 PROD2-RT(config-subif)#description production_service_2
 PROD2-RT(config-subif)#encapsulation dot1Q 60
-PROD2-RT(config-subif)#ip address 10.10.60.2 255.255.255.252
+PROD2-RT(config-subif)#ip address 10.10.60.2 255.255.255.248
 PROD2-RT(config-subif)#end
 PROD2-RT(config)#interface GigabitEthernet0/0
 PROD2-RT(config-if)#no sh
@@ -307,12 +307,12 @@ PROD2-RT(config-if)#no sh
 PROD3-RT(config)#interface GigabitEthernet0/0.10
 PROD3-RT(config-subif)#description management
 PROD3-RT(config-subif)#encapsulation dot1Q 10
-PROD3-RT(config-subif)#ip address 10.10.10.6 255.255.255.0
+PROD3-RT(config-subif)#ip address 10.10.10.26 255.255.255.0
 PROD3-RT(config-subif)#end
 PROD3-RT(config)#interface GigabitEthernet0/0.20
 PROD3-RT(config-subif)#description servers
 PROD3-RT(config-subif)#encapsulation dot1Q 20
-PROD3-RT(config-subif)#ip address 10.10.20.6 255.255.255.0
+PROD3-RT(config-subif)#ip address 10.10.20.26 255.255.255.0
 PROD3-RT(config-subif)#end
 PROD3-RT(config)#interface GigabitEthernet0/0.50
 PROD3-RT(config-subif)#description production_service_1
@@ -322,7 +322,7 @@ PROD3-RT(config-subif)#end
 PROD3-RT(config)#interface GigabitEthernet0/0.60
 PROD3-RT(config-subif)#description production_service_2
 PROD3-RT(config-subif)#encapsulation dot1Q 60
-PROD3-RT(config-subif)#ip address 10.10.60.1 255.255.255.252
+PROD3-RT(config-subif)#ip address 10.10.60.1 255.255.255.248
 PROD3-RT(config-subif)#end
 PROD3-RT(config)#interface GigabitEthernet0/0
 PROD3-RT(config-if)#no sh
@@ -391,15 +391,20 @@ SW2-OPTICAL(config-if)#no sh
 - ISP-2 (Ростелеком), предоставленные IP: 109.127.128.2 - 4/29, шлюз, DNS: 109.127.128.1
 
 Задачи:
-1. Настройка в CORE-RT DHCP-сервера в сети USERS.
-2. Настройка в CORE-RT DNS-сервера в сети USERS для локальных ресурсов WEB-CORP, FILE-BACKUP-CORP, NTP-CORP.
-3. Настройка синхронизации по NTP всех устройств в MANAGEMENT сети и серверов в сети SERVERS и серверов в комплексах PROD1, PROD2, PROD3.
-4. Разрешение доступа из сети USERS в сеть SERVERS только к IP серверов WEB-CORP по HTTPS, FILE-BACKUP-CORP по SAMBA, и NTP-CORP по NTP.
-5. Запрещение доступа по SSH из любых сетей в сеть MANAGEMENT и в сеть SERVERS, кроме как с IP-адреса SYSADM. 
-7. 
-8. Настроить доступ к WEB-CORP серверу из интернета по статитескому NAT.
-9. Настроить доступ в интернет из сети USERS по PAT.
-10. Настройка отказоустойчивости интернета.
+1. Настройка CORE-RT для доступа к интернету через двух провайдеров.
+2. Настройка в CORE-RT DHCP-сервера в сети USERS.
+3. Настройка в CORE-RT DNS-сервера в сети USERS для локальных ресурсов WEB-CORP, FILE-BACKUP-CORP, NTP-CORP.
+4. Настройка синхронизации по NTP всех устройств в MANAGEMENT сети и серверов в сети SERVERS и серверов в комплексах PROD1, PROD2, PROD3.
+5. Настройка сохранения логирования и конфигураций на ftp-сервер LOG-CORP
+
+
+6. Настройка доступа в интернет с сервера HTTPS-PROD.
+7. Настройка доступ к WEB-CORP и HTTPS-PROD серверам из интернета по статитескому NAT.
+8. Настройка доступа в интернет из сети USERS по PAT.
+
+
+7. Разрешение доступа из сети USERS в сеть SERVERS только к IP серверов WEB-CORP по HTTPS, FILE-BACKUP-CORP по SAMBA, и NTP-CORP по NTP.
+
 11. Настройка port-security на access портах сети USERS
 
 ### Конфигурация интерфейсов корпоративной сети ###
@@ -439,6 +444,7 @@ SW2-OPTICAL(config-if)#no sh
 |                      | VLAN20     | 20       | 10.10.20.100 | 255.255.255.0   |                   | Servers VLAN       |
 |                      | VLAN30     | 30       | 10.10.30.100 | 255.255.255.0   |                   | Users VLAN       |
 |                      | VLAN40     | 40       | 10.10.40.100 | 255.255.255.0   |                   | Telephones VLAN       |
+|                      | VLAN60     | 60       | 10.10.60.3   | 255.255.255.248 |                   | Production Service 2 VLAN  |
 |                      | VLAN70     | 70       | 213.87.113.2 | 255.255.255.248 |213.87.113.1       | Internet ISP-1 VLAN |
 |                      | G0/0       | Trunk    |              |                 |                   | Trunk link for all vlan to SW2-CORP |
 |                      | G0/1       | Trunk    |              |                 |                   | Trunk link for all vlan to SW1-CORP |
@@ -560,6 +566,11 @@ CORE-RT(config-subif)#description telephones
 CORE-RT(config-subif)#encapsulation dot1Q 40
 CORE-RT(config-subif)#ip address 10.10.40.100 255.255.255.0
 CORE-RT(config-subif)#end
+CORE-RT(config)#interface GigabitEthernet0/0.60
+CORE-RT(config-subif)#description prod_service2
+CORE-RT(config-subif)#encapsulation dot1Q 60
+CORE-RT(config-subif)#ip address 10.10.60.3 255.255.255.248
+CORE-RT(config-subif)#end
 CORE-RT(config)#interface GigabitEthernet0/0.70
 CORE-RT(config-subif)#description ISP-1-MTS
 CORE-RT(config-subif)#encapsulation dot1Q 70
@@ -598,25 +609,17 @@ CORE-RT(config-if)#no sh
 CORE-RT(config-if)#end
 ```
 
-- Настройка маршрутизаторов провайдеров интернета ISP-1 и ISP-2 (внешний непровайдерский IP сымитируем через интерфейс loopback1)
+- Настройка маршрутизаторов провайдеров интернета ISP-1 и ISP-2.
 
 ```
 ISP-1(config)#interface GigabitEthernet0/0
 ISP-1(config-if)#ip address 213.87.113.1 255.255.255.248
 ISP-1(config-if)#no sh
 ISP-1(config-if)#end
-ISP-1(config)#interface loopback1
-ISP-1(config-if)#ip address 8.8.8.8 0.0.0.0
-ISP-1(config-if)#no sh
-ISP-1(config-if)#end
 ```
 ```
 ISP-2(config)#interface GigabitEthernet0/0
 ISP-2(config-if)#ip address 109.127.128.1 255.255.255.248
-ISP-2(config-if)#no sh
-ISP-2(config-if)#end
-ISP-2(config)#interface loopback1
-ISP-2(config-if)#ip address 8.8.8.8 0.0.0.0
 ISP-2(config-if)#no sh
 ISP-2(config-if)#end
 ```
@@ -627,7 +630,15 @@ SW1-OPTICAL(config-if)#switchport mode access
 SW1-OPTICAL(config-if)#switchport access vlan 70
 SW1-OPTICAL(config-if)#no sh
 ```
-### 1. Настройка в CORE-RT DHCP-сервера в сети USERS. ###
+
+### 1. Настройка CORE-RT для доступа к интернету через двух провайдеров. ### 
+
+CORE-RT(config)#ip route 0.0.0.0 0.0.0.0 109.127.128.1
+CORE-RT(config)#ip route 0.0.0.0 0.0.0.0 213.87.113.1
+
+Настройка CLA для проверки доступности провайдера - в разработке
+
+### 2. Настройка в CORE-RT DHCP-сервера в сети USERS. ###
 
 - Настройка исключения первых 10 ip-адресов из DHCP сети USERS для ручного назначения их устройствам (например, принтерам)
 ```
@@ -643,7 +654,7 @@ CORE-RT(dhcp-config)#domain-name megacompany.com
 CORE-RT(dhcp-config)#lease 2 12 30
 ```
 
-### 2. Настройка в CORE-RT DNS-сервера в сети USERS для локальных ресурсов WEB-CORP, FILE-BACKUP-CORP, NTP-CORP. ###
+### 3. Настройка в CORE-RT DNS-сервера в сети USERS для локальных ресурсов WEB-CORP, FILE-BACKUP-CORP, NTP-CORP. ###
 
 - Настройка DNS-сервера на CORE-RT для разрешения локальных адресов
 ```
@@ -659,6 +670,82 @@ CORE-RT(config)ip host ntp-corp.local 10.10.20.16
 CORE-RT(config)ip domain-lookup
 CORE-RT(config)ip name-server 8.8.8.8
 ```
+
+### 4. Настройка синхронизации по NTP всех устройств в MANAGEMENT сети и серверов в комплексах PROD1, PROD2, PROD3. ###
+
+На предприятии имеется промышленный NTP-сервер c синхронизацией по GPS и GLONASS.
+
+Необходимо настроить синхронизацию всех устройств в MANAGEMENT сети с NTP-сервером в сети SERVERS. Также необходимо осуществить доступность по ping серверов в комплексах PROD1, PROD2, PROD3 c NTP-сервером в сети SERVERS.
+В качестве резервного для всех устройств NTP-сервера будет использован CORE-RT, настроенный как master и тоже получающий данные от двух источников - локального NTP-сервера и глобального доступного из интернета time.google.com
+
+- Настройка NTP-клиентов на всех сетевых устройствах (показано для SW1-OPTICAL, для других аналогично)
+```
+SW1-OPTICAL(config)#ntp server 10.10.20.10 prefer
+SW1-OPTICAL(config)#ntp server 10.10.20.100
+```
+- Настройка CORE-RT как NTP-сервера
+```
+CORE-RT(config)#ntp master 2
+CORE-RT(config)#ntp server 10.10.20.10
+CORE-RT(config)#ntp server time.google.com
+```
+К сожалению cisco packet tracer по видимому, не поддерживает несколько записей "ntp server"
+
+- Настройка маршрутов для доступности NTP-сервера  для серверов в комплексах PROD1, PROD2, PROD3
+```
+PROD1-RT(config)#ip route 10.10.20.0 255.255.255.0 10.10.10.100
+PROD2-RT(config)#ip route 10.10.20.0 255.255.255.0 10.10.10.100
+PROD3-RT(config)#ip route 10.10.20.0 255.255.255.0 10.10.10.100
+```
+```
+CORE-RT(config)#ip route 192.168.1.0 255.255.255.0 10.10.10.4
+CORE-RT(config)#ip route 192.168.2.0 255.255.255.0 10.10.10.5
+CORE-RT(config)#ip route 192.168.3.0 255.255.255.0 10.10.10.26
+```
+
+### 5. Настройка доступа в интернет с сервера HTTPS-PROD. ###
+
+Для настройки выхода в интернет для сервера HTTPS-PROD нужно прописать маршрут по умолчанию на маршрутизаторе PROD2-RT. Пускай в интернет траффик в этом маршрутизаторе бегает по VLAN 60 (PROD2).
+
+```
+PROD2-RT(config)#ip route 0.0.0.0 0.0.0.0 10.10.60.3
+```
+
+### 5. Настройка доступ к WEB-CORP и HTTPS-PROD серверам из интернета по статитескому NAT. ###
+
+- Настраиваем интрфейсы для натирования
+```
+CORE-RT(config)#interface GigabitEthernet0/0.20
+CORE-RT(config-subif)#ip nat inside
+CORE-RT(config-subif)#interface GigabitEthernet0/0.60
+CORE-RT(config-subif)#ip nat inside
+CORE-RT(config-subif)#interface GigabitEthernet0/0.70
+CORE-RT(config-subif)#ip nat outside
+CORE-RT(config-subif)#interface GigabitEthernet0/1.20
+CORE-RT(config-subif)#ip nat inside
+CORE-RT(config-subif)#interface GigabitEthernet0/1.60
+CORE-RT(config-subif)#ip nat inside
+CORE-RT(config-subif)#interface GigabitEthernet0/1.70
+CORE-RT(config-subif)#ip nat outside
+```
+
+- Настройка статического NAT для сервера WEB-CORP (глобальный IP берем из пула ISP-1)
+```
+CORE-RT(config)# ip nat inside source static 10.10.20.16 213.87.113.3
+```
+- Настройка статического NAT для сервера HTTP-PROD (глобальный IP берем из пула ISP-2)
+```
+CORE-RT(config)# ip nat inside source static 192.168.2.2 109.127.128.3 
+```
+
+
+### 6.Настройка сохранения логирования и конфигураций на ftp-сервер LOG-CORP ###
+
+
+
+CORE-RT(config)#ip nat pool ISP-1-POOL 213.87.113.3 213.87.113.4 netmask 255.255.255.248
+CORE-RT(config)#ip nat pool ISP-2-POOL 109.127.128.3 109.127.128.4 netmask 255.255.255.248
+
 
 
 ### Разрешение доступа из сети USERS в сеть SERVERS только к IP серверов WEB-CORP по HTTPS, FILE-BACKUP-CORP по SAMBA, и NTP-CORP по NTP. ### 
@@ -683,34 +770,7 @@ CORE-RT(config)#int GigabitEthernet0/1.30
 CORE-RT(config-if)#ip access-group USERS_TO_SERVERS in
 ```
 
-### Настройка синхронизации по NTP всех устройств в MANAGEMENT сети и серверов в комплексах PROD1, PROD2, PROD3. ###
 
-На предприятии имеется промышленный NTP-сервер c синхронизацией по GPS и GLONASS.
-
-Необходимо настроить синхронизацию всех устройств в MANAGEMENT сети с NTP-сервером в сети SERVERS. Также необходимо осуществить доступность по ping серверов в комплексах PROD1, PROD2, PROD3 c NTP-сервером в сети SERVERS.
-В качестве резервного для всех устройств NTP-сервера будет использован CORE-RT, настроенный как master и тоже получающий данные от двух источников - локального NTP-сервера и глобального доступного из интернета time.google.com
-
-- Настройка NTP-клиентов на всех сетевых устройствах (показано для SW1-OPTICAL, для других аналогично)
-```
-SW1-OPTICAL(config)#ntp server 10.10.20.10 prefer
-SW1-OPTICAL(config)#ntp server 10.10.20.100
-```
-- Настройка CORE-RT как NTP-сервера
-```
-CORE-RT(config)#ntp master 2
-CORE-RT(config)#ntp server 10.10.20.10
-CORE-RT(config)#ntp server time.google.com
-```
-К сожалению cisco packet tracer по видимому, не поддерживает несколько записей "ntp server"
-
-- Настройка маршрутов для доступности NTP-сервера  для серверов в комплексах PROD1, PROD2, PROD3
-
-PROD1-RT(config)#ip route 10.10.20.0 255.255.255.0 10.10.10.100
-PROD2-RT(config)#ip route 10.10.20.0 255.255.255.0 10.10.10.100
-PROD3-RT(config)#ip route 10.10.20.0 255.255.255.0 10.10.10.100
-
-CORE-RT(config)#ip route 192.168.1.0 255.255.255.0 10.10.10.4
-CORE-RT(config)#ip route 192.168.2.0 255.255.255.0 10.10.10.5
 
 ### Настройка сохранения логов и конфигураций сетевых устройств на syslog и ftp сервер в сети SERVERS ### 
 9. Настроить  сохранение конфигураций
