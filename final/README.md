@@ -739,7 +739,32 @@ CORE-RT(config)# ip nat inside source static 192.168.2.2 109.127.128.3
 ```
 
 
-### 6.Настройка сохранения логирования и конфигураций на ftp-сервер LOG-CORP ###
+### 6.Настройка сохранения логирования и конфигураций на syslog сервер LOG-CORP ###
+
+- Настройка логирования на удаленный syslog сервер LOG-CORP (одинаково для всех устройств)
+
+```
+CORE-RT(config)#logging trap debugging
+CORE-RT(config)#logging 10.10.20.12
+CORE-RT(config)#logging on
+```
+
+- Настройка сохранения startup-config на удаленный ftp-сервер FILESHARE-BACKUP-CORP (одинаково для всех устройств)
+
+```
+RT-01(config)#archive
+RT-01(config-archive)#log config
+RT-01(config-archive)#logging enable
+RT-01(config-archive)#logging persistent reload
+RT-01(config-archive)#hidekeys
+RT-01(config-archive)#path tftp://10.10.20.14/$H-$T
+RT-01(config-archive)#write-memory
+```
+
+*К сожалению в Packet Tracer не реализовано.
+
+
+
 
 
 
