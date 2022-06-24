@@ -640,18 +640,26 @@ CORE-RT(config)#ip route 0.0.0.0 0.0.0.0 213.87.113.1
 
 *Примечание: Вообще для резервирования интернет линков используется так называемый IP SLA. К сожалению его функционал не реализован в Packet Tracer, но на реальном Cisco 2921 все нижепреведенные настройки работают:
 
-- Настраиваем правило тестирования доступности сервера google через ISP-2 и включаем его
-
+- Настраиваем правило тестирования доступности сервера google через ISP-2
+```
 CORE-RT(config)#ip sla 1
 CORE-RT(config-ip-sla)#icmp-echo 8.8.8.8 source-interface GigabitEthernet0/2
-CORE-RT(config-ip-sla)#threshold 500
-CORE-RT(config-ip-sla)#timeout 500
+CORE-RT(config-ip-sla)#timeout 1500
 CORE-RT(config-ip-sla)#frequency 3
 CORE-RT(config-ip-sla)#exit
+```
+При данных настройках происходит пинг адреса 8.8.8.8 каждые 3 секунды, при отсутствии пинга в течение 1,5 секунд правило срабатывает
+
+Включаем выполнение тестирования
+```
 CORE-RT(config)#ip sla schedule 1 life forever start-time now
+```
+- Связываем правило с треком, который привяжем к командам, выполняемым при срабатывании правила
 
-В данном 
+track 1 ip sla 1 reachability
 
+ip route 0.0.0.0 0.0.0.0 212.19.4.129 track 1
+ip route 0.0.0.0 0.0.0.0 195.239.237.217 250
 
 
 Настройка CLA для проверки доступности провайдера - в разработке
