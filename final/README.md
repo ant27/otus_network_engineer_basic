@@ -638,7 +638,7 @@ CORE-RT(config)#ip route 0.0.0.0 0.0.0.0 213.87.113.1
 ```
 Такая схема из двух одновременно работающих маршрутов по умолчанию работает плохо (большие потери пакетов)
 
-*Примечание: Вообще для резервирования интернет линков используется так называемый IP SLA. К сожалению его функционал не реализован в Packet Tracer, но на реальном Cisco 2921 все нижепреведенные настройки работают:
+*Примечание: Вообще для резервирования интернет линков используется так называемый IP SLA и EEM. К сожалению их функционал не реализован в Packet Tracer, но на реальном Cisco 2921 все нижепреведенные настройки работают:
 
 - Настраиваем правило тестирования доступности сервера google через ISP-2
 ```
@@ -655,11 +655,17 @@ CORE-RT(config-ip-sla)#exit
 CORE-RT(config)#ip sla schedule 1 life forever start-time now
 ```
 - Связываем правило с треком, который привяжем к командам, выполняемым при срабатывании правила
+```
+CORE-RT(config)#track 1 ip sla 1 reachability
+```
+ip route 0.0.0.0 0.0.0.0 212.19.4.129 10 track 1
+ip route 0.0.0.0 0.0.0.0 195.239.237.217 50
 
-track 1 ip sla 1 reachability
-
-ip route 0.0.0.0 0.0.0.0 212.19.4.129 track 1
-ip route 0.0.0.0 0.0.0.0 195.239.237.217 250
+CORE-RT(config)#event manager applet ISPtracking
+ event track 1 state any
+ action 1.0 cli command "enable"
+ action 1.1 cli command "clear ip nat translation *"
+ action 1.2 syslog msg "ISP track state is changed"
 
 
 Настройка CLA для проверки доступности провайдера - в разработке
