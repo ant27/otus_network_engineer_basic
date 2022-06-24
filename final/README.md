@@ -658,17 +658,20 @@ CORE-RT(config)#ip sla schedule 1 life forever start-time now
 ```
 CORE-RT(config)#track 1 ip sla 1 reachability
 ```
-ip route 0.0.0.0 0.0.0.0 212.19.4.129 10 track 1
-ip route 0.0.0.0 0.0.0.0 195.239.237.217 50
+- Привяжем объявление маршрута до ISP-1 к треку (обратите внимание, что административное расстояние для маршрута до ISP-2 специально сделано больше, чтобы при наличии двух ISP маршрутизатор использовал маршрут до первого)
+```
+ip route 0.0.0.0 0.0.0.0 109.127.128.1 10 track 1
+ip route 0.0.0.0 0.0.0.0 213.87.113.1 50
+```
 
+- В конце заведем EEM апплет ISPtracking для сброса NAT-трансляций при сработке track1 (для того, чтобы при пропадании или появлении вновь линка, трансляции происходили через пул адресов работающего провайдера)
+```
 CORE-RT(config)#event manager applet ISPtracking
- event track 1 state any
- action 1.0 cli command "enable"
- action 1.1 cli command "clear ip nat translation *"
- action 1.2 syslog msg "ISP track state is changed"
-
-
-Настройка CLA для проверки доступности провайдера - в разработке
+CORE-RT(config-applet)#event track 1 state any
+CORE-RT(config-applet)#action 1.0 cli command "enable"
+CORE-RT(config-applet)#action 1.1 cli command "clear ip nat translation *"
+CORE-RT(config-applet)#action 1.2 syslog msg "ISP track state is changed"
+```
 
 ### 2. Настройка в CORE-RT DHCP-сервера в сети USERS. ###
 
