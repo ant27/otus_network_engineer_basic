@@ -23,6 +23,29 @@
 5. Ethernet Security
 6. NAT
 
+### Начальная настройка сетевых устройств ###
+
+Начальная настройка устройств включает заведение пользователя, установку паролей на расширенный режим, включение ssh доступа.
+Выполним наальную настройку на всех устройствах
+
+```
+en
+conf t
+username user privilege 15 secret user
+line console 0
+login local
+exit
+enable secret user
+service password-encryption
+banner motd $ OTUS Network-engineer-basic final project. 2022 $
+ip domain-name mega-company.com
+crypto key generate rsa general-keys modulus 1024
+ip ssh version 2
+line vty 0 15
+transport input ssh
+login local
+```
+
 ### Планирование VLAN ###
 
 Предполагается, что будут следующие VLAN:
