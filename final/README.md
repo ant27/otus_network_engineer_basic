@@ -747,30 +747,65 @@ PROD2-RT(config)#ip route 0.0.0.0 0.0.0.0 10.10.60.3
 ### 6. Настройка доступ к WEB-CORP и HTTPS-PROD серверам из интернета по статитескому NAT. ###
 
 - Настраиваем интрфейсы для натирования
+
+```
+CORE-RT(config)#interface GigabitEthernet0/2
+CORE-RT(config-if)#ip nat outside
+CORE-RT(config-subif)#interface GigabitEthernet0/0.70
+CORE-RT(config-subif)#ip nat outside
+CORE-RT(config-subif)#interface GigabitEthernet0/1.70
+CORE-RT(config-subif)#ip nat outside
+```
 ```
 CORE-RT(config)#interface GigabitEthernet0/0.20
 CORE-RT(config-subif)#ip nat inside
 CORE-RT(config-subif)#interface GigabitEthernet0/0.60
 CORE-RT(config-subif)#ip nat inside
-CORE-RT(config-subif)#interface GigabitEthernet0/0.70
-CORE-RT(config-subif)#ip nat outside
 CORE-RT(config-subif)#interface GigabitEthernet0/1.20
 CORE-RT(config-subif)#ip nat inside
 CORE-RT(config-subif)#interface GigabitEthernet0/1.60
 CORE-RT(config-subif)#ip nat inside
-CORE-RT(config-subif)#interface GigabitEthernet0/1.70
-CORE-RT(config-subif)#ip nat outside
 ```
 
 - Настройка статического NAT для сервера WEB-CORP (глобальный IP берем из пула ISP-1)
 ```
 CORE-RT(config)# ip nat inside source static 10.10.20.16 213.87.113.3
+CORE-RT(config)# ip nat inside source static 10.10.20.16 109.127.128.3
 ```
 - Настройка статического NAT для сервера HTTP-PROD (глобальный IP берем из пула ISP-2)
 ```
-CORE-RT(config)# ip nat inside source static 192.168.2.2 109.127.128.3 
+CORE-RT(config)# ip nat inside source static 192.168.2.2 213.87.113.4
+CORE-RT(config)# ip nat inside source static 192.168.2.2 109.127.128.4
 ```
 
+### 8. Настройка доступа в интернет из сети USERS по динамическому PAT. ### 
+
+- Определим диапазон адресов, подлежащих трансляции с помощью стандартной ACL
+```
+CORE-RT(config)#ip access-list standard USERS_NET
+CORE-RT(config-std-nacl)#permit 10.10.30.0 0.0.0.255
+```
+- Затем настроим два пула глобальных адресов от двух провайдеров
+
+```
+CORE-RT(config)#ip nat pool ISP-1-USERS-POOL 213.87.113.5 213.87.113.7 netmask 255.255.255.248
+CORE-RT(config)#ip nat pool ISP-2-USERS-POOL 109.127.128.5 109.127.128.7 netmask 255.255.255.248
+```
+- Добавляем правила трансляции
+
+```
+CORE-RT(config)#ip nat inside source list USERS_NET pool ISP-1-USERS-POOL
+CORE-RT(config)#ip nat inside source list USERS_NET pool ISP-2-USERS-POOL
+```
+
+- Включаем NAT-трансляцию на интерфейсе VLAN30
+
+```
+CORE-RT(config)#interface GigabitEthernet0/0.30
+CORE-RT(config-subif)#ip nat inside
+CORE-RT(config-subif)#interface GigabitEthernet0/1.30
+CORE-RT(config-subif)#ip nat inside
+```
 
 ### 6.Настройка сохранения логирования и конфигураций на syslog сервер LOG-CORP ###
 
@@ -801,8 +836,6 @@ RT-01(config-archive)#write-memory
 
 
 
-CORE-RT(config)#ip nat pool ISP-1-POOL 213.87.113.3 213.87.113.4 netmask 255.255.255.248
-CORE-RT(config)#ip nat pool ISP-2-POOL 109.127.128.3 109.127.128.4 netmask 255.255.255.248
 
 
 
