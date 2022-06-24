@@ -833,35 +833,35 @@ RT-01(config-archive)#write-memory
 
 
 
-
-
-
-
-
-
-### Разрешение доступа из сети USERS в сеть SERVERS только к IP серверов WEB-CORP по HTTPS, FILE-BACKUP-CORP по SAMBA, и NTP-CORP по NTP. ### 
+### Разрешение доступа из сети USERS в сеть SERVERS только к IP серверов WEB-CORP по HTTP и HTTPS, FILE-BACKUP-CORP по SAMBA, и NTP-CORP по NTP. ### 
 
 Пользователи сети USERS (обычные юзвери) могут ходить во все VLAN'ы без ограничений за счет маршрутизации CORE-RT. Это нехорошо.
-Настроим ACL для доступа из сети USERS ТОЛЬКО в сеть SERVERS ТОЛЬКО к IP серверов WEB-CORP по HTTPS, FILE-BACKUP-CORP по SAMBA, и NTP-CORP по NTP. К остальным серверам доступа у юзверей быть не должно.
+Настроим ACL для доступа из сети USERS ТОЛЬКО в сеть SERVERS ТОЛЬКО к IP серверов WEB-CORP по HTTPS, FILE-BACKUP-CORP по SAMBA, и NTP-CORP по NTP. К остальным серверам доступа у юзверей быть не должно. Также разрешается ходить в интернет. 
 
-Описание 1-го правила: Нужно создать access-list с правилом, разрешающим пакеты с ip источника, соответствующего диапазону сети USERS (10.10.30.0/24), ip назначения, соответствующего хосту WEB-CORP (10.10.20.16), протоколом tcp и портом 443. И затем применить его на интерфейсе GigabitEthernet0/1.30 для входящего траффика.
-Описание 2-го правила: Нужно создать access-list с правилом, разрешающим пакеты с ip источника, соответствующего диапазону сети USERS (10.10.30.0/24), ip назначения, соответствующего хосту FILE-BACKUP-CORP (10.10.20.14), протоколом tcp и портами 139, 445. И затем применить его на интерфейсе GigabitEthernet0/1.30 для входящего траффика.
-Описание 3-го правила: Нужно создать access-list с правилом, разрешающим пакеты с ip источника, соответствующего диапазону сети USERS (10.10.30.0/24), ip назначения, соответствующего хосту FILE-BACKUP-CORP (10.10.20.10), протоколом udp и портами 1023. И затем применить его на интерфейсе GigabitEthernet0/1.30 для входящего траффика.
+- Описание 1-го правила: Нужно создать access-list с правилом, разрешающим пакеты с ip источника, соответствующего диапазону сети USERS (10.10.30.0/24), ip назначения, соответствующего хосту WEB-CORP (10.10.20.16), протоколом tcp и портом 443. 
+- Описание 2-го правила: Нужно создать access-list с правилом, разрешающим пакеты с ip источника, соответствующего диапазону сети USERS (10.10.30.0/24), ip назначения, соответствующего хосту FILE-BACKUP-CORP (10.10.20.14), протоколом tcp и портами 139, 445. 
+- Описание 3-го правила: Нужно создать access-list с правилом, разрешающим пакеты с ip источника, соответствующего диапазону сети USERS (10.10.30.0/24), ip назначения, соответствующего хосту FILE-BACKUP-CORP (10.10.20.10), протоколом udp и портами 1023. 
+- Описание 3-го правила: Нужно создать access-list с правилом, запрещающим пакеты с ip источника, соответствующего диапазону сети USERS (10.10.30.0/24), ip назначения, соответствующего диапазону сетей всех наших VLAN 10.10.0.0 0.0.255.255, чтобы юзвери не могли ходить в vlan'ы, но могли в интернет.
 
-Весь остальной траффик запрещается.
+Весь остальной траффик разрешается.
 
 ```
-CORE-RT(config)#ip access-list extended USERS_TO_SERVERS
-CORE-RT(config-std-nacl)#accept tcp 10.10.30.0 0.0.0.255 host 10.10.20.16 eq 443
-CORE-RT(config-std-nacl)#accept tcp 10.10.30.0 0.0.0.255 host 10.10.20.14 eq 139
-CORE-RT(config-std-nacl)#accept tcp 10.10.30.0 0.0.0.255 host 10.10.20.14 eq 445
-CORE-RT(config-std-nacl)#accept tcp 10.10.30.0 0.0.0.255 host 10.10.20.10 eq ntp
-CORE-RT(config-std-nacl)#deny ip any any
+CORE-RT(config)#ip access-list extended USERS_TO_SERVERS_AND_INTERNET
+CORE-RT(config-std-nacl)#permit tcp 10.10.30.0 0.0.0.255 host 10.10.20.16 eq www
+CORE-RT(config-std-nacl)#permit tcp 10.10.30.0 0.0.0.255 host 10.10.20.16 eq 443
+CORE-RT(config-std-nacl)#permit tcp 10.10.30.0 0.0.0.255 host 10.10.20.14 eq 139
+CORE-RT(config-std-nacl)#permit tcp 10.10.30.0 0.0.0.255 host 10.10.20.14 eq 445
+CORE-RT(config-std-nacl)#permit tcp 10.10.30.0 0.0.0.255 host 10.10.20.10 eq 123
+CORE-RT(config-std-nacl)#deny ip 10.10.30.0 0.0.0.255 10.10.0.0 0.0.255.255
+CORE-RT(config-std-nacl)#permit ip any any
+```
+- Применение на интерфейсах GigabitEthernet0/0.30 и GigabitEthernet0/1.30 для входящего траффика.
+```
+CORE-RT(config)#int GigabitEthernet0/0.30
+CORE-RT(config-if)#ip access-group USERS_TO_SERVERS_AND_INTERNET in
 CORE-RT(config)#int GigabitEthernet0/1.30
-CORE-RT(config-if)#ip access-group USERS_TO_SERVERS in
+CORE-RT(config-if)#ip access-group USERS_TO_SERVERS_AND_INTERNET in
 ```
-
-
 
 ### Настройка сохранения логов и конфигураций сетевых устройств на syslog и ftp сервер в сети SERVERS ### 
 9. Настроить  сохранение конфигураций
