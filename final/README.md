@@ -343,9 +343,6 @@ PROD3-RT(config)#ip route 192.168.1.0 255.255.255.0 10.10.50.2
 PROD3-RT(config)#ip route 192.168.2.0 255.255.255.0 10.10.60.2
 ```
 
-
-
-
 - Включаем порты на коммутаторе SW3-OPTICAL для связи с маршрутизаторами PROD1-RT и PROD2-RT
 ```
 SW3-OPTICAL(config)#interface g0/1
@@ -396,13 +393,8 @@ SW2-OPTICAL(config-if)#no sh
 5. Настройка доступа в интернет с сервера HTTPS-PROD.
 6. Настройка сохранения логирования и конфигураций на ftp-сервер LOG-CORP
 7. Настройка доступ к WEB-CORP и HTTPS-PROD серверам из интернета по статитескому NAT.
-
-
 8. Настройка доступа в интернет из сети USERS по PAT.
-
-
 7. Разрешение доступа из сети USERS в сеть SERVERS только к IP серверов WEB-CORP по HTTPS, FILE-BACKUP-CORP по SAMBA, и NTP-CORP по NTP.
-
 11. Настройка port-security на access портах сети USERS
 
 ### Конфигурация интерфейсов корпоративной сети ###
@@ -863,8 +855,16 @@ CORE-RT(config)#int GigabitEthernet0/1.30
 CORE-RT(config-if)#ip access-group USERS_TO_SERVERS_AND_INTERNET in
 ```
 
-### Настройка сохранения логов и конфигураций сетевых устройств на syslog и ftp сервер в сети SERVERS ### 
-9. Настроить  сохранение конфигураций
+###  Настройка port-security на access портах сети USERS ### 
 
-### Настройка Port Security ### 
-Не забыть настроить port security на порта провайдеров
+- Настраиваем port-security на access портах сети USERS коммутатора SW1-CORP (на SW2-CORP аналогично)
+```
+SW1-CORP(config)interface range F0/5 - 10
+SW1-CORP(config-if)#switchport port-security
+SW1-CORP(config-if)#switchport port-security maximum 3
+SW1-CORP(config-if)#switchport port-security violation restrict
+SW1-CORP(config-if)#switchport port-security aging time 10
+SW1-CORP(config-if)#ip dhcp snooping limit rate 5
+SW1-CORP(config-if)#spanning-tree portfast
+SW1-CORP(config-if)#spanning-tree bpduguard enable
+```
