@@ -599,6 +599,52 @@ CORE-RT(config)#interface GigabitEthernet0/1
 CORE-RT(config-if)#no sh
 ```
 *!!!Проверить, будет ли таким образом осуществляться резервирование, когда VLAN'ы настроены на двух интерфейсах маршрутизатора.
+!!! Оказывается такая схема резервирования НЕ РАБОТАЕТ!!!
+Для настоящего резервирования необходимо постваить в CORE-RT карточку HWIC-4ESW (4-х портового коммутатора) и сделать следующее:
+
+- Настроить транки на портах HWIC-4ESW:
+```
+CORE-RT(config)#interface FastEthernet0/3/0
+CORE-RT(config-if)#switchport trunk native vlan 333
+CORE-RT(config-if)#switchport trunk allowed vlan 10,20,30,40,50,60,70,333
+CORE-RT(config-if)#switchport mode trunk
+CORE-RT(config-if)#interface FastEthernet0/3/1
+CORE-RT(config-if)#switchport trunk native vlan 333
+CORE-RT(config-if)#switchport trunk allowed vlan 10,20,30,40,50,60,70,333
+CORE-RT(config-if)#switchport mode trunk
+```
+- Прописать интерфейсы VLAN не как подинтерфейсы маршрутизируемых портов, а непосредственно:
+```
+CORE-RT(config-if)#interface Vlan10
+CORE-RT(config-if)#ip address 10.10.10.100 255.255.255.0
+CORE-RT(config-if)#interface Vlan20
+CORE-RT(config-if)#ip address 10.10.20.100 255.255.255.0
+CORE-RT(config-if)#ip nat inside
+CORE-RT(config-if)#interface Vlan30
+CORE-RT(config-if)#ip address 10.10.30.100 255.255.255.0
+CORE-RT(config-if)#interface Vlan40
+CORE-RT(config-if)#ip address 10.10.40.100 255.255.255.0
+CORE-RT(config-if)#interface Vlan50
+CORE-RT(config-if)#ip address 10.10.50.100 255.255.255.0
+CORE-RT(config-if)#interface Vlan60
+CORE-RT(config-if)#ip address 10.10.60.3 255.255.255.248
+CORE-RT(config-if)#ip nat inside
+CORE-RT(config-if)#interface Vlan70
+CORE-RT(config-if)#ip address 213.87.113.2 255.255.255.248
+CORE-RT(config-if)#ip nat outside
+```
+- Не забыть, что в роутере VLAN'ы нужно специально прописывать через vlan database
+```
+CORE-RT#vlan database
+CORE-RT(vlan)#vlan 10
+CORE-RT(vlan)#vlan 20
+CORE-RT(vlan)#vlan 30
+CORE-RT(vlan)#vlan 40
+CORE-RT(vlan)#vlan 50
+CORE-RT(vlan)#vlan 60
+CORE-RT(vlan)#vlan 70
+```
+
 
 - Настройка интерфейсов CORE-RT до провайдеров интернета (обратите внимание, что первый провайдер приходит через VLAN, потому что оборудование провайдера находится в другом от CORE-RT помещении)
 
