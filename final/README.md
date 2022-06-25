@@ -31,7 +31,7 @@
 ```
 en
 conf t
-username user privilege 15 secret user
+username user privilege 15 secret 0 user
 line console 0
 login local
 exit
@@ -44,6 +44,9 @@ ip ssh version 2
 line vty 0 15
 transport input ssh
 login local
+end
+wr
+exit
 ```
 
 ### Планирование VLAN ###
