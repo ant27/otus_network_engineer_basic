@@ -872,6 +872,17 @@ CORE-RT(config)#logging 10.10.20.12
 CORE-RT(config)#logging on
 ```
 
+```
+conf t
+logging trap debugging
+logging 10.10.20.12
+logging on
+exit
+wr
+exit
+exit
+```
+
 - Настройка сохранения startup-config на удаленный ftp-сервер FILESHARE-BACKUP-CORP (одинаково для всех устройств)
 
 ```
