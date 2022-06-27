@@ -12,16 +12,27 @@
 4. Доступность серверов из WAN.
 5. Шлюз для контроля и администрирования из WAN.
 6. Настройка GRE тоннелей
-7. Настройка устройств Internet of Things
 
 
 ### Используемые технологии ###
 1. VLAN
 2. LACP, EtherChannel
-3. DHCP
-4. DNS
+3. STP
+4. DHCP
+5. DNS
+6. NTP
 5. Ethernet Security
 6. NAT
+7. SYSLOG
+8. IP SLA
+9. EEM
+10. GRE/IPSec
+
+
+### Схема сети ###
+
+![](final-net.png)
+
 
 ### Начальная настройка сетевых устройств ###
 
